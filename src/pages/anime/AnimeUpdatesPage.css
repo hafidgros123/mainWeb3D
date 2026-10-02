@@ -1,0 +1,54 @@
+.anime-updates-page h1 {
+  color: var(--coral);
+  text-shadow: 0.3125rem 0.3125rem 0 rgba(165, 31, 49, 0.35);
+}
+
+.anime-updates-intro {
+  max-width: 48rem;
+  margin: 1.5rem 0 2.5rem;
+  color: var(--cream);
+  font-family: var(--mono);
+  line-height: 1.7;
+}
+
+.recent-episode,
+.anime-list-area {
+  padding: 1.75rem;
+  border: 0.0625rem solid var(--line);
+  background: var(--panel);
+}
+
+.recent-episode {
+  width: min(100%, 26rem);
+  min-height: 12rem;
+}
+
+.anime-list-area {
+  min-height: 46svh;
+  margin-top: 3.5rem;
+}
+
+.recent-episode h2,
+.anime-list-area h2 {
+  margin: 0;
+  color: var(--coral);
+  font-family: var(--pixel);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.recent-episode p,
+.anime-list-area p {
+  margin: 2rem 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 43.75rem) {
+  .anime-list-area {
+    min-height: 42svh;
+    margin-top: 2.5rem;
+  }
+}

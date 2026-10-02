@@ -1,77 +1,47 @@
-import { lazy, Suspense, useState } from 'react'
-import ellenCharacter from './assets/character_transparent.png'
-
+import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import ChatOverlay from './components/chat/ChatOverlay'
+import RandomImageOverlay from './components/random/RandomImageOverlay'
+import ErrorBoundary from './components/shared/ErrorBoundary'
+import GameListPage from './pages/games/GameListPage'
+import GamePage from './pages/games/GamePage'
+import AnimeUpdatesPage from './pages/anime/AnimeUpdatesPage'
+import MainPage from './pages/MainPage'
+import ThreeDPage from './pages/ThreeDPage'
 import './App.css'
 
-const ChatMessages = lazy(() => import('./ChatMessages'))
-const ChatInput = lazy(() => import('./ChatInput'))
-const initialMessage = {
-  message: 'Hey! I am Ellen, whatever you need just say it and i will see if i can do anything about it, ok?',
-  sender: 'ellenBot',
-  id: '0000000000000'
+function AppContent() {
+  const location = useLocation()
+  const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
+
+  return (
+    <div className={`app-shell${hasRedPageBackground ? ' app-shell--red-page' : ''}`}>
+      <RandomImageOverlay />
+
+      <header className="site-header">
+        <Link className="home-link" to="/" aria-label="Return to the main project">
+          <span className="home-link-arrow" aria-hidden="true">&#8592;</span>
+          <span className="home-link-label">Main project</span>
+        </Link>
+      </header>
+
+      <Routes>
+        <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
+        <Route path="/games" element={<ErrorBoundary><GameListPage /></ErrorBoundary>} />
+        <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
+        <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
+        <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
+        <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
+      </Routes>
+
+      <ErrorBoundary>
+        <ChatOverlay />
+      </ErrorBoundary>
+    </div>
+  )
 }
 
 function App() {
-  const [isChatOpen, setIsChatOpen] = useState(false)
-  const [chatMessages, setChatMessages] = useState([initialMessage])
-
-  const openChat = () => setIsChatOpen(true)
-  const closeChat = () => setIsChatOpen(false)
-
-  return (
-    <>
-      <header className="site-header">
-        <a className="home-link" href="/" aria-label="Return to the main project">
-          <span className="home-link-arrow" aria-hidden="true">&#8592;</span>
-          <span className="home-link-label">Main project</span>
-        </a>
-      </header>
-
-      <main className={`App${isChatOpen ? ' chat-open' : ''}`}>
-        <section
-          className="main-panel"
-          aria-label="Main content"
-          onClick={closeChat}
-        />
-
-        <aside className="side-panel">
-          {!isChatOpen ? (
-            <button
-              className="chat-launcher"
-              type="button"
-              onClick={openChat}
-              aria-label="Open Ellen chat"
-            >
-              <img src={ellenCharacter} alt="Ellen" />
-              <h2>Chat with Ellen Joe</h2>
-            </button>
-          ) : (
-            <div className="chat-window" role="dialog" aria-label="Ellen chat">
-              <div className="chat-header">
-                <button
-                  className="chat-back-button"
-                  type="button"
-                  onClick={closeChat}
-                  aria-label="Back to the initial view"
-                  title="Back to the initial view"
-                >
-                  <span aria-hidden="true">&#8592;</span>
-                </button>
-                <div>
-                  <span className="chat-status" aria-hidden="true" />
-                  <strong>Chat with Ellen Joe</strong>
-                </div>
-              </div>
-              <Suspense fallback={<div className="chat-loading" aria-live="polite">Loading chat...</div>}>
-                <ChatMessages chatMessages={chatMessages} />
-                <ChatInput chatMessages={chatMessages} setChatMessages={setChatMessages} />
-              </Suspense>
-            </div>
-          )}
-        </aside>
-      </main>
-    </>
-  )
+  return <AppContent />
 }
 
 export default App

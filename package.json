@@ -1,17 +1,25 @@
 {
-  "name": "mainapp",
+  "name": "appmain-menu",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "server": "node --env-file=serverless-side/.env serverless-side/server.js",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.20.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2",
+    "three": "^0.185.1",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
