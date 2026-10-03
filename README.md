@@ -1,53 +1,136 @@
-# EllenBot
+# EllenBot Animated Link 3D
 
-React and Vite app for Ellen's game menu, chat assistant, and 3D experience.
+A React + Vite project that combines a themed game portal, a Gemini-powered chat assistant, and a 3D interactive experience. The app includes a landing screen, game catalogue, anime updates page, and an overlay chat that can trigger animations in the 3D scene.
 
+## Features
 
-## Source map
+- Intro screen with a looping video and skip/play flow
+- Main project hub with navigation to games, 3D experience, and anime content
+- Game list and per-game pages using React Router
+- Chat overlay with Gemini integration and function-calling support
+- 3D scene and animation controls powered by Three.js
+- Anonymous browser session handling and lightweight request limiting on the backend
+- Demo-style aesthetic with custom random image overlays and animated UI
 
-All application code belongs in `src/`. Use the folder that matches the job:
+## Tech stack
 
-| Folder | Put here | Current contents |
-| --- | --- | --- |
-| `src/app` | Reserved for app-wide setup when it is needed | Empty, currently omitted |
-| `src/components/chat` | Chat button, window, messages, and chat styles | EllenBot chat UI |
-| `src/components/shared` | Reusable components that are not specific to one page | `ErrorBoundary.jsx` |
-| `src/gamesData` | Game definitions and game-specific data | `gameDefinitions.js` |
-| `src/lib` | External-service clients and general utilities | Gemini client |
-| `src/pages` | Route-level screens | Main menu and 3D screen |
-| `src/pages/games` | Game listing and individual game screens | Game list and game route |
-| `src/store` | Zustand application state | Progress and scene stores |
-| `src/three` | Three.js scene code and animation definitions | Animation names |
-| `src/assets` | Images, cursors, models, and other imported media | Ellen and user artwork |
+- Frontend: React 19, Vite, React Router, Zustand, Three.js
+- Backend: Express, Google Generative AI SDK
+- Styling: custom CSS modules and component-level styles
 
-`src/App.jsx` owns the route table. `src/main.jsx` is the browser entry point. `src/App.css` owns the app visual system; `src/index.css` only contains browser-level resets.
+## Project structure
 
-## Adding a game
+```text
+.
+├── index.html
+├── package.json
+├── vite.config.js
+├── public/
+├── serverless-side/
+│   └── server.js
+├── src/
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   ├── main.jsx
+│   ├── assets/
+│   ├── components/
+│   │   ├── chat/
+│   │   ├── random/
+│   │   └── shared/
+│   ├── gamesData/
+│   ├── lib/
+│   │   └── gemini.js
+│   ├── pages/
+│   │   ├── MainPage.jsx
+│   │   ├── ThreeDPage.jsx
+│   │   ├── anime/
+│   │   └── games/
+│   ├── store/
+│   │   ├── progressionStore.js
+│   │   └── sceneStore.js
+│   └── three/
+│       └── animations.js
+└── README.md
+```
 
-1. Add its id, number, and title in `src/games/gameDefinitions.js`.
-2. Put its route UI in `src/pages/games/`.
-3. Put a Unity build at `public/unity/<game-id>/` when the public folder is created.
-4. Connect the finished-game event to `src/store/progressionStore.js`.
+## Getting started
 
-## Adding chat behavior
+### 1) Install dependencies
 
-Keep chat UI in `src/components/chat/`. Keep Gemini requests and tool declarations in `src/lib/gemini.js`. Do not put chat files directly in `src/components/`.
+```bash
+npm install
+```
 
-## Adding 3D behavior
+### 2) Set up environment variables
 
-Keep animation names and Three.js helpers in `src/three/`. Use `src/store/sceneStore.js` for communication between chat commands and the 3D scene.
-
-## Environment
-
-Create `serverless-side/.env` for the backend with:
+Create a file named `serverless-side/.env` in the project root with:
 
 ```env
-GEMINI_API_KEY=your_key_here
+GEMINI_API_KEY=your_google_gemini_api_key
 CHAT_SESSION_SECRET=your_long_random_secret
-# Set only when deployed behind a known proxy; use its exact hop count.
+# Optional: only set this in production behind a trusted reverse proxy
 # TRUST_PROXY_HOPS=1
 ```
 
-`CHAT_SESSION_SECRET` signs anonymous chat-session cookies. In production, configure a stable random secret of at least 32 bytes. The development server generates a temporary secret if it is omitted.
+Notes:
+- `GEMINI_API_KEY` is required for the chat backend to call the Gemini API.
+- `CHAT_SESSION_SECRET` signs the anonymous chat session cookie.
+- Do not commit `.env` to source control.
+- In production, use a secure backend proxy instead of exposing a key in the frontend.
 
-Never commit `.env` or expose a production Gemini key in a public frontend. Use a backend proxy for a deployed app.
+### 3) Start the local backend
+
+```bash
+npm run server
+```
+
+This starts the Express API on `http://localhost:3001`.
+
+### 4) Start the frontend
+
+In a second terminal:
+
+```bash
+npm run dev
+```
+
+Then open `http://localhost:5173` in the browser.
+
+## Available scripts
+
+```bash
+npm run dev       # Start the Vite frontend
+npm run server    # Start the Express backend
+npm run build     # Create a production build
+npm run preview   # Preview the production build locally
+npm run lint      # Run the project linter
+```
+
+## How the app works
+
+- The frontend is served by Vite and uses React Router to switch between pages.
+- The chat overlay sends user messages to the backend at `/api/chat`.
+- The backend validates input, applies rate limits, signs session cookies, and forwards requests to Gemini.
+- If a chat command includes a valid tool action such as a character animation, the backend returns a function call that the client can handle.
+- The 3D page reads scene state from the Zustand store and updates the animation state in the browser.
+
+## Development notes
+
+- Route configuration lives in `src/App.jsx`.
+- Chat UI belongs in `src/components/chat/`.
+- Gemini API logic and chat route definitions live in `src/lib/gemini.js`.
+- 3D animation names and scene-related helpers live in `src/three/`.
+- Game definitions are kept under `src/gamesData/`.
+
+## Production and deployment
+
+- Use the backend as the API boundary for Gemini requests.
+- Keep the frontend free of production secrets.
+- If the app is deployed behind a proxy, set `TRUST_PROXY_HOPS` to the real number of proxy hops.
+- Ensure the host used by the backend CORS configuration matches your deployed frontend origin if applicable.
+
+## License
+
+This project is currently without a formal license declaration in the repository.
+
