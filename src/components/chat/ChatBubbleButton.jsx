@@ -1,4 +1,4 @@
-import ellenCharacter from '../../assets/character_transparent.png'
+import ellenCharacter from '../../assets/character_transparent.webp'
 
 function ChatBubbleButton({ onOpen }) {
   return (

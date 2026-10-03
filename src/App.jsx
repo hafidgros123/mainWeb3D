@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import ChatOverlay from './components/chat/ChatOverlay'
 import RandomImageOverlay from './components/random/RandomImageOverlay'
@@ -18,10 +19,12 @@ function AppContent() {
       <RandomImageOverlay />
 
       <header className="site-header">
-        <Link className="home-link" to="/" aria-label="Return to the main project">
-          <span className="home-link-arrow" aria-hidden="true">&#8592;</span>
-          <span className="home-link-label">Main project</span>
-        </Link>
+        {location.pathname !== '/' && (
+          <Link className="home-link" to="/" aria-label="Return to the main project">
+            <span className="home-link-arrow" aria-hidden="true">&#8592;</span>
+            <span className="home-link-label">Main project</span>
+          </Link>
+        )}
       </header>
 
       <Routes>
@@ -41,7 +44,40 @@ function AppContent() {
 }
 
 function App() {
-  return <AppContent />
+  const [introComplete, setIntroComplete] = useState(false)
+  const [introStarted, setIntroStarted] = useState(false)
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    if (!introStarted) return
+
+    const timeoutId = window.setTimeout(() => setIntroComplete(true), 2500)
+    return () => window.clearTimeout(timeoutId)
+  }, [introStarted])
+
+  if (introComplete) return <AppContent />
+
+  return (
+    <main className="intro-screen">
+      <video
+        ref={videoRef}
+        loop
+        playsInline
+        aria-label="Intro video"
+        onPlay={() => setIntroStarted(true)}
+      >
+        <source src="/skyrim.mp4" type="video/mp4" />
+      </video>
+      {!introStarted && (
+        <button className="intro-play" onClick={() => videoRef.current?.play()}>
+          Play with sound
+        </button>
+      )}
+      <button className="intro-skip" onClick={() => setIntroComplete(true)}>
+        Skip intro
+      </button>
+    </main>
+  )
 }
 
 export default App

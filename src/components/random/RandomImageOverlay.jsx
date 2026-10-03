@@ -7,7 +7,7 @@ const cornerFolders = [
   ['bottom left', 'bottom-left'],
 ]
 const imageModules = import.meta.glob(
-  '../../assets/random/*/*.{avif,gif,jpeg,jpg,png,svg,webp}',
+  '../../assets/random/*/*.{avif,jpeg,jpg,png,svg,webp}',
   { eager: true, import: 'default' },
 )
 
@@ -17,11 +17,11 @@ const imagesByCorner = Object.fromEntries(
     Object.entries(imageModules)
       .filter(([path]) => path.split('/').slice(-2, -1)[0] === folder)
       .sort(([firstPath], [secondPath]) => firstPath.localeCompare(secondPath))
-      .map(([path, src]) => ({ src, isRem: path.toLowerCase().endsWith('/rem.png') })),
+      .map(([path, src]) => ({ src, isRem: path.toLowerCase().endsWith('/rem.webp') })),
   ]),
 )
 const corners = cornerFolders.map(([, corner]) => corner)
-const MAX_IMAGES_PER_CORNER = 10
+const MAX_IMAGES_PER_CORNER = 15
 
 const RANDOM_IMAGE_KEY = 'random-image-overlay-last-change'
 const CORNER_QUEUE_KEY = `${RANDOM_IMAGE_KEY}-corner-queue`

@@ -39,8 +39,53 @@ button { cursor: pointer; }
   background: var(--page);
 }
 
+.intro-screen {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--page);
+}
+
+.intro-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.intro-skip,
+.intro-play {
+  position: absolute;
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  z-index: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: rgb(16 9 11 / 75%);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
+.intro-skip {
+  right: max(1.5rem, env(safe-area-inset-right));
+}
+
+.intro-play {
+  left: max(1.5rem, env(safe-area-inset-left));
+}
+
+.intro-skip:hover,
+.intro-skip:focus-visible,
+.intro-play:hover,
+.intro-play:focus-visible {
+  border-color: var(--coral);
+  color: var(--coral);
+}
+
 .app-shell--red-page {
-  background: url('./assets/sombra_red_no_logo.png') center / cover no-repeat fixed;
+  background: url('./assets/sombra_red_no_logo.webp') center / cover no-repeat fixed;
 }
 
 .random-image-layer {
@@ -263,6 +308,77 @@ button { cursor: pointer; }
   font-family: var(--mono);
 }
 
+.contact-section {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 0.0625rem solid var(--line);
+}
+
+.contact-section h2 {
+  margin: 0 0 1rem;
+  color: var(--coral);
+  font-family: var(--pixel);
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+.contact-links {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.contact-link {
+  display: flex;
+  min-width: 0;
+  min-height: 5rem;
+  padding: 0.875rem;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 0.0625rem solid var(--line);
+  color: var(--cream);
+  background: var(--panel);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+  border-color: var(--coral);
+  background: var(--panel-soft);
+}
+
+.contact-link:focus-visible {
+  outline: 0.125rem solid var(--coral);
+  outline-offset: 0.125rem;
+}
+
+.contact-link-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+}
+
+.contact-link-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: 0 0 auto;
+  color: var(--coral);
+}
+
+.contact-link small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
 .about-page .about-highlight {
   display: block;
   margin: 0.5rem 0;
@@ -462,6 +578,7 @@ button { cursor: pointer; }
   .game-card strong { font-size: 1.3125rem; }
   .main-page-content h1, .three-d-page h1 { font-size: clamp(1.75rem, 10vw, 3.25rem); }
   .main-page-content .page-intro { max-width: 100%; }
+  .contact-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .game-placeholder { min-height: 50svh; }
   .three-d-page .game-placeholder { min-height: 62svh; }
   .three-d-link { width: 100%; justify-content: center; text-align: center; }

@@ -4,8 +4,8 @@ import { selectThreeDUnlocked, useProgression } from '../../store/progressionSto
 import { useSceneStore } from '../../store/sceneStore'
 import './cssfiles/ChatMessages.css'
 import './cssfiles/ChatInput.css'
-import ellenPortrait from '../../assets/hey ellen nom nom.png'
-import userPortrait from '../../assets/user.jpg'
+import ellenPortrait from '../../assets/hey ellen nom nom.webp'
+import userPortrait from '../../assets/user.webp'
 
 function ChatWindow({ onClose }) {
   const [messages, setMessages] = useState([{ message: 'Hey! I am Ellen. What do you need?', sender: 'ellenBot', id: '000000000000' }])
