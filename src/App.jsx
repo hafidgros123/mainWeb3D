@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import ChatOverlay from './components/chat/ChatOverlay'
 import RandomImageOverlay from './components/random/RandomImageOverlay'
@@ -18,23 +18,25 @@ function AppContent() {
     <div className={`app-shell${hasRedPageBackground ? ' app-shell--red-page' : ''}`}>
       <RandomImageOverlay />
 
-      <header className="site-header">
-        {location.pathname !== '/' && (
-          <Link className="home-link" to="/" aria-label="Return to the main project">
-            <span className="home-link-arrow" aria-hidden="true">&#8592;</span>
-            <span className="home-link-label">Main project</span>
-          </Link>
-        )}
-      </header>
+      <div className="route-transition" key={location.pathname}>
+        <header className="site-header">
+          {location.pathname !== '/' && (
+            <Link className="home-link" to="/" aria-label="Return to the main project">
+              <span className="home-link-arrow" aria-hidden="true">&#8592;</span>
+              <span className="home-link-label">Main project</span>
+            </Link>
+          )}
+        </header>
 
-      <Routes>
-        <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
-        <Route path="/games" element={<ErrorBoundary><GameListPage /></ErrorBoundary>} />
-        <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
-        <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
-        <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
-        <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
+          <Route path="/games" element={<ErrorBoundary><GameListPage /></ErrorBoundary>} />
+          <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
+          <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
+          <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
+          <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
+        </Routes>
+      </div>
 
       <ErrorBoundary>
         <ChatOverlay />
@@ -48,23 +50,17 @@ function App() {
   const [introStarted, setIntroStarted] = useState(false)
   const videoRef = useRef(null)
 
-  useEffect(() => {
-    if (!introStarted) return
-
-    const timeoutId = window.setTimeout(() => setIntroComplete(true), 2500)
-    return () => window.clearTimeout(timeoutId)
-  }, [introStarted])
-
   if (introComplete) return <AppContent />
 
   return (
     <main className="intro-screen">
       <video
         ref={videoRef}
-        loop
         playsInline
+        preload="auto"
         aria-label="Intro video"
         onPlay={() => setIntroStarted(true)}
+        onEnded={() => setIntroComplete(true)}
       >
         <source src="/skyrim.mp4" type="video/mp4" />
       </video>

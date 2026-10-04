@@ -49,10 +49,13 @@ button { cursor: pointer; }
 }
 
 .intro-screen video {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #000;
 }
 
 .intro-skip,
@@ -86,6 +89,60 @@ button { cursor: pointer; }
 
 .app-shell--red-page {
   background: url('./assets/sombra_red_no_logo.webp') center / cover no-repeat fixed;
+}
+
+.route-transition {
+  --route-enter-distance: 2.75rem;
+  animation: route-enter 900ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.route-transition > main:not(.AppMainMenu) > *,
+.route-transition > .AppMainMenu > .main-page-content > * {
+  animation: content-enter 900ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(2) { animation-delay: 55ms; }
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(3) { animation-delay: 110ms; }
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(4) { animation-delay: 165ms; }
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(5) { animation-delay: 220ms; }
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(6) { animation-delay: 275ms; }
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(7) { animation-delay: 330ms; }
+.route-transition > .AppMainMenu > .main-page-content > :nth-child(8) { animation-delay: 385ms; }
+
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--route-enter-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--route-enter-distance));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition {
+    --route-enter-distance: 1.5rem;
+    animation-duration: 620ms;
+  }
+
+  .route-transition > main:not(.AppMainMenu) > *,
+  .route-transition > .AppMainMenu > .main-page-content > * {
+    animation-duration: 560ms;
+  }
 }
 
 .random-image-layer {
