@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap');
 
 :root {
-  --ink: #fff1ed;
-  --muted: #d09f99;
-  --dim: #80504c;
+  --ink: #fff5f2;
+  --muted: #ffd9d1;
+  --dim: #ffb2b5;
   --page: #10090b;
   --panel: #1d0d11;
   --panel-soft: #321117;
   --line: #60232b;
-  --coral: #ff3d4f;
-  --coral-dark: #a51f31;
-  --cream: #ffd8d0;
-  --blue: #4db8ff;
-  --blue-dark: #176aa8;
+  --coral: #ff8d93;
+  --coral-dark: #d14053;
+  --cream: #fff4f1;
+  --blue: #9fe5ff;
+  --blue-dark: #1a75b8;
   --blue-soft: #102b42;
   --mono: 'DM Mono', Consolas, monospace;
   --pixel: 'Silkscreen', 'Courier New', monospace;
@@ -270,12 +270,13 @@ button { cursor: pointer; }
 .main-panel h1, .game-page h1 {
   max-width: 47.5rem;
   margin: 0;
-  color: var(--ink);
+  color: #fff3ef;
   font-family: var(--display);
   font-size: clamp(2.625rem, 7vw, 5.5rem);
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1.25;
+  text-shadow: 0 0 0.5rem rgba(255, 116, 122, 0.9), 0.125rem 0.125rem 0 rgba(255, 76, 76, 0.35);
 }
 
 .main-page-content h1 {
@@ -294,6 +295,12 @@ button { cursor: pointer; }
   max-width: 90rem;
   margin-bottom: 3.25rem;
   font-size: clamp(1rem, 2vw, 1.25rem);
+}
+
+.main-page-content .page-intro a {
+  color: #9fe5ff;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .about-page {
@@ -339,12 +346,17 @@ button { cursor: pointer; }
 .about-page summary {
   width: fit-content;
   margin: 0 0 0.75rem;
-  color: var(--cream);
+  padding: 0.65rem 1rem;
+  border: 0.125rem solid rgba(255, 144, 150, 0.9);
+  background: rgba(20, 11, 14, 0.9);
+  color: #fff4f1;
+  box-shadow: inset 0 0 0 0.125rem rgba(255, 144, 150, 0.18), 0.25rem 0.25rem 0 rgba(168, 35, 52, 0.18);
   font-family: var(--pixel);
   font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 400;
   line-height: 1.6;
   cursor: pointer;
+  text-shadow: 0 0 0.5rem rgba(255, 137, 141, 0.65);
 }
 
 .about-page summary::marker {
@@ -360,6 +372,24 @@ button { cursor: pointer; }
   line-height: 1.7;
 }
 
+.about-page ul {
+  max-width: 65rem;
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.about-page li + li {
+  margin-top: 0.35rem;
+}
+
+.about-page strong {
+  color: var(--cream);
+}
+
 .about-page code {
   color: var(--cream);
   font-family: var(--mono);
@@ -373,10 +403,11 @@ button { cursor: pointer; }
 
 .contact-section h2 {
   margin: 0 0 1rem;
-  color: var(--coral);
+  color: #fff4f0;
   font-family: var(--pixel);
   font-size: 1.125rem;
   font-weight: 400;
+  text-shadow: 0 0 0.45rem rgba(255, 116, 122, 0.9);
 }
 
 .contact-links {
@@ -518,6 +549,54 @@ button { cursor: pointer; }
   flex-direction: column;
 }
 
+.project-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.project-link {
+  display: inline-flex;
+  min-width: min(100%, 20rem);
+  padding: 0.875rem 1.25rem;
+  border: 0.125rem solid rgba(255, 85, 92, 0.98);
+  background: rgba(250, 118, 125, 0.88);
+  color: #18090c;
+  box-shadow: inset 0 0 0 0.125rem rgba(255, 87, 94, 0.18), 0.25rem 0.25rem 0 rgba(123, 24, 30, 0.18);
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 120ms ease, border-color 120ms ease, color 120ms ease, background 120ms ease, opacity 120ms ease;
+}
+
+.project-link:hover,
+.project-link:focus-visible {
+  border-color: var(--cream);
+  color: var(--cream);
+  background: rgba(67, 17, 19, 0.72);
+  transform: translateY(-0.125rem);
+  outline: none;
+}
+
+.project-link--secondary {
+  border-color: rgba(122, 201, 255, 0.88);
+  background: rgba(160, 225, 255, 0.72);
+  color: #071923;
+  box-shadow: inset 0 0 0 0.125rem rgba(122, 201, 255, 0.18), 0.25rem 0.25rem 0 rgba(54, 95, 120, 0.12);
+}
+
+.project-link--secondary:hover,
+.project-link--secondary:focus-visible {
+  border-color: #eafaff;
+  color: #071923;
+  background: rgba(182, 232, 255, 0.65);
+  opacity: 0.9;
+}
+
 .anime-updates-link {
   align-self: flex-end;
 }
@@ -540,10 +619,12 @@ button { cursor: pointer; }
 
 .three-d-link:hover, .game-page button:hover { background: #b9e6ff; transform: translate(-0.1875rem, -0.1875rem); box-shadow: 0.625rem 0.625rem 0 var(--blue-dark); }
 .three-d-link.locked {
-  border-color: var(--line);
-  color: var(--dim);
-  background: #a5a5a5;
+  border-color: rgba(255, 171, 176, 0.95);
+  color: #fff5f2;
+  background: rgba(40, 18, 20, 0.96);
+  box-shadow: 0.4375rem 0.4375rem 0 rgba(91, 42, 49, 0.95);
   cursor: not-allowed;
+  opacity: 1;
 }
 
 .game-page { padding: 2.625rem 0 5.625rem; }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { askGemini } from '../../lib/gemini'
 import { selectThreeDUnlocked, useProgression } from '../../store/progressionStore'
 import { useSceneStore } from '../../store/sceneStore'
+import { ANIMATION_NAMES } from '../../three/animations'
 import './cssfiles/ChatMessages.css'
 import './cssfiles/ChatInput.css'
 import ellenPortrait from '../../assets/hey ellen nom nom.webp'
@@ -14,17 +15,29 @@ function ChatWindow({ onClose }) {
   const unlockForSession = useProgression((state) => state.unlockForSession)
   const triggerAnimation = useSceneStore((state) => state.triggerAnimation)
 
+  const extractCommand = (messageText) => {
+    const match = messageText.match(/(?:^|\s)(\/\w+)/i)
+    return match ? match[1].toLowerCase() : null
+  }
+
   const sendMessage = async () => {
     const messageText = text.trim()
     if (!messageText) return
-    const isCommand = messageText.startsWith('/')
-    const normalizedCommand = messageText.toLowerCase()
+    const command = extractCommand(messageText)
+    const isCommand = Boolean(command)
+    const animationName = command ? command.slice(1).toLowerCase() : null
     setMessages((current) => [...current, { message: messageText, sender: 'user', id: crypto.randomUUID() }])
     setText('')
 
-    if (normalizedCommand === '/unlock3d') {
+    if (command === '/unlock3d') {
       unlockForSession()
       setMessages((current) => [...current, { message: '3D interactions unlocked for this session.', sender: 'ellenBot', id: `${crypto.randomUUID()}-unlock` }])
+      return
+    }
+
+    if (isCommand && ANIMATION_NAMES.includes(animationName) && threeDUnlocked) {
+      triggerAnimation(animationName)
+      setMessages((current) => [...current, { message: `Playing ${animationName} animation.`, sender: 'ellenBot', id: `${crypto.randomUUID()}-action` }])
       return
     }
 

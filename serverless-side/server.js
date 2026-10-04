@@ -19,8 +19,14 @@ if (trustedProxyHops > 0) {
   app.set('trust proxy', trustedProxyHops)
 }
 
+const extractSlashCommand = (message) => {
+  if (typeof message !== 'string') return null
+  const match = message.trim().match(/(?:^|\s)(\/\w+)/i)
+  return match ? match[1].toLowerCase() : null
+}
+
 const isSlashCommand = (request) => (
-  typeof request.body?.message === 'string' && request.body.message.trim().startsWith('/')
+  typeof request.body?.message === 'string' && Boolean(extractSlashCommand(request.body.message))
 )
 
 function signSessionId(sessionId) {

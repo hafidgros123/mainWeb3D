@@ -4,7 +4,7 @@ function ChatBubbleButton({ onOpen }) {
   return (
     <button className="chat-launcher" type="button" onClick={onOpen} aria-label="Open Ellen chat">
       <img src={ellenCharacter} alt="Ellen" />
-      <span>Chat with Small Ellen</span>
+      <span>Chat with Smoll Ellen</span>
     </button>
   )
 }
