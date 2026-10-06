@@ -5,10 +5,11 @@ import { useSceneStore } from '../../store/sceneStore'
 import { ANIMATION_NAMES } from '../../three/animations'
 import './cssfiles/ChatMessages.css'
 import './cssfiles/ChatInput.css'
-import ellenPortrait from '../../assets/hey ellen nom nom.webp'
-import userPortrait from '../../assets/user.webp'
 
-function ChatWindow({ onClose }) {
+const ellenPortrait = '/assets/hey ellen nom nom.webp'
+const userPortrait = '/assets/user.webp'
+
+function ChatWindow({ onClose, onUnlockTheme }) {
   const [messages, setMessages] = useState([{ message: 'Hey! I am Ellen. What do you need?', sender: 'ellenBot', id: '000000000000' }])
   const [text, setText] = useState('')
   const threeDUnlocked = useProgression(selectThreeDUnlocked)
@@ -28,6 +29,12 @@ function ChatWindow({ onClose }) {
     const animationName = command ? command.slice(1).toLowerCase() : null
     setMessages((current) => [...current, { message: messageText, sender: 'user', id: crypto.randomUUID() }])
     setText('')
+
+    if (command === '/theme') {
+      onUnlockTheme()
+      setMessages((current) => [...current, { message: 'Secret theme unlocked. Select it from the theme bar.', sender: 'ellenBot', id: `${crypto.randomUUID()}-theme` }])
+      return
+    }
 
     if (command === '/unlock3d') {
       unlockForSession()

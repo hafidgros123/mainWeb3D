@@ -1,6 +1,6 @@
 .anime-updates-page h1 {
   color: var(--coral);
-  text-shadow: 0.3125rem 0.3125rem 0 rgba(165, 31, 49, 0.35);
+  text-shadow: 0.3125rem 0.3125rem 0 color-mix(in srgb, var(--coral-dark) 40%, transparent);
 }
 
 .anime-updates-intro {

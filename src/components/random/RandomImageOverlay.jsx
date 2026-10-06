@@ -6,18 +6,51 @@ const cornerFolders = [
   ['top right', 'top-right'],
   ['bottom left', 'bottom-left'],
 ]
-const imageModules = import.meta.glob(
-  '../../assets/random/*/*.{avif,jpeg,jpg,png,svg,webp}',
-  { eager: true, import: 'default' },
-)
+const imageFilesByFolder = {
+  'top left': [
+    'background-removed.webp',
+    'burnice.webp',
+    'cissia-zenless-zone-zero.webp',
+    'curba.webp',
+    'cutie.webp',
+    'frienren.webp',
+    'juno.webp',
+    'poorboy.webp',
+  ],
+  'top right': [
+    'ciri.webp',
+    'dog.webp',
+    'durge.webp',
+    'jofr.webp',
+    'owl.webp',
+    'plnareff.webp',
+    'rem.webp',
+    'remem.webp',
+    'soukaku_sandwich.webp',
+    'spino.webp',
+    'warhammer.webp',
+  ],
+  'bottom left': [
+    'bea.webp',
+    'beq.webp',
+    'cat.webp',
+    'darkness.webp',
+    'disgusted.webp',
+    'elden-ring-ranni.webp',
+    'fatty.webp',
+    'jho.webp',
+    'miyabi.webp',
+    'slanesh.webp',
+  ],
+}
 
 const imagesByCorner = Object.fromEntries(
   cornerFolders.map(([folder, corner]) => [
     corner,
-    Object.entries(imageModules)
-      .filter(([path]) => path.split('/').slice(-2, -1)[0] === folder)
-      .sort(([firstPath], [secondPath]) => firstPath.localeCompare(secondPath))
-      .map(([path, src]) => ({ src, isRem: path.toLowerCase().endsWith('/rem.webp') })),
+    imageFilesByFolder[folder].map((filename) => ({
+      src: `/assets/random/${encodeURIComponent(folder)}/${filename}`,
+      isRem: filename.toLowerCase() === 'rem.webp',
+    })),
   ]),
 )
 const corners = cornerFolders.map(([, corner]) => corner)

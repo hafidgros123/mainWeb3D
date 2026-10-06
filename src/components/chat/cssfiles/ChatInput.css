@@ -5,10 +5,10 @@
 .chat-input button { 
   min-width: 4.75rem;
   padding: 0.6875rem 1rem; 
-  border: 0.0625rem solid #dc143c; 
+  border: 0.0625rem solid var(--coral-dark); 
   border-radius: 0.1875rem; 
-  color: #dc143c; 
-  background: #000;
+  color: var(--coral); 
+  background: var(--panel);
   font-family: var(--mono); 
   font-size: 0.75rem; 
   font-weight: 500;
@@ -16,9 +16,9 @@
   transition: background 10rem ease, color 10rem ease, box-shadow 10rem ease, transform 10rem ease;
 }
 .chat-input button:hover { 
-  color: #000;
-  background: #dc143c;
-  box-shadow: 0 0 0.75rem rgba(220, 20, 60, 0.42);
+  color: var(--page);
+  background: var(--coral);
+  box-shadow: 0 0 0.75rem color-mix(in srgb, var(--coral) 42%, transparent);
   transform: translateY(-0.0625rem);
 }
  

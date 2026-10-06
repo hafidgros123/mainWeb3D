@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gameDefinitions } from '../gamesData/gameDefinitions'
 import { selectThreeDUnlocked, useProgression } from '../store/progressionStore'
 
@@ -62,8 +62,26 @@ function ContactIcon({ type }) {
 
 function MenuScreen() {
   const faqSectionRef = useRef(null)
+  const centerImageInputRef = useRef(null)
+  const centerImageUrlRef = useRef(null)
+  const [centerImageUrl, setCenterImageUrl] = useState('')
   const completedGames = useProgression((state) => state.completedGames)
   const threeDUnlocked = useProgression(selectThreeDUnlocked)
+
+  useEffect(() => () => {
+    if (centerImageUrlRef.current) URL.revokeObjectURL(centerImageUrlRef.current)
+  }, [])
+
+  const handleCenterImageChange = (event) => {
+    const imageFile = event.currentTarget.files?.[0]
+    if (!imageFile || !imageFile.type.startsWith('image/')) return
+
+    const nextImageUrl = URL.createObjectURL(imageFile)
+    if (centerImageUrlRef.current) URL.revokeObjectURL(centerImageUrlRef.current)
+    centerImageUrlRef.current = nextImageUrl
+    setCenterImageUrl(nextImageUrl)
+    event.currentTarget.value = ''
+  }
 
   return (
     <main className="AppMainMenu">
@@ -102,6 +120,23 @@ function MenuScreen() {
           >
             {threeDUnlocked ? 'Enter 3D environment' : '3D environment locked'}
           </Link>
+          <button
+            className={`feature-orbit${centerImageUrl ? ' has-image' : ''}`}
+            type="button"
+            title={centerImageUrl ? 'Change center image' : 'Choose center image'}
+            aria-label={centerImageUrl ? 'Change center image' : 'Choose center image'}
+            onClick={() => centerImageInputRef.current?.click()}
+          >
+            {centerImageUrl && <img className="feature-orbit-image" src={centerImageUrl} alt="" />}
+          </button>
+          <input
+            ref={centerImageInputRef}
+            className="feature-image-input"
+            type="file"
+            accept="image/*"
+            aria-label="Choose center image"
+            onChange={handleCenterImageChange}
+          />
           <Link className="three-d-link anime-updates-link" to="/anime">
             Anime Updates
           </Link>

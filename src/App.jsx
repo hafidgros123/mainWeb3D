@@ -12,10 +12,11 @@ import './App.css'
 
 function AppContent() {
   const location = useLocation()
+  const [theme, setTheme] = useState('crimson')
   const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
 
   return (
-    <div className={`app-shell${hasRedPageBackground ? ' app-shell--red-page' : ''}`}>
+    <div className={`app-shell${hasRedPageBackground ? ' app-shell--red-page' : ''}`} data-theme={theme}>
       <RandomImageOverlay />
 
       <div className="route-transition" key={location.pathname}>
@@ -39,7 +40,7 @@ function AppContent() {
       </div>
 
       <ErrorBoundary>
-        <ChatOverlay />
+        <ChatOverlay theme={theme} onThemeChange={setTheme} />
       </ErrorBoundary>
     </div>
   )
@@ -65,8 +66,9 @@ function App() {
         <source src="/skyrim.mp4" type="video/mp4" />
       </video>
       {!introStarted && (
-        <button className="intro-play" onClick={() => videoRef.current?.play()}>
-          Play with sound
+        <button className="intro-play" onClick={() => videoRef.current?.play()} aria-label="Play intro with sound">
+          <span className="intro-play-icon" aria-hidden="true" />
+          <span>Play with sound</span>
         </button>
       )}
       <button className="intro-skip" onClick={() => setIntroComplete(true)}>
