@@ -183,6 +183,10 @@ function MenuScreen() {
           <div className="faq-item">
             <h3>- how can i acess to the 3d page ??</h3>
             <p>you can either finish any of the games to unlock it permanently as the result will be stored in localstorage (so each device need to do this once) or by typing any variant of /unlock3d</p>
+            <h3>how to unlock the secret theme? </h3>
+            <p>finish all three games</p>
+            <h3>is there a Secret Secret theme</h3>
+            <p>yes and its actually the best part of this site</p>
             <h3>- what count as a chat and what count as a command ??</h3>
             <p>basically anything that starts with "/" is a command</p>
             <h3>- how does the 3d page work ?</h3>
@@ -223,6 +227,36 @@ function MenuScreen() {
             <p>Honestly, good question. We'll get back to you.</p>
             <h3>Is this page finished?</h3>
             <p>Define "finished."</p>
+            <h3>-why is 3d page locked?</h3>
+            <p>you worthless piece of meat</p>
+            <h3>-WHY IS THE CHAT BOT SOMETIMES STUPID ?</h3>
+            <p>its free. what did you expect.</p>
+            <h3>-WHO MADE THIS ?</h3>
+            <p>some guy who should have been sleeping. (reward me with free lunch)</p>
+            <h3>-WHY MORROWIND AND BALDURS GATE 3 SPECIFICALLY ?</h3>
+            <p>i have issues , LOTS or issues</p>
+            <h3>-- CAN I TALK TO THE BOT FOREVER ?</h3>
+            <p>20 messages  is all you get a day mijo, touch grass</p>
+            <h3>-WHAT HAPPENS IF I TYPE SOMETHING WEIRD TO THE BOT ?</h3>
+            <p>i will come personaly for you</p>
+            <h3>-IS THE SITE SAFE ?</h3>
+            <p>i hope so</p>
+            <h3>-CAN I SUGGEST FEATURES ?</h3>
+            <p>like i said earlier , buy me lunch and i will consider</p>
+            <h3>-WHY IS THE BACKGROUND AN ANIME GIRL ?</h3>
+            <p>i didn't hear you , next question</p>
+            <h3>-DOES THE SITE WORK ON FIREFOX ? (since yk it doesnt use chromanium or was it chronium , or maybe chromium)</h3>
+            <p>it works on my firefox </p>
+            <h3>-WHAT IS THE SECRET THEME ?</h3>
+            <p>*sigh*</p>
+            <h3>-DO YOU SLEEP ?</h3>
+            <p>claude insulted me</p>
+            <h3>-WHY GEMINI AND NOT CHATGPT ?</h3>
+            <p>i asked you to buy my luvh , do you think i have money</p>
+            <h3>-WHAT HAPPENS WHEN THE BOT RUNS OUT OF MESSAGES ?</h3>
+            <p>you go outsid.....no you know  what , i go outside</p>
+            <h3>was the rick roll needed ?</h3>
+            <p>is the sky blue (technically it isnt but you get the point)</p>
           </div>
         </details>
 

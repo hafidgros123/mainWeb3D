@@ -172,7 +172,7 @@ button { cursor: pointer; }
 .intro-play:focus-visible { outline: 0.125rem solid var(--coral); outline-offset: 0.35rem; }
 
 .app-shell--red-page {
-  background: url('/backgrounds/maria.jpg') center / cover no-repeat fixed;
+  background: url('/backgrounds/maria.jpeg') center / cover no-repeat fixed;
 }
 
 .app-shell[data-theme="blue"] {
@@ -193,7 +193,7 @@ button { cursor: pointer; }
   --orbit-fill: #09192c;
   --orbit-accent: #a9dcff;
   --orbit-glow: rgba(105, 177, 241, 0.25);
-  background-image: linear-gradient(135deg, rgba(4, 19, 43, 0.01), rgba(9, 43, 78, 0.01)), url('/backgrounds/ra.jpg');
+  background-image: linear-gradient(135deg, rgba(4, 19, 43, 0.01), rgba(9, 43, 78, 0.01)), url('/backgrounds/ranni.jpeg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -218,7 +218,7 @@ button { cursor: pointer; }
   --orbit-fill: #bdd9e3;
   --orbit-accent: #286f88;
   --orbit-glow: rgba(49, 126, 151, 0.24);
-  background-image: linear-gradient(135deg, rgba(15, 58, 78, 0.01), rgba(22, 93, 120, 0.01)), url('/backgrounds/mik.jpg');
+  background-image: linear-gradient(135deg, rgba(15, 58, 78, 0.01), rgba(22, 93, 120, 0.01)), url('/backgrounds/mik.jpeg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -243,7 +243,7 @@ button { cursor: pointer; }
   --orbit-fill: #1d1508;
   --orbit-accent: #f5cb65;
   --orbit-glow: rgba(245, 203, 101, 0.28);
-  background-image: linear-gradient(135deg, rgba(42, 29, 4, 0.01), rgba(110, 76, 15, 0.01)), url('/backgrounds/ma.jpg');
+  background-image: linear-gradient(135deg, rgba(42, 29, 4, 0.01), rgba(110, 76, 15, 0.01)), url('/backgrounds/ma.jpeg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -268,7 +268,7 @@ button { cursor: pointer; }
   --orbit-fill: #081710;
   --orbit-accent: #67dda0;
   --orbit-glow: rgba(103, 221, 160, 0.22);
-  background-image: linear-gradient(135deg, rgba(5, 35, 17, 0.01), rgba(13, 63, 34, 0.01)), url('/backgrounds/wtce.jpg');
+  background-image: linear-gradient(135deg, rgba(5, 35, 17, 0.01), rgba(13, 63, 34, 0.01)), url('/backgrounds/wtce.jpeg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -293,7 +293,7 @@ button { cursor: pointer; }
   --orbit-fill: #17171a;
   --orbit-accent: #f2f0ea;
   --orbit-glow: rgba(213, 211, 203, 0.2);
-  background-image: linear-gradient(135deg, rgba(12, 12, 14, 0.01), rgba(45, 45, 48, 0.01)), url('/backgrounds/blood.jpg');
+  background-image: linear-gradient(135deg, rgba(12, 12, 14, 0.01), rgba(45, 45, 48, 0.01)), url('/backgrounds/blood.jpeg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
