@@ -54,7 +54,7 @@ const imagesByCorner = Object.fromEntries(
   ]),
 )
 const corners = cornerFolders.map(([, corner]) => corner)
-const MAX_IMAGES_PER_CORNER = 15
+const MAX_IMAGES_PER_CORNER = 100
 
 const RANDOM_IMAGE_KEY = 'random-image-overlay-last-change'
 const CORNER_QUEUE_KEY = `${RANDOM_IMAGE_KEY}-corner-queue`

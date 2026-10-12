@@ -3,6 +3,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import ChatOverlay from './components/chat/ChatOverlay'
 import RandomImageOverlay from './components/random/RandomImageOverlay'
 import ErrorBoundary from './components/shared/ErrorBoundary'
+import ThemeBackground from './components/shared/ThemeBackground'
 import GameListPage from './pages/games/GameListPage'
 import GamePage from './pages/games/GamePage'
 import AnimeUpdatesPage from './pages/anime/AnimeUpdatesPage'
@@ -16,7 +17,8 @@ function AppContent() {
   const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
 
   return (
-    <div className={`app-shell${hasRedPageBackground ? ' app-shell--red-page' : ''}`} data-theme={theme}>
+    <div className="app-shell" data-theme={theme}>
+      <ThemeBackground theme={theme} showCrimson={hasRedPageBackground} />
       <RandomImageOverlay />
 
       <div className="route-transition" key={location.pathname}>

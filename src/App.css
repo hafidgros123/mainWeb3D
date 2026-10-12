@@ -38,6 +38,21 @@
   src: url('/fonts/silkscreen-700.woff2') format('woff2');
 }
 
+/* Registering the theme colours lets the browser animate them when the theme changes. */
+@property --ink { syntax: '<color>'; inherits: true; initial-value: #fff5f2; }
+@property --muted { syntax: '<color>'; inherits: true; initial-value: #ffd9d1; }
+@property --dim { syntax: '<color>'; inherits: true; initial-value: #ffb2b5; }
+@property --page { syntax: '<color>'; inherits: true; initial-value: #10090b; }
+@property --panel { syntax: '<color>'; inherits: true; initial-value: #1d0d11; }
+@property --panel-soft { syntax: '<color>'; inherits: true; initial-value: #321117; }
+@property --line { syntax: '<color>'; inherits: true; initial-value: #60232b; }
+@property --coral { syntax: '<color>'; inherits: true; initial-value: #ff8d93; }
+@property --coral-dark { syntax: '<color>'; inherits: true; initial-value: #d14053; }
+@property --cream { syntax: '<color>'; inherits: true; initial-value: #fff4f1; }
+@property --blue { syntax: '<color>'; inherits: true; initial-value: #9fe5ff; }
+@property --blue-dark { syntax: '<color>'; inherits: true; initial-value: #1a75b8; }
+@property --blue-soft { syntax: '<color>'; inherits: true; initial-value: #102b42; }
+
 :root {
   --ink: #fff5f2;
   --muted: #ffd9d1;
@@ -76,6 +91,39 @@ button { cursor: pointer; }
   overflow: hidden;
   color: var(--ink);
   background: var(--page);
+  transition: --ink 1900ms ease-in-out, --muted 1000ms ease-in-out, --dim 1000ms ease-in-out, --page 1000ms ease-in-out, --panel 1000ms ease-in-out, --panel-soft 1000ms ease-in-out, --line 1000ms ease-in-out, --coral 1000ms ease-in-out, --coral-dark 1000ms ease-in-out, --cream 1000ms ease-in-out, --blue 1000ms ease-in-out, --blue-dark 1000ms ease-in-out, --blue-soft 1000ms ease-in-out;
+}
+
+/* Theme backgrounds: every image is a stacked layer (see ThemeBackground.jsx).
+   The new theme fades in slowly ON TOP of the old one, so the page never dips or flashes. */
+.theme-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--page);
+}
+
+.theme-bg__layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1900ms ease-in-out; /* <- change this number to make it faster / slower */
+}
+
+.theme-bg__plain { background: var(--page); }
+
+.theme-bg__layer.is-prev { z-index: 1; opacity: 1; transition: none; }
+.theme-bg__layer.is-current { z-index: 2; opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-bg__layer { transition-duration: 400ms; }
+  .app-shell { transition-duration: 400ms; }
 }
 
 .intro-screen {
@@ -171,10 +219,6 @@ button { cursor: pointer; }
 
 .intro-play:focus-visible { outline: 0.125rem solid var(--coral); outline-offset: 0.35rem; }
 
-.app-shell--red-page {
-  background: url('/backgrounds/maria.jpeg') center / cover no-repeat fixed;
-}
-
 .app-shell[data-theme="blue"] {
   --ink: #eff7ff;
   --muted: #b8cee7;
@@ -193,19 +237,63 @@ button { cursor: pointer; }
   --orbit-fill: #09192c;
   --orbit-accent: #a9dcff;
   --orbit-glow: rgba(105, 177, 241, 0.25);
-  background-image: linear-gradient(135deg, rgba(4, 19, 43, 0.01), rgba(9, 43, 78, 0.01)), url('/backgrounds/ranni.jpeg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
+
+
+
+
 .app-shell[data-theme="light-blue"] {
+  /* A crisp icy-blue theme with deep navy text and teal controls. */
+  --ink: #102b3b;
+  --muted: #25495d;
+  --dim: #496a7b;
+  --page: #dceef5;
+  --panel: #f2f9fc;
+  --panel-soft: #d5eaf2;
+  --line: #7da9ba;
+  --coral: #087b9a;
+  --coral-dark: #07536b;
+  --cream: #102b3b;
+  --blue: #147f9e;
+  --blue-dark: #07536b;
+  --blue-soft: #c5e5ef;
+  --orbit-edge: #3d8ca5;
+  --orbit-fill: #edf8fc;
+  --orbit-accent: #07536b;
+  --orbit-glow: rgba(20, 127, 158, 0.22);
+}
+
+/* Keep the intro visually light in this theme, not a heavy dark slab. */
+.app-shell[data-theme="light-blue"] .main-page-content .page-intro {
+  background: rgba(242, 249, 252, 0.92);
+  color: #102b3b;
+  border: 1px solid rgba(61, 140, 165, 0.42);
+  border-left: 4px solid #147f9e;
+  border-radius: 0.4rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(10, 47, 64, 0.12);
+  text-shadow: none;
+}
+
+.app-shell[data-theme="light-blue"] .main-page-content .page-intro a {
+  color: #07536b;
+  text-shadow: none;
+}
+
+.app-shell .main-page-content h1,
+.app-shell .main-page-content h2,
+.app-shell .main-page-content h3 {
+  color: var(--cream);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.62);
+}
+
+
+/*.app-shell[data-theme="light-blue"] {
   --ink: #102c3c;
-  --muted: #38596c;
+  --muted: #5685a0;
   --dim: #54758a;
   --page: #bedbe5;
-  --panel: #d0e5ec;
+  --panel: #3b7285;
   --panel-soft: #b2d1dc;
   --line: #6a96a8;
   --coral: #318ba8;
@@ -218,13 +306,8 @@ button { cursor: pointer; }
   --orbit-fill: #bdd9e3;
   --orbit-accent: #286f88;
   --orbit-glow: rgba(49, 126, 151, 0.24);
-  background-image: linear-gradient(135deg, rgba(15, 58, 78, 0.01), rgba(22, 93, 120, 0.01)), url('/backgrounds/mik.jpeg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
-
+*/
 .app-shell[data-theme="gold"] {
   --ink: #fff6e3;
   --muted: #dec99e;
@@ -243,11 +326,6 @@ button { cursor: pointer; }
   --orbit-fill: #1d1508;
   --orbit-accent: #f5cb65;
   --orbit-glow: rgba(245, 203, 101, 0.28);
-  background-image: linear-gradient(135deg, rgba(42, 29, 4, 0.01), rgba(110, 76, 15, 0.01)), url('/backgrounds/ma.jpeg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 .app-shell[data-theme="jade"] {
@@ -268,11 +346,6 @@ button { cursor: pointer; }
   --orbit-fill: #081710;
   --orbit-accent: #67dda0;
   --orbit-glow: rgba(103, 221, 160, 0.22);
-  background-image: linear-gradient(135deg, rgba(5, 35, 17, 0.01), rgba(13, 63, 34, 0.01)), url('/backgrounds/wtce.jpeg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 .app-shell[data-theme="secret"] {
@@ -293,11 +366,6 @@ button { cursor: pointer; }
   --orbit-fill: #17171a;
   --orbit-accent: #f2f0ea;
   --orbit-glow: rgba(213, 211, 203, 0.2);
-  background-image: linear-gradient(135deg, rgba(12, 12, 14, 0.01), rgba(45, 45, 48, 0.01)), url('/backgrounds/blood.jpeg');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 .route-transition {
@@ -1053,9 +1121,261 @@ button { cursor: pointer; }
   .chat-overlay { right: 1rem; bottom: 1rem; width: calc(100vw - 2rem); }
   .game-page { padding-top: 1.75rem; }
   .page-back-link { margin-bottom: 3.25rem; }
-  .app-shell[data-theme="blue"],
-  .app-shell[data-theme="light-blue"],
-  .app-shell[data-theme="gold"],
-  .app-shell[data-theme="jade"],
-  .app-shell[data-theme="secret"] { background-attachment: scroll; }
+}
+
+
+/* ================================================================
+   ACCESSIBILITY + VISUAL POLISH
+   These are additive overrides. All original themes, background layers,
+   overlays, keyframes, responsive rules, and component behavior remain.
+   ================================================================ */
+
+.app-shell {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Clear, comfortable body copy over detailed background artwork. */
+.app-shell .main-page-content .page-intro {
+  position: relative;
+  padding: clamp(0.85rem, 1.8vw, 1.2rem) clamp(1rem, 2vw, 1.35rem);
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-left: 3px solid var(--blue);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  color: var(--ink);
+  line-height: 1.8;
+  text-shadow: none;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.13);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.app-shell .main-page-content .page-intro a {
+  color: var(--coral);
+  font-weight: 700;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.22em;
+  text-shadow: none;
+}
+
+.app-shell .main-page-content .page-intro a:hover,
+.app-shell .main-page-content .page-intro a:focus-visible {
+  color: var(--ink);
+  text-decoration-thickness: 3px;
+}
+
+/* Theme-aware headings; keep the pixel style but improve contrast. */
+.app-shell .main-page-content h1,
+.app-shell .main-page-content h2,
+.app-shell .main-page-content h3 {
+  color: var(--cream);
+  overflow-wrap: anywhere;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.app-shell[data-theme="light-blue"] .main-page-content h1,
+.app-shell[data-theme="light-blue"] .main-page-content h2,
+.app-shell[data-theme="light-blue"] .main-page-content h3 {
+  color: #102b3b;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 4px rgba(16, 43, 59, 0.14);
+}
+
+/* About / FAQ / technical-details accordions. */
+.app-shell .about-page {
+  border-top-color: color-mix(in srgb, var(--line) 82%, transparent);
+}
+
+.app-shell .about-page > summary {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+  color: var(--cream);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.app-shell .about-page > summary:hover,
+.app-shell .about-page > summary:focus-visible {
+  color: var(--blue);
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  border-color: var(--line);
+}
+
+.app-shell .about-page > summary:focus-visible,
+.app-shell a:focus-visible,
+.app-shell button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.app-shell .about-page[open] {
+  padding: clamp(0.8rem, 1.8vw, 1.2rem);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--panel) 96%, transparent);
+  box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.14);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.app-shell .about-page[open] > summary {
+  display: table;
+  margin-bottom: 1rem;
+  color: var(--ink);
+  background: var(--panel-soft);
+  border-color: var(--line);
+  text-shadow: none;
+}
+
+.app-shell .about-page p,
+.app-shell .faq-item,
+.app-shell .about-page li {
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+.app-shell[data-theme="light-blue"] .about-page[open] {
+  background: rgba(242, 249, 252, 0.94);
+  border-color: #9bbdca;
+}
+
+.app-shell[data-theme="light-blue"] .about-page > summary {
+  color: #102b3b;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.app-shell[data-theme="light-blue"] .about-page[open] > summary {
+  color: #f4fbff;
+  background: #07536b;
+  border-color: #07536b;
+  text-shadow: none;
+}
+
+.app-shell[data-theme="light-blue"] .about-page[open] > summary:hover,
+.app-shell[data-theme="light-blue"] .about-page[open] > summary:focus-visible {
+  color: #ffffff;
+  background: #087b9a;
+}
+
+/* Cards and contact links have a clear edge without losing their theme. */
+.app-shell .game-card {
+  border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+  box-shadow: 0 0.45rem 0 color-mix(in srgb, var(--coral-dark) 22%, transparent),
+              0 0.65rem 1.5rem rgba(0, 0, 0, 0.16);
+  transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.app-shell .game-card:hover,
+.app-shell .game-card:focus-visible {
+  border-color: var(--blue);
+  box-shadow: 0 0.25rem 0 color-mix(in srgb, var(--coral-dark) 28%, transparent),
+              0 0.9rem 1.8rem rgba(0, 0, 0, 0.22);
+}
+
+.app-shell .contact-link {
+  border-color: var(--line);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--panel) 96%, transparent);
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.app-shell .contact-link:hover,
+.app-shell .contact-link:focus-visible {
+  border-color: var(--blue);
+  background: var(--panel-soft);
+  transform: translateY(-2px);
+}
+
+/* Preserve the chat widget's design while improving its glass effect. */
+.app-shell .chat-overlay .chat-launcher,
+.app-shell .chat-overlay .chat-window {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.app-shell .chat-overlay .chat-launcher {
+  text-shadow: none;
+}
+
+.app-shell a,
+.app-shell button,
+.app-shell summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *,
+  .app-shell *::before,
+  .app-shell *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* LIGHT-BLUE ACCORDION FINISH
+   Keep About / FAQ / Technical Details unboxed, like the other themes.
+   The expanded content panel remains separate from its summary heading. */
+.app-shell[data-theme="light-blue"] .about-page > summary,
+.app-shell[data-theme="light-blue"] .about-page[open] > summary {
+  display: block !important;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 0.75rem;
+  padding: 0.4rem 0.6rem !important;
+  color: #f0faff !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: 0 2px 5px rgba(0, 15, 28, 0.98), 0 0 2px rgba(0, 15, 28, 0.9) !important;
+  line-height: 1.6;
+}
+
+.app-shell[data-theme="light-blue"] .about-page > summary::marker {
+  color: #d4f4ff;
+}
+
+.app-shell[data-theme="light-blue"] .about-page > summary:hover,
+.app-shell[data-theme="light-blue"] .about-page > summary:focus-visible,
+.app-shell[data-theme="light-blue"] .about-page[open] > summary:hover,
+.app-shell[data-theme="light-blue"] .about-page[open] > summary:focus-visible {
+  color: #ffffff !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* The expanded content stays readable, but its heading has no box. */
+.app-shell[data-theme="light-blue"] .about-page[open] {
+  color: #102b3b !important;
+  background: rgba(218, 239, 247, 0.94) !important;
+  border: 1px solid #6da7bb !important;
+  border-radius: 0.45rem;
+}
+
+.app-shell[data-theme="light-blue"] .about-page[open] p,
+.app-shell[data-theme="light-blue"] .about-page[open] li,
+.app-shell[data-theme="light-blue"] .about-page[open] .faq-item,
+.app-shell[data-theme="light-blue"] .about-page[open] .faq-item p,
+.app-shell[data-theme="light-blue"] .about-page[open] .faq-item h3 {
+  color: #102b3b !important;
+  text-shadow: none !important;
+}
+
+.app-shell[data-theme="light-blue"] .about-page[open] a {
+  color: #07536b !important;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.app-shell[data-theme="light-blue"] .about-page[open] a:hover,
+.app-shell[data-theme="light-blue"] .about-page[open] a:focus-visible {
+  color: #087b9a !important;
 }
