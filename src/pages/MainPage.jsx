@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { gameDefinitions } from '../gamesData/gameDefinitions'
 import { selectThreeDUnlocked, useProgression } from '../store/progressionStore'
+import DiceGamble from '../diceGamble/DiceGamble'
 
 const contactLinks = [
   { label: 'Email', icon: 'email', value: 'your@email.com', href: 'mailto:your@email.com' },
@@ -149,7 +150,7 @@ function MenuScreen() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            View my local AI on Hugging Face
+            View my fine tuned model on Hugging Face
           </a>
           <a
             className="project-link project-link--secondary"
@@ -157,10 +158,10 @@ function MenuScreen() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            View my rag model also on hugging face
+            View my rag model on Hugging Face
           </a>
         </div>
-
+        <DiceGamble />
         <details className="about-page">
           <summary>About this page</summary>
           <p>This project brings together three WebGL games, an anime updates area for recent releases, and a 3D experience currently in development.</p>
@@ -264,7 +265,7 @@ function MenuScreen() {
           <summary>Technical Details</summary>
           <p>This project is structured as a small multi-page app that blends a game portal, a chat assistant, and a 3D scene prototype. The main frontend lives in <code>src/</code>, while the backend API lives in the separate <code>serverless-side</code> folder.</p>
           <ul>
-            <li><strong>Frontend:</strong> React + Vite power the UI, with route-based screens under <code>src/pages</code> and reusable pieces under <code>src/components</code>.</li>
+            <li><strong>Frontend:</strong> React + Vite power the UI, with route-based screens under <code>src/pages</code> and reusable pieces under <code>src/componentsOverlay</code>.</li>
             <li><strong>State:</strong> Zustand keeps the game progression and 3D scene state in sync across screens. Progress is saved to <code>localStorage</code>, and special unlocks can be temporary for the current session.</li>
             <li><strong>Routing:</strong> React Router controls navigation between the main menu, game pages, the anime section, and the 3D experience.</li>
             <li><strong>3D layer:</strong> Three.js and scene helpers in <code>src/three</code> are intended for the interactive environment, with animation actions driven by the app state.</li>

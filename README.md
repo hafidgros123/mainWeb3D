@@ -34,7 +34,7 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
 │   ├── index.css
 │   ├── main.jsx
 │   ├── assets/
-│   ├── components/
+│   ├── componentsOverlay/
 │   │   ├── chat/
 │   │   ├── random/
 │   │   └── shared/
@@ -118,7 +118,7 @@ npm run lint      # Run the project linter
 ## Development notes
 
 - Route configuration lives in `src/App.jsx`.
-- Chat UI belongs in `src/components/chat/`.
+- Chat UI belongs in `src/componentsOverlay/chat/`.
 - Gemini API logic and chat route definitions live in `src/lib/gemini.js`.
 - 3D animation names and scene-related helpers live in `src/three/`.
 - Game definitions are kept under `src/gamesData/`.

@@ -903,51 +903,101 @@ button { cursor: pointer; }
 }
 
 .project-links {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  --flame-width: 4.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* two equal columns, like the buttons above */
+  gap: clamp(1rem, 3vw, 2.5rem);                    /* same middle gap as the buttons above */
   margin-top: 1.5rem;
+  padding-inline: var(--flame-width);               /* room for the flame ends, so their tips line up with the buttons above */
 }
 
+/*
+  Project link buttons, sized like the two big buttons above them.
+  The outline is drawn with drop-shadow filters instead of a border, so it wraps
+  around the button AND its flame-shaped end as one single shape (no seam).
+*/
 .project-link {
+  --link-fill: var(--blue);
+  --link-outline: var(--blue-dark);
+  --link-shadow: var(--blue-dark);
+  --link-shadow-offset: 0.4375rem;
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
-  min-width: min(100%, 20rem);
-  padding: 0.875rem 1.25rem;
-  border: 0.125rem solid var(--coral-dark);
-  background: var(--coral);
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 5.5rem;
+  padding: 0.875rem clamp(1.5rem, 3vw, 2.5rem); /* two lines of text still fit in the same 5.5rem height as the buttons above */
+  border: 0;
+  border-radius: 0 1.25rem 1.25rem 0; /* flat on the flame side, rounded on the inner side */
+  background: var(--link-fill);
   color: var(--page);
-  box-shadow: inset 0 0 0 0.125rem color-mix(in srgb, var(--cream) 18%, transparent), 0.25rem 0.25rem 0 color-mix(in srgb, var(--coral-dark) 35%, transparent);
-  font-family: var(--pixel);
-  font-size: 0.75rem;
-  line-height: 1.5;
-  letter-spacing: 0.08em;
+  text-align: center;
+  filter:
+    drop-shadow(0.125rem 0 0 var(--link-outline))
+    drop-shadow(-0.125rem 0 0 var(--link-outline))
+    drop-shadow(0 0.125rem 0 var(--link-outline))
+    drop-shadow(0 -0.125rem 0 var(--link-outline))
+    drop-shadow(var(--link-shadow-offset) var(--link-shadow-offset) 0 var(--link-shadow));
+  font-family: var(--display);
+  font-size: clamp(0.75rem, 1.3vw, 1.125rem);
+  line-height: 1.6;
   text-decoration: none;
   text-transform: uppercase;
-  transition: transform 120ms ease, border-color 120ms ease, color 120ms ease, background 120ms ease, opacity 120ms ease;
+  transition: transform 120ms ease, color 120ms ease, background 120ms ease, opacity 120ms ease, filter 120ms ease;
+}
+
+.project-link::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  bottom: 0;
+  right: calc(100% - 1px);
+  width: var(--flame-width);
+  background: inherit;    
+  clip-path: polygon(100% 0%, 79% 0.4%, 59.8% 1.6%, 42.6% 3.6%, 27.4% 6.4%, 14% 10%, 21% 17.4%, 29% 23.4%, 38.2% 28.2%, 48.6% 31.8%, 60% 34%, 48% 39.8%, 36% 44.2%, 24% 47.4%, 12% 49.4%, 0% 50%, 12.8% 54.2%, 25.6% 59%, 38.4% 64.2%, 51.2% 69.8%, 64% 76%, 52.9% 78%, 43.5% 80.8%, 35.9% 84.4%, 30.1% 88.8%, 26% 94%, 39.8% 96.2%, 54.2% 97.8%, 69% 99%, 84.2% 99.8%, 100% 100%);
 }
 
 .project-link:hover,
 .project-link:focus-visible {
-  border-color: var(--coral);
-  color: var(--ink);
-  background: var(--panel-soft);
-  transform: translateY(-0.125rem);
+  --link-outline: var(--blue);
+  --link-shadow-offset: 0.625rem;
+  color: var(--page);
+  background: color-mix(in srgb, var(--blue) 80%, var(--cream));
+  transform: translate(-0.1875rem, -0.1875rem);
   outline: none;
 }
 
 .project-link--secondary {
-  border-color: var(--blue-dark);
-  background: var(--blue);
+  --link-fill: var(--blue);
+  --link-outline: var(--blue-dark);
+  --link-shadow: var(--blue-dark);
+  border-radius: 1.25rem 0 0 1.25rem;
   color: var(--page);
-  box-shadow: inset 0 0 0 0.125rem color-mix(in srgb, var(--cream) 18%, transparent), 0.25rem 0.25rem 0 color-mix(in srgb, var(--blue-dark) 25%, transparent);
+}
+
+.project-link--secondary::before {
+  right: auto;
+  left: calc(100% - 1px);
+  clip-path: polygon(0% 0%, 21% 0.4%, 40.2% 1.6%, 57.4% 3.6%, 72.6% 6.4%, 86% 10%, 79% 17.4%, 71% 23.4%, 61.8% 28.2%, 51.4% 31.8%, 40% 34%, 52% 39.8%, 64% 44.2%, 76% 47.4%, 88% 49.4%, 100% 50%, 87.2% 54.2%, 74.4% 59%, 61.6% 64.2%, 48.8% 69.8%, 36% 76%, 47.1% 78%, 56.5% 80.8%, 64.1% 84.4%, 69.9% 88.8%, 74% 94%, 60.2% 96.2%, 45.8% 97.8%, 31% 99%, 15.8% 99.8%, 0% 100%);
 }
 
 .project-link--secondary:hover,
 .project-link--secondary:focus-visible {
-  border-color: var(--blue);
+  --link-outline: var(--blue);
   color: var(--page);
   background: color-mix(in srgb, var(--blue) 80%, var(--cream));
-  opacity: 0.9;
+}
+
+/* small screens: buttons stack and fill the width (same breakpoint as the buttons above), so drop the flames */
+@media (max-width: 43.75rem) {
+  .project-links { grid-template-columns: 1fr; padding-inline: 0; gap: 1rem; }
+  .project-link,
+  .project-link--secondary { border-radius: 1.25rem; }
+  .project-link::before { display: none; }
 }
 
 .anime-updates-link {

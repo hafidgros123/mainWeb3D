@@ -1,0 +1,137 @@
+.dice-gamble { margin-top: 2rem; }
+
+/* ---------- the "test your luck" bar ---------- */
+.dice-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+  width: 100%;
+  min-height: 5.5rem;
+  padding: 0 2rem;
+  border: 0.125rem solid var(--blue-dark);
+  border-radius: 1.25rem;
+  background: var(--blue);
+  color: var(--page);
+  box-shadow: 0.4375rem 0.4375rem 0 var(--blue-dark);
+  font-family: var(--display);
+  font-size: clamp(0.875rem, 1.5vw, 1.25rem);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+.dice-toggle:hover {
+  background: color-mix(in srgb, var(--blue) 80%, var(--cream));
+  transform: translate(-0.1875rem, -0.1875rem);
+  box-shadow: 0.625rem 0.625rem 0 var(--blue-dark);
+}
+
+.dice-toggle:focus-visible { outline: 0.1875rem solid var(--coral); outline-offset: 0.25rem; }
+
+/* the two diamonds: outlined when closed, filled and turned when open */
+.dice-diamond {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 0.125rem solid var(--page);
+  transform: rotate(45deg);
+  transition: transform 250ms ease, background 250ms ease;
+}
+
+.dice-toggle[aria-expanded="true"] .dice-diamond {
+  background: var(--page);
+  transform: rotate(225deg);
+}
+
+/* ---------- the panel that opens under the bar ---------- */
+.dice-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 300ms ease;
+}
+
+.dice-panel.is-open { grid-template-rows: 1fr; }
+.dice-panel-inner { min-height: 0; overflow: hidden; }
+
+.dice-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: min(100%, 40rem);
+  margin: 1.5rem auto 0.5rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 0.125rem solid var(--line);
+  border-radius: 1.25rem;
+  background: var(--panel);
+}
+
+/* the five dice and the total box, placed like in the sketch */
+.dice-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 8 / 5.4;
+}
+
+.die-slot {
+  position: absolute;
+  width: 24%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+
+.die-slot-1 { left: 47%; top: 14%; }
+.die-slot-2 { left: 22%; top: 31%; }
+.die-slot-3 { left: 76%; top: 34%; }
+.die-slot-4 { left: 12%; top: 66%; }
+.die-slot-5 { left: 84%; top: 70%; }
+
+.dice-box {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  border: 0.125rem solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--panel-soft);
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(0.75rem, 1.6vw, 1rem);
+  text-transform: uppercase;
+}
+
+.dice-box strong { color: var(--coral); }
+
+.dice-total {
+  position: absolute;
+  left: 47%;
+  top: 66%;
+  min-width: 36%;
+  transform: translate(-50%, -50%);
+}
+
+.dice-left { width: min(100%, 22rem); }
+
+/* ---------- roll button ---------- */
+.dice-roll {
+  min-width: 12rem;
+  padding: 1rem 2rem;
+  border: 0.125rem solid var(--blue-dark);
+  border-radius: 0.75rem;
+  background: var(--blue);
+  color: var(--page);
+  box-shadow: 0.25rem 0.25rem 0 var(--blue-dark);
+  font-family: var(--display);
+  font-size: clamp(0.75rem, 1.5vw, 1rem);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.dice-roll:hover:not(:disabled) { transform: translate(-0.125rem, -0.125rem); box-shadow: 0.375rem 0.375rem 0 var(--blue-dark); }
+.dice-roll:focus-visible { outline: 0.1875rem solid var(--coral); outline-offset: 0.25rem; }
+.dice-roll:disabled { opacity: 0.6; cursor: not-allowed; }
