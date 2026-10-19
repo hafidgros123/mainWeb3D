@@ -64,12 +64,22 @@
   --coral: #ff8d93;
   --coral-dark: #d14053;
   --cream: #fff4f1;
-  --blue: #9fe5ff;
-  --blue-dark: #1a75b8;
-  --blue-soft: #102b42;
+  --blue: #ece1cd;
+  --blue-dark: #ece1cd;
+  --blue-soft: #ece1cd;
   --mono: 'DM Mono', Consolas, monospace;
   --pixel: 'Silkscreen', 'Courier New', monospace;
   --display: 'Press Start 2P', 'Courier New', monospace;
+}
+
+:root {
+  /* TORN EDGE: traced from the reference picture - rounded lobes, a sharp serrated jut, and stair-steps.
+     Each end is a small picture (SVG) that repeats down the box, so it fits any height.
+     To make the tear bigger or smaller, change the two sizes below (they are in rem). */
+  --torn-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 372' preserveAspectRatio='none' shape-rendering='crispEdges'%3E%3Cpath d='M144 0 L144 0 L144 2 L144 2 L144 4 L116 4 L116 6 L116 6 L116 8 L96 8 L96 10 L96 10 L96 12 L80 12 L80 14 L80 14 L80 16 L68 16 L68 18 L68 18 L68 20 L56 20 L56 22 L56 22 L56 24 L44 24 L44 26 L44 26 L44 28 L40 28 L40 30 L40 30 L40 32 L40 32 L40 34 L40 34 L40 36 L40 36 L40 38 L40 38 L40 40 L40 40 L40 42 L40 42 L40 44 L40 44 L40 46 L40 46 L40 48 L44 48 L44 50 L44 50 L44 52 L48 52 L48 54 L48 54 L48 56 L48 56 L48 58 L48 58 L48 60 L52 60 L52 62 L52 62 L52 64 L56 64 L56 66 L56 66 L56 68 L60 68 L60 70 L60 70 L60 72 L64 72 L64 74 L64 74 L64 76 L68 76 L68 78 L68 78 L68 80 L72 80 L72 82 L72 82 L72 84 L76 84 L76 86 L76 86 L76 88 L80 88 L80 90 L80 90 L80 92 L84 92 L84 94 L84 94 L84 96 L88 96 L88 98 L88 98 L88 100 L92 100 L92 102 L92 102 L92 104 L96 104 L96 106 L96 106 L96 108 L100 108 L100 110 L100 110 L100 112 L104 112 L104 114 L104 114 L104 116 L108 116 L108 118 L108 118 L108 120 L116 120 L116 122 L116 122 L116 124 L120 124 L120 126 L120 126 L120 128 L128 128 L128 130 L128 130 L128 132 L132 132 L132 134 L132 134 L132 136 L124 136 L124 138 L124 138 L124 140 L116 140 L116 142 L116 142 L116 144 L108 144 L108 146 L108 146 L108 148 L96 148 L96 150 L96 150 L96 152 L84 152 L84 154 L84 154 L84 156 L72 156 L72 158 L72 158 L72 160 L52 160 L52 162 L52 162 L52 164 L28 164 L28 166 L28 166 L28 168 L4 168 L4 170 L4 170 L4 172 L12 172 L12 174 L12 174 L12 176 L0 176 L0 178 L0 178 L0 180 L12 180 L12 182 L12 182 L12 184 L4 184 L4 186 L4 186 L4 188 L12 188 L12 190 L12 190 L12 192 L24 192 L24 194 L24 194 L24 196 L32 196 L32 198 L32 198 L32 200 L36 200 L36 202 L36 202 L36 204 L28 204 L28 206 L28 206 L28 208 L40 208 L40 210 L40 210 L40 212 L32 212 L32 214 L32 214 L32 216 L40 216 L40 218 L40 218 L40 220 L52 220 L52 222 L52 222 L52 224 L60 224 L60 226 L60 226 L60 228 L68 228 L68 230 L68 230 L68 232 L80 232 L80 234 L80 234 L80 236 L88 236 L88 238 L88 238 L88 240 L96 240 L96 242 L96 242 L96 244 L104 244 L104 246 L104 246 L104 248 L112 248 L112 250 L112 250 L112 252 L120 252 L120 254 L120 254 L120 256 L128 256 L128 258 L128 258 L128 260 L136 260 L136 262 L136 262 L136 264 L144 264 L144 266 L144 266 L144 268 L144 268 L144 270 L144 270 L144 272 L132 272 L132 274 L132 274 L132 276 L120 276 L120 278 L120 278 L120 280 L112 280 L112 282 L112 282 L112 284 L108 284 L108 286 L108 286 L108 288 L100 288 L100 290 L100 290 L100 292 L96 292 L96 294 L96 294 L96 296 L92 296 L92 298 L92 298 L92 300 L88 300 L88 302 L88 302 L88 304 L84 304 L84 306 L84 306 L84 308 L80 308 L80 310 L80 310 L80 312 L76 312 L76 314 L76 314 L76 316 L76 316 L76 318 L76 318 L76 320 L72 320 L72 322 L72 322 L72 324 L76 324 L76 326 L76 326 L76 328 L72 328 L72 330 L72 330 L72 332 L76 332 L76 334 L76 334 L76 336 L72 336 L72 338 L72 338 L72 340 L88 340 L88 342 L88 342 L88 344 L104 344 L104 346 L104 346 L104 348 L100 348 L100 350 L100 350 L100 352 L104 352 L104 354 L104 354 L104 356 L100 356 L100 358 L100 358 L100 360 L104 360 L104 362 L104 362 L104 364 L100 364 L100 366 L100 366 L100 368 L116 368 L116 370 L116 370 L116 372 L144 372 Z'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 372' preserveAspectRatio='none' shape-rendering='crispEdges'%3E%3Cpath d='M0 0 L0 0 L0 2 L0 2 L0 4 L0 4 L0 6 L0 6 L0 8 L12 8 L12 10 L12 10 L12 12 L24 12 L24 14 L24 14 L24 16 L32 16 L32 18 L32 18 L32 20 L36 20 L36 22 L36 22 L36 24 L44 24 L44 26 L44 26 L44 28 L48 28 L48 30 L48 30 L48 32 L52 32 L52 34 L52 34 L52 36 L56 36 L56 38 L56 38 L56 40 L60 40 L60 42 L60 42 L60 44 L64 44 L64 46 L64 46 L64 48 L68 48 L68 50 L68 50 L68 52 L68 52 L68 54 L68 54 L68 56 L72 56 L72 58 L72 58 L72 60 L68 60 L68 62 L68 62 L68 64 L72 64 L72 66 L72 66 L72 68 L68 68 L68 70 L68 70 L68 72 L72 72 L72 74 L72 74 L72 76 L56 76 L56 78 L56 78 L56 80 L40 80 L40 82 L40 82 L40 84 L44 84 L44 86 L44 86 L44 88 L40 88 L40 90 L40 90 L40 92 L44 92 L44 94 L44 94 L44 96 L40 96 L40 98 L40 98 L40 100 L44 100 L44 102 L44 102 L44 104 L28 104 L28 106 L28 106 L28 108 L0 108 L0 110 L0 110 L0 112 L28 112 L28 114 L28 114 L28 116 L48 116 L48 118 L48 118 L48 120 L64 120 L64 122 L64 122 L64 124 L76 124 L76 126 L76 126 L76 128 L88 128 L88 130 L88 130 L88 132 L100 132 L100 134 L100 134 L100 136 L104 136 L104 138 L104 138 L104 140 L104 140 L104 142 L104 142 L104 144 L104 144 L104 146 L104 146 L104 148 L104 148 L104 150 L104 150 L104 152 L104 152 L104 154 L104 154 L104 156 L100 156 L100 158 L100 158 L100 160 L96 160 L96 162 L96 162 L96 164 L96 164 L96 166 L96 166 L96 168 L92 168 L92 170 L92 170 L92 172 L88 172 L88 174 L88 174 L88 176 L84 176 L84 178 L84 178 L84 180 L80 180 L80 182 L80 182 L80 184 L76 184 L76 186 L76 186 L76 188 L72 188 L72 190 L72 190 L72 192 L68 192 L68 194 L68 194 L68 196 L64 196 L64 198 L64 198 L64 200 L60 200 L60 202 L60 202 L60 204 L56 204 L56 206 L56 206 L56 208 L52 208 L52 210 L52 210 L52 212 L48 212 L48 214 L48 214 L48 216 L44 216 L44 218 L44 218 L44 220 L40 220 L40 222 L40 222 L40 224 L36 224 L36 226 L36 226 L36 228 L28 228 L28 230 L28 230 L28 232 L24 232 L24 234 L24 234 L24 236 L16 236 L16 238 L16 238 L16 240 L12 240 L12 242 L12 242 L12 244 L20 244 L20 246 L20 246 L20 248 L28 248 L28 250 L28 250 L28 252 L36 252 L36 254 L36 254 L36 256 L48 256 L48 258 L48 258 L48 260 L60 260 L60 262 L60 262 L60 264 L72 264 L72 266 L72 266 L72 268 L92 268 L92 270 L92 270 L92 272 L116 272 L116 274 L116 274 L116 276 L140 276 L140 278 L140 278 L140 280 L132 280 L132 282 L132 282 L132 284 L144 284 L144 286 L144 286 L144 288 L132 288 L132 290 L132 290 L132 292 L140 292 L140 294 L140 294 L140 296 L132 296 L132 298 L132 298 L132 300 L120 300 L120 302 L120 302 L120 304 L112 304 L112 306 L112 306 L112 308 L108 308 L108 310 L108 310 L108 312 L116 312 L116 314 L116 314 L116 316 L104 316 L104 318 L104 318 L104 320 L112 320 L112 322 L112 322 L112 324 L104 324 L104 326 L104 326 L104 328 L92 328 L92 330 L92 330 L92 332 L84 332 L84 334 L84 334 L84 336 L76 336 L76 338 L76 338 L76 340 L64 340 L64 342 L64 342 L64 344 L56 344 L56 346 L56 346 L56 348 L48 348 L48 350 L48 350 L48 352 L40 352 L40 354 L40 354 L40 356 L32 356 L32 358 L32 358 L32 360 L24 360 L24 362 L24 362 L24 364 L16 364 L16 366 L16 366 L16 368 L8 368 L8 370 L8 370 L8 372 L0 372 Z'/%3E%3C/svg%3E"), linear-gradient(#000, #000);
+  --torn-size: 2.016rem 5.208rem, 2.016rem 5.208rem, calc(100% - 3.932rem) 100%;
+  --torn-pos: 0 0, 100% 0, 1.966rem 0;
+  --torn-repeat: repeat-y, repeat-y, no-repeat;
 }
 
 * { box-sizing: border-box; }
@@ -244,39 +254,51 @@ button { cursor: pointer; }
 
 
 .app-shell[data-theme="light-blue"] {
-  /* A crisp icy-blue theme with deep navy text and teal controls. */
-  --ink: #102b3b;
-  --muted: #25495d;
-  --dim: #496a7b;
-  --page: #dceef5;
-  --panel: #f2f9fc;
-  --panel-soft: #d5eaf2;
-  --line: #7da9ba;
-  --coral: #087b9a;
-  --coral-dark: #07536b;
-  --cream: #102b3b;
-  --blue: #147f9e;
-  --blue-dark: #07536b;
-  --blue-soft: #c5e5ef;
-  --orbit-edge: #3d8ca5;
-  --orbit-fill: #edf8fc;
-  --orbit-accent: #07536b;
-  --orbit-glow: rgba(20, 127, 158, 0.22);
+  /* A violet theme: cool lavender panels, deep violet text, violet buttons with black text. */
+  --ink: #1d1238;
+  --muted: #3a2d66;
+  --dim: #55468a;
+  --page: #cfc9ec;
+  --panel: #e1dcf4;
+  --panel-soft: #c8c1e8;
+  --line: #7d6fc4;
+  --coral: #6a35c8;
+  --coral-dark: #43208f;
+  --cream: #1d1238;
+  --blue: #8f72e6;
+  --blue-dark: #4f32a8;
+  --blue-soft: #bdb4e4;
+  --orbit-edge: #6f5bc0;
+  --orbit-fill: #e6e2f6;
+  --orbit-accent: #43208f;
+  --orbit-glow: rgba(90, 60, 190, 0.22);
 }
+
+
+/* Violet theme: buttons use black text. (The locked 3D button keeps its own colours.) */
+.app-shell[data-theme="light-blue"] .three-d-link:not(.locked),
+.app-shell[data-theme="light-blue"] .game-page button,
+.app-shell[data-theme="light-blue"] .project-link,
+.app-shell[data-theme="light-blue"] .dice-toggle,
+.app-shell[data-theme="light-blue"] .dice-roll {
+  color: #000;
+}
+.app-shell[data-theme="light-blue"] .dice-diamond { border-color: #000; }
+.app-shell[data-theme="light-blue"] .dice-toggle[aria-expanded="true"] .dice-diamond { background: #000; }
 
 /* Keep the intro visually light in this theme, not a heavy dark slab. */
 .app-shell[data-theme="light-blue"] .main-page-content .page-intro {
-  background: rgba(242, 249, 252, 0.92);
-  color: #102b3b;
-  border: 1px solid rgba(61, 140, 165, 0.42);
-  border-left: 4px solid #147f9e;
+  background: rgba(225, 220, 244, 0.92);
+  color: #1d1238;
+  border: 1px solid rgba(100, 80, 190, 0.42);
+  border-left: 4px solid #8f72e6;
   border-radius: 0.4rem;
-  box-shadow: 0 0.5rem 1.5rem rgba(10, 47, 64, 0.12);
+  box-shadow: 0 0.5rem 1.5rem rgba(30, 15, 60, 0.12);
   text-shadow: none;
 }
 
 .app-shell[data-theme="light-blue"] .main-page-content .page-intro a {
-  color: #07536b;
+  color: #43208f;
   text-shadow: none;
 }
 
@@ -288,26 +310,7 @@ button { cursor: pointer; }
 }
 
 
-/*.app-shell[data-theme="light-blue"] {
-  --ink: #102c3c;
-  --muted: #5685a0;
-  --dim: #54758a;
-  --page: #bedbe5;
-  --panel: #3b7285;
-  --panel-soft: #b2d1dc;
-  --line: #6a96a8;
-  --coral: #318ba8;
-  --coral-dark: #246b83;
-  --cream: #102f41;
-  --blue: #84c3d9;
-  --blue-dark: #3d7f96;
-  --blue-soft: #b6d4df;
-  --orbit-edge: #4e879d;
-  --orbit-fill: #bdd9e3;
-  --orbit-accent: #286f88;
-  --orbit-glow: rgba(49, 126, 151, 0.24);
-}
-*/
+
 .app-shell[data-theme="gold"] {
   --ink: #fff6e3;
   --muted: #dec99e;
@@ -804,7 +807,6 @@ button { cursor: pointer; }
   color: var(--ink);
   background: var(--coral-dark);
   text-decoration: none;
-  box-shadow: 0.375rem 0.375rem 0 color-mix(in srgb, var(--coral-dark) 20%, transparent);
   transition: border-color 11.25rem ease, background 11.25rem ease, transform 11.25rem ease, box-shadow 11.25rem ease;
 }
 
@@ -818,16 +820,14 @@ button { cursor: pointer; }
   pointer-events: none;
 }
 
-.game-card:nth-child(1) { left: 0; width: 40.86%; clip-path: polygon(0 2%, 70% 0, 100% 100%, 0 100%); }
-.game-card:nth-child(2) { left: 29%; width: 42.8%; clip-path: polygon(0 0, 100% 0, 69.5% 100%, 28.5% 100%); }
-.game-card:nth-child(2) { left: 29.5%; width: 42.8%; clip-path: polygon(0 0, 100% 0, 67.3% 100%, 28.5% 100%); }
-.game-card:nth-child(3) { left: 59.14%; width: 40.86%; clip-path: polygon(34.4% 0, 100% 2%, 100% 100%, 0 100%); }
+.game-card:nth-child(1) { left: 0; width: 40.86%; clip-path: polygon(calc(70% - 2.88rem) 0%, calc(70.2% - 2.88rem) 0.667%, calc(70.4% - 2.64rem) 1.333%, calc(70.6% - 2.4rem) 2%, calc(70.8% - 2.16rem) 2.667%, calc(71% - 2rem) 3.333%, calc(71.2% - 1.92rem) 4%, calc(71.4% - 1.84rem) 4.667%, calc(71.6% - 1.68rem) 5.333%, calc(71.8% - 1.6rem) 6%, calc(72% - 1.52rem) 6.667%, calc(72.2% - 1.52rem) 7.333%, calc(72.4% - 1.52rem) 8%, calc(72.6% - 1.44rem) 8.667%, calc(72.8% - 1.52rem) 9.333%, calc(73% - 1.44rem) 10%, calc(73.2% - 2.08rem) 10.667%, calc(73.4% - 2rem) 11.333%, calc(73.6% - 2.08rem) 12%, calc(73.8% - 2rem) 12.667%, calc(74% - 2rem) 13.333%, calc(74.2% - 2.32rem) 14%, calc(74.4% - 2.88rem) 14.667%, calc(74.6% - 2.32rem) 15.333%, calc(74.8% - 1.6rem) 16%, calc(75% - 1.36rem) 16.667%, calc(75.2% - 1.12rem) 17.333%, calc(75.4% - 0.88rem) 18%, calc(75.6% - 0.8rem) 18.667%, calc(75.8% - 0.8rem) 19.333%, calc(76% - 0.8rem) 20%, calc(76.2% - 0.8rem) 20.667%, calc(76.4% - 0.96rem) 21.333%, calc(76.6% - 0.96rem) 22%, calc(76.8% - 1.04rem) 22.667%, calc(77% - 1.12rem) 23.333%, calc(77.2% - 1.28rem) 24%, calc(77.4% - 1.36rem) 24.667%, calc(77.6% - 1.44rem) 25.333%, calc(77.8% - 1.52rem) 26%, calc(78% - 1.68rem) 26.667%, calc(78.2% - 1.76rem) 27.333%, calc(78.4% - 1.84rem) 28%, calc(78.6% - 1.92rem) 28.667%, calc(78.8% - 2.08rem) 29.333%, calc(79% - 2.16rem) 30%, calc(79.2% - 2.32rem) 30.667%, calc(79.4% - 2.4rem) 31.333%, calc(79.6% - 2.64rem) 32%, calc(79.8% - 2.48rem) 32.667%, calc(80% - 2.32rem) 33.333%, calc(80.2% - 2.16rem) 34%, calc(80.4% - 1.68rem) 34.667%, calc(80.6% - 1.44rem) 35.333%, calc(80.8% - 1.04rem) 36%, calc(81% - 0.56rem) 36.667%, calc(81.2% - 0.24rem) 37.333%, calc(81.4% - 0rem) 38%, calc(81.6% - 0.24rem) 38.667%, calc(81.8% - 0.08rem) 39.333%, calc(82% - 0.48rem) 40%, calc(82.2% - 0.64rem) 40.667%, calc(82.4% - 0.72rem) 41.333%, calc(82.6% - 0.56rem) 42%, calc(82.8% - 0.64rem) 42.667%, calc(83% - 0.8rem) 43.333%, calc(83.2% - 1.04rem) 44%, calc(83.4% - 1.2rem) 44.667%, calc(83.6% - 1.6rem) 45.333%, calc(83.8% - 1.76rem) 46%, calc(84% - 1.92rem) 46.667%, calc(84.2% - 2.08rem) 47.333%, calc(84.4% - 2.4rem) 48%, calc(84.6% - 2.56rem) 48.667%, calc(84.8% - 2.72rem) 49.333%, calc(85% - 2.88rem) 50%, calc(85.2% - 2.64rem) 50.667%, calc(85.4% - 2.4rem) 51.333%, calc(85.6% - 2.24rem) 52%, calc(85.8% - 2.16rem) 52.667%, calc(86% - 1.92rem) 53.333%, calc(86.2% - 1.84rem) 54%, calc(86.4% - 1.76rem) 54.667%, calc(86.6% - 1.68rem) 55.333%, calc(86.8% - 1.52rem) 56%, calc(87% - 1.52rem) 56.667%, calc(87.2% - 1.44rem) 57.333%, calc(87.4% - 1.52rem) 58%, calc(87.6% - 1.52rem) 58.667%, calc(87.8% - 1.44rem) 59.333%, calc(88% - 1.76rem) 60%, calc(88.2% - 2.08rem) 60.667%, calc(88.4% - 2.08rem) 61.333%, calc(88.6% - 2rem) 62%, calc(88.8% - 2.08rem) 62.667%, calc(89% - 2rem) 63.333%, calc(89.2% - 2.88rem) 64%, calc(89.4% - 2.32rem) 64.667%, calc(89.6% - 1.92rem) 65.333%, calc(89.8% - 1.6rem) 66%, calc(90% - 1.12rem) 66.667%, calc(90.2% - 0.88rem) 67.333%, calc(90.4% - 0.8rem) 68%, calc(90.6% - 0.8rem) 68.667%, calc(90.8% - 0.8rem) 69.333%, calc(91% - 0.8rem) 70%, calc(91.2% - 0.88rem) 70.667%, calc(91.4% - 0.96rem) 71.333%, calc(91.6% - 1.04rem) 72%, calc(91.8% - 1.12rem) 72.667%, calc(92% - 1.2rem) 73.333%, calc(92.2% - 1.28rem) 74%, calc(92.4% - 1.44rem) 74.667%, calc(92.6% - 1.52rem) 75.333%, calc(92.8% - 1.6rem) 76%, calc(93% - 1.68rem) 76.667%, calc(93.2% - 1.84rem) 77.333%, calc(93.4% - 1.92rem) 78%, calc(93.6% - 2rem) 78.667%, calc(93.8% - 2.08rem) 79.333%, calc(94% - 2.32rem) 80%, calc(94.2% - 2.4rem) 80.667%, calc(94.4% - 2.56rem) 81.333%, calc(94.6% - 2.64rem) 82%, calc(94.8% - 2.32rem) 82.667%, calc(95% - 2.16rem) 83.333%, calc(95.2% - 1.92rem) 84%, calc(95.4% - 1.68rem) 84.667%, calc(95.6% - 1.04rem) 85.333%, calc(95.8% - 0.56rem) 86%, calc(96% - 0.08rem) 86.667%, calc(96.2% - 0.24rem) 87.333%, calc(96.4% - 0.24rem) 88%, calc(96.6% - 0.08rem) 88.667%, calc(96.8% - 0.24rem) 89.333%, calc(97% - 0.48rem) 90%, calc(97.2% - 0.72rem) 90.667%, calc(97.4% - 0.56rem) 91.333%, calc(97.6% - 0.8rem) 92%, calc(97.8% - 0.64rem) 92.667%, calc(98% - 1.04rem) 93.333%, calc(98.2% - 1.2rem) 94%, calc(98.4% - 1.36rem) 94.667%, calc(98.6% - 1.6rem) 95.333%, calc(98.8% - 1.92rem) 96%, calc(99% - 2.08rem) 96.667%, calc(99.2% - 2.24rem) 97.333%, calc(99.4% - 2.4rem) 98%, calc(99.6% - 2.72rem) 98.667%, calc(99.8% - 2.88rem) 99.333%, calc(100% - 2.88rem) 100%, calc(0% + 2.88rem) 100%, calc(0% + 2.88rem) 99.347%, calc(0% + 2.32rem) 98.693%, calc(0% + 2.08rem) 98.04%, calc(0% + 2rem) 97.387%, calc(0% + 2.08rem) 96.733%, calc(0% + 2rem) 96.08%, calc(0% + 1.76rem) 95.427%, calc(0% + 1.44rem) 94.773%, calc(0% + 1.52rem) 94.12%, calc(0% + 1.44rem) 93.467%, calc(0% + 1.44rem) 92.813%, calc(0% + 1.52rem) 92.16%, calc(0% + 1.52rem) 91.507%, calc(0% + 1.6rem) 90.853%, calc(0% + 1.76rem) 90.2%, calc(0% + 1.84rem) 89.547%, calc(0% + 1.92rem) 88.893%, calc(0% + 2rem) 88.24%, calc(0% + 2.24rem) 87.587%, calc(0% + 2.4rem) 86.933%, calc(0% + 2.64rem) 86.28%, calc(0% + 2.88rem) 85.627%, calc(0% + 2.72rem) 84.973%, calc(0% + 2.56rem) 84.32%, calc(0% + 2.4rem) 83.667%, calc(0% + 2.24rem) 83.013%, calc(0% + 1.92rem) 82.36%, calc(0% + 1.76rem) 81.707%, calc(0% + 1.6rem) 81.053%, calc(0% + 1.36rem) 80.4%, calc(0% + 1.04rem) 79.747%, calc(0% + 0.8rem) 79.093%, calc(0% + 0.64rem) 78.44%, calc(0% + 0.8rem) 77.787%, calc(0% + 0.72rem) 77.133%, calc(0% + 0.64rem) 76.48%, calc(0% + 0.48rem) 75.827%, calc(0% + 0.24rem) 75.173%, calc(0% + 0.24rem) 74.52%, calc(0% + 0rem) 73.867%, calc(0% + 0.24rem) 73.213%, calc(0% + 0.08rem) 72.56%, calc(0% + 1.04rem) 71.907%, calc(0% + 1.44rem) 71.253%, calc(0% + 1.68rem) 70.6%, calc(0% + 1.92rem) 69.947%, calc(0% + 2.32rem) 69.293%, calc(0% + 2.48rem) 68.64%, calc(0% + 2.64rem) 67.987%, calc(0% + 2.56rem) 67.333%, calc(0% + 2.32rem) 66.68%, calc(0% + 2.16rem) 66.027%, calc(0% + 2.08rem) 65.373%, calc(0% + 2rem) 64.72%, calc(0% + 1.84rem) 64.067%, calc(0% + 1.76rem) 63.413%, calc(0% + 1.68rem) 62.76%, calc(0% + 1.6rem) 62.107%, calc(0% + 1.44rem) 61.453%, calc(0% + 1.36rem) 60.8%, calc(0% + 1.28rem) 60.147%, calc(0% + 1.2rem) 59.493%, calc(0% + 1.04rem) 58.84%, calc(0% + 0.96rem) 58.187%, calc(0% + 0.96rem) 57.533%, calc(0% + 0.88rem) 56.88%, calc(0% + 0.8rem) 56.227%, calc(0% + 0.8rem) 55.573%, calc(0% + 0.8rem) 54.92%, calc(0% + 0.8rem) 54.267%, calc(0% + 1.12rem) 53.613%, calc(0% + 1.36rem) 52.96%, calc(0% + 1.6rem) 52.307%, calc(0% + 1.92rem) 51.653%, calc(0% + 2.88rem) 51%, calc(0% + 2.32rem) 50.347%, calc(0% + 2rem) 49.693%, calc(0% + 2.08rem) 49.04%, calc(0% + 2.08rem) 48.387%, calc(0% + 2rem) 47.733%, calc(0% + 2.08rem) 47.08%, calc(0% + 1.76rem) 46.427%, calc(0% + 1.52rem) 45.773%, calc(0% + 1.44rem) 45.12%, calc(0% + 1.52rem) 44.467%, calc(0% + 1.44rem) 43.813%, calc(0% + 1.52rem) 43.16%, calc(0% + 1.6rem) 42.507%, calc(0% + 1.68rem) 41.853%, calc(0% + 1.76rem) 41.2%, calc(0% + 1.92rem) 40.547%, calc(0% + 2rem) 39.893%, calc(0% + 2.16rem) 39.24%, calc(0% + 2.24rem) 38.587%, calc(0% + 2.64rem) 37.933%, calc(0% + 2.88rem) 37.28%, calc(0% + 2.88rem) 36.627%, calc(0% + 2.72rem) 35.973%, calc(0% + 2.4rem) 35.32%, calc(0% + 2.24rem) 34.667%, calc(0% + 2.08rem) 34.013%, calc(0% + 1.92rem) 33.36%, calc(0% + 1.6rem) 32.707%, calc(0% + 1.36rem) 32.053%, calc(0% + 1.2rem) 31.4%, calc(0% + 1.04rem) 30.747%, calc(0% + 0.64rem) 30.093%, calc(0% + 0.8rem) 29.44%, calc(0% + 0.56rem) 28.787%, calc(0% + 0.72rem) 28.133%, calc(0% + 0.48rem) 27.48%, calc(0% + 0.24rem) 26.827%, calc(0% + 0.08rem) 26.173%, calc(0% + 0.24rem) 25.52%, calc(0% + 0.24rem) 24.867%, calc(0% + 0.08rem) 24.213%, calc(0% + 0.56rem) 23.56%, calc(0% + 1.04rem) 22.907%, calc(0% + 1.68rem) 22.253%, calc(0% + 1.92rem) 21.6%, calc(0% + 2.16rem) 20.947%, calc(0% + 2.32rem) 20.293%, calc(0% + 2.64rem) 19.64%, calc(0% + 2.56rem) 18.987%, calc(0% + 2.4rem) 18.333%, calc(0% + 2.32rem) 17.68%, calc(0% + 2.08rem) 17.027%, calc(0% + 2rem) 16.373%, calc(0% + 1.92rem) 15.72%, calc(0% + 1.84rem) 15.067%, calc(0% + 1.68rem) 14.413%, calc(0% + 1.6rem) 13.76%, calc(0% + 1.52rem) 13.107%, calc(0% + 1.44rem) 12.453%, calc(0% + 1.28rem) 11.8%, calc(0% + 1.2rem) 11.147%, calc(0% + 1.12rem) 10.493%, calc(0% + 1.04rem) 9.84%, calc(0% + 0.96rem) 9.187%, calc(0% + 0.88rem) 8.533%, calc(0% + 0.8rem) 7.88%, calc(0% + 0.8rem) 7.227%, calc(0% + 0.8rem) 6.573%, calc(0% + 0.8rem) 5.92%, calc(0% + 0.88rem) 5.267%, calc(0% + 1.12rem) 4.613%, calc(0% + 1.6rem) 3.96%, calc(0% + 1.92rem) 3.307%, calc(0% + 2.32rem) 2.653%, calc(0% + 2.88rem) 2%); }
+.game-card:nth-child(2) { left: 29.5%; width: 42.8%; clip-path: polygon(calc(100% - 2.88rem) 0%, calc(99.782% - 2.88rem) 0.667%, calc(99.564% - 2.64rem) 1.333%, calc(99.346% - 2.4rem) 2%, calc(99.128% - 2.16rem) 2.667%, calc(98.91% - 2rem) 3.333%, calc(98.692% - 1.92rem) 4%, calc(98.474% - 1.84rem) 4.667%, calc(98.256% - 1.68rem) 5.333%, calc(98.038% - 1.6rem) 6%, calc(97.82% - 1.52rem) 6.667%, calc(97.602% - 1.52rem) 7.333%, calc(97.384% - 1.52rem) 8%, calc(97.166% - 1.44rem) 8.667%, calc(96.948% - 1.52rem) 9.333%, calc(96.73% - 1.44rem) 10%, calc(96.512% - 2.08rem) 10.667%, calc(96.294% - 2rem) 11.333%, calc(96.076% - 2.08rem) 12%, calc(95.858% - 2rem) 12.667%, calc(95.64% - 2rem) 13.333%, calc(95.422% - 2.32rem) 14%, calc(95.204% - 2.88rem) 14.667%, calc(94.986% - 2.32rem) 15.333%, calc(94.768% - 1.6rem) 16%, calc(94.55% - 1.36rem) 16.667%, calc(94.332% - 1.12rem) 17.333%, calc(94.114% - 0.88rem) 18%, calc(93.896% - 0.8rem) 18.667%, calc(93.678% - 0.8rem) 19.333%, calc(93.46% - 0.8rem) 20%, calc(93.242% - 0.8rem) 20.667%, calc(93.024% - 0.96rem) 21.333%, calc(92.806% - 0.96rem) 22%, calc(92.588% - 1.04rem) 22.667%, calc(92.37% - 1.12rem) 23.333%, calc(92.152% - 1.28rem) 24%, calc(91.934% - 1.36rem) 24.667%, calc(91.716% - 1.44rem) 25.333%, calc(91.498% - 1.52rem) 26%, calc(91.28% - 1.68rem) 26.667%, calc(91.062% - 1.76rem) 27.333%, calc(90.844% - 1.84rem) 28%, calc(90.626% - 1.92rem) 28.667%, calc(90.408% - 2.08rem) 29.333%, calc(90.19% - 2.16rem) 30%, calc(89.972% - 2.32rem) 30.667%, calc(89.754% - 2.4rem) 31.333%, calc(89.536% - 2.64rem) 32%, calc(89.318% - 2.48rem) 32.667%, calc(89.1% - 2.32rem) 33.333%, calc(88.882% - 2.16rem) 34%, calc(88.664% - 1.68rem) 34.667%, calc(88.446% - 1.44rem) 35.333%, calc(88.228% - 1.04rem) 36%, calc(88.01% - 0.56rem) 36.667%, calc(87.792% - 0.24rem) 37.333%, calc(87.574% - 0rem) 38%, calc(87.356% - 0.24rem) 38.667%, calc(87.138% - 0.08rem) 39.333%, calc(86.92% - 0.48rem) 40%, calc(86.702% - 0.64rem) 40.667%, calc(86.484% - 0.72rem) 41.333%, calc(86.266% - 0.56rem) 42%, calc(86.048% - 0.64rem) 42.667%, calc(85.83% - 0.8rem) 43.333%, calc(85.612% - 1.04rem) 44%, calc(85.394% - 1.2rem) 44.667%, calc(85.176% - 1.6rem) 45.333%, calc(84.958% - 1.76rem) 46%, calc(84.74% - 1.92rem) 46.667%, calc(84.522% - 2.08rem) 47.333%, calc(84.304% - 2.4rem) 48%, calc(84.086% - 2.56rem) 48.667%, calc(83.868% - 2.72rem) 49.333%, calc(83.65% - 2.88rem) 50%, calc(83.432% - 2.64rem) 50.667%, calc(83.214% - 2.4rem) 51.333%, calc(82.996% - 2.24rem) 52%, calc(82.778% - 2.16rem) 52.667%, calc(82.56% - 1.92rem) 53.333%, calc(82.342% - 1.84rem) 54%, calc(82.124% - 1.76rem) 54.667%, calc(81.906% - 1.68rem) 55.333%, calc(81.688% - 1.52rem) 56%, calc(81.47% - 1.52rem) 56.667%, calc(81.252% - 1.44rem) 57.333%, calc(81.034% - 1.52rem) 58%, calc(80.816% - 1.52rem) 58.667%, calc(80.598% - 1.44rem) 59.333%, calc(80.38% - 1.76rem) 60%, calc(80.162% - 2.08rem) 60.667%, calc(79.944% - 2.08rem) 61.333%, calc(79.726% - 2rem) 62%, calc(79.508% - 2.08rem) 62.667%, calc(79.29% - 2rem) 63.333%, calc(79.072% - 2.88rem) 64%, calc(78.854% - 2.32rem) 64.667%, calc(78.636% - 1.92rem) 65.333%, calc(78.418% - 1.6rem) 66%, calc(78.2% - 1.12rem) 66.667%, calc(77.982% - 0.88rem) 67.333%, calc(77.764% - 0.8rem) 68%, calc(77.546% - 0.8rem) 68.667%, calc(77.328% - 0.8rem) 69.333%, calc(77.11% - 0.8rem) 70%, calc(76.892% - 0.88rem) 70.667%, calc(76.674% - 0.96rem) 71.333%, calc(76.456% - 1.04rem) 72%, calc(76.238% - 1.12rem) 72.667%, calc(76.02% - 1.2rem) 73.333%, calc(75.802% - 1.28rem) 74%, calc(75.584% - 1.44rem) 74.667%, calc(75.366% - 1.52rem) 75.333%, calc(75.148% - 1.6rem) 76%, calc(74.93% - 1.68rem) 76.667%, calc(74.712% - 1.84rem) 77.333%, calc(74.494% - 1.92rem) 78%, calc(74.276% - 2rem) 78.667%, calc(74.058% - 2.08rem) 79.333%, calc(73.84% - 2.32rem) 80%, calc(73.622% - 2.4rem) 80.667%, calc(73.404% - 2.56rem) 81.333%, calc(73.186% - 2.64rem) 82%, calc(72.968% - 2.32rem) 82.667%, calc(72.75% - 2.16rem) 83.333%, calc(72.532% - 1.92rem) 84%, calc(72.314% - 1.68rem) 84.667%, calc(72.096% - 1.04rem) 85.333%, calc(71.878% - 0.56rem) 86%, calc(71.66% - 0.08rem) 86.667%, calc(71.442% - 0.24rem) 87.333%, calc(71.224% - 0.24rem) 88%, calc(71.006% - 0.08rem) 88.667%, calc(70.788% - 0.24rem) 89.333%, calc(70.57% - 0.48rem) 90%, calc(70.352% - 0.72rem) 90.667%, calc(70.134% - 0.56rem) 91.333%, calc(69.916% - 0.8rem) 92%, calc(69.698% - 0.64rem) 92.667%, calc(69.48% - 1.04rem) 93.333%, calc(69.262% - 1.2rem) 94%, calc(69.044% - 1.36rem) 94.667%, calc(68.826% - 1.6rem) 95.333%, calc(68.608% - 1.92rem) 96%, calc(68.39% - 2.08rem) 96.667%, calc(68.172% - 2.24rem) 97.333%, calc(67.954% - 2.4rem) 98%, calc(67.736% - 2.72rem) 98.667%, calc(67.518% - 2.88rem) 99.333%, calc(67.3% - 2.88rem) 100%, calc(28.5% + 2.88rem) 100%, calc(28.31% + 2.88rem) 99.333%, calc(28.12% + 2.32rem) 98.667%, calc(27.93% + 2.08rem) 98%, calc(27.74% + 2rem) 97.333%, calc(27.55% + 2.08rem) 96.667%, calc(27.36% + 2rem) 96%, calc(27.17% + 1.76rem) 95.333%, calc(26.98% + 1.44rem) 94.667%, calc(26.79% + 1.52rem) 94%, calc(26.6% + 1.44rem) 93.333%, calc(26.41% + 1.44rem) 92.667%, calc(26.22% + 1.52rem) 92%, calc(26.03% + 1.52rem) 91.333%, calc(25.84% + 1.6rem) 90.667%, calc(25.65% + 1.76rem) 90%, calc(25.46% + 1.84rem) 89.333%, calc(25.27% + 1.92rem) 88.667%, calc(25.08% + 2rem) 88%, calc(24.89% + 2.24rem) 87.333%, calc(24.7% + 2.4rem) 86.667%, calc(24.51% + 2.64rem) 86%, calc(24.32% + 2.88rem) 85.333%, calc(24.13% + 2.72rem) 84.667%, calc(23.94% + 2.56rem) 84%, calc(23.75% + 2.4rem) 83.333%, calc(23.56% + 2.24rem) 82.667%, calc(23.37% + 1.92rem) 82%, calc(23.18% + 1.76rem) 81.333%, calc(22.99% + 1.6rem) 80.667%, calc(22.8% + 1.36rem) 80%, calc(22.61% + 1.04rem) 79.333%, calc(22.42% + 0.8rem) 78.667%, calc(22.23% + 0.64rem) 78%, calc(22.04% + 0.8rem) 77.333%, calc(21.85% + 0.72rem) 76.667%, calc(21.66% + 0.64rem) 76%, calc(21.47% + 0.48rem) 75.333%, calc(21.28% + 0.24rem) 74.667%, calc(21.09% + 0.24rem) 74%, calc(20.9% + 0rem) 73.333%, calc(20.71% + 0.24rem) 72.667%, calc(20.52% + 0.08rem) 72%, calc(20.33% + 1.04rem) 71.333%, calc(20.14% + 1.44rem) 70.667%, calc(19.95% + 1.68rem) 70%, calc(19.76% + 1.92rem) 69.333%, calc(19.57% + 2.32rem) 68.667%, calc(19.38% + 2.48rem) 68%, calc(19.19% + 2.64rem) 67.333%, calc(19% + 2.56rem) 66.667%, calc(18.81% + 2.32rem) 66%, calc(18.62% + 2.16rem) 65.333%, calc(18.43% + 2.08rem) 64.667%, calc(18.24% + 2rem) 64%, calc(18.05% + 1.84rem) 63.333%, calc(17.86% + 1.76rem) 62.667%, calc(17.67% + 1.68rem) 62%, calc(17.48% + 1.6rem) 61.333%, calc(17.29% + 1.44rem) 60.667%, calc(17.1% + 1.36rem) 60%, calc(16.91% + 1.28rem) 59.333%, calc(16.72% + 1.2rem) 58.667%, calc(16.53% + 1.04rem) 58%, calc(16.34% + 0.96rem) 57.333%, calc(16.15% + 0.96rem) 56.667%, calc(15.96% + 0.88rem) 56%, calc(15.77% + 0.8rem) 55.333%, calc(15.58% + 0.8rem) 54.667%, calc(15.39% + 0.8rem) 54%, calc(15.2% + 0.8rem) 53.333%, calc(15.01% + 1.12rem) 52.667%, calc(14.82% + 1.36rem) 52%, calc(14.63% + 1.6rem) 51.333%, calc(14.44% + 1.92rem) 50.667%, calc(14.25% + 2.88rem) 50%, calc(14.06% + 2.32rem) 49.333%, calc(13.87% + 2rem) 48.667%, calc(13.68% + 2.08rem) 48%, calc(13.49% + 2.08rem) 47.333%, calc(13.3% + 2rem) 46.667%, calc(13.11% + 2.08rem) 46%, calc(12.92% + 1.76rem) 45.333%, calc(12.73% + 1.52rem) 44.667%, calc(12.54% + 1.44rem) 44%, calc(12.35% + 1.52rem) 43.333%, calc(12.16% + 1.44rem) 42.667%, calc(11.97% + 1.52rem) 42%, calc(11.78% + 1.6rem) 41.333%, calc(11.59% + 1.68rem) 40.667%, calc(11.4% + 1.76rem) 40%, calc(11.21% + 1.92rem) 39.333%, calc(11.02% + 2rem) 38.667%, calc(10.83% + 2.16rem) 38%, calc(10.64% + 2.24rem) 37.333%, calc(10.45% + 2.64rem) 36.667%, calc(10.26% + 2.88rem) 36%, calc(10.07% + 2.88rem) 35.333%, calc(9.88% + 2.72rem) 34.667%, calc(9.69% + 2.4rem) 34%, calc(9.5% + 2.24rem) 33.333%, calc(9.31% + 2.08rem) 32.667%, calc(9.12% + 1.92rem) 32%, calc(8.93% + 1.6rem) 31.333%, calc(8.74% + 1.36rem) 30.667%, calc(8.55% + 1.2rem) 30%, calc(8.36% + 1.04rem) 29.333%, calc(8.17% + 0.64rem) 28.667%, calc(7.98% + 0.8rem) 28%, calc(7.79% + 0.56rem) 27.333%, calc(7.6% + 0.72rem) 26.667%, calc(7.41% + 0.48rem) 26%, calc(7.22% + 0.24rem) 25.333%, calc(7.03% + 0.08rem) 24.667%, calc(6.84% + 0.24rem) 24%, calc(6.65% + 0.24rem) 23.333%, calc(6.46% + 0.08rem) 22.667%, calc(6.27% + 0.56rem) 22%, calc(6.08% + 1.04rem) 21.333%, calc(5.89% + 1.68rem) 20.667%, calc(5.7% + 1.92rem) 20%, calc(5.51% + 2.16rem) 19.333%, calc(5.32% + 2.32rem) 18.667%, calc(5.13% + 2.64rem) 18%, calc(4.94% + 2.56rem) 17.333%, calc(4.75% + 2.4rem) 16.667%, calc(4.56% + 2.32rem) 16%, calc(4.37% + 2.08rem) 15.333%, calc(4.18% + 2rem) 14.667%, calc(3.99% + 1.92rem) 14%, calc(3.8% + 1.84rem) 13.333%, calc(3.61% + 1.68rem) 12.667%, calc(3.42% + 1.6rem) 12%, calc(3.23% + 1.52rem) 11.333%, calc(3.04% + 1.44rem) 10.667%, calc(2.85% + 1.28rem) 10%, calc(2.66% + 1.2rem) 9.333%, calc(2.47% + 1.12rem) 8.667%, calc(2.28% + 1.04rem) 8%, calc(2.09% + 0.96rem) 7.333%, calc(1.9% + 0.88rem) 6.667%, calc(1.71% + 0.8rem) 6%, calc(1.52% + 0.8rem) 5.333%, calc(1.33% + 0.8rem) 4.667%, calc(1.14% + 0.8rem) 4%, calc(0.95% + 0.88rem) 3.333%, calc(0.76% + 1.12rem) 2.667%, calc(0.57% + 1.6rem) 2%, calc(0.38% + 1.92rem) 1.333%, calc(0.19% + 2.32rem) 0.667%, calc(0% + 2.88rem) 0%); }
+.game-card:nth-child(3) { left: 59.14%; width: 40.86%; clip-path: polygon(calc(100% - 2.88rem) 2%, calc(100% - 2.88rem) 2.653%, calc(100% - 2.64rem) 3.307%, calc(100% - 2.4rem) 3.96%, calc(100% - 2.16rem) 4.613%, calc(100% - 2rem) 5.267%, calc(100% - 1.92rem) 5.92%, calc(100% - 1.84rem) 6.573%, calc(100% - 1.68rem) 7.227%, calc(100% - 1.6rem) 7.88%, calc(100% - 1.52rem) 8.533%, calc(100% - 1.52rem) 9.187%, calc(100% - 1.52rem) 9.84%, calc(100% - 1.44rem) 10.493%, calc(100% - 1.52rem) 11.147%, calc(100% - 1.44rem) 11.8%, calc(100% - 2.08rem) 12.453%, calc(100% - 2rem) 13.107%, calc(100% - 2.08rem) 13.76%, calc(100% - 2rem) 14.413%, calc(100% - 2rem) 15.067%, calc(100% - 2.32rem) 15.72%, calc(100% - 2.88rem) 16.373%, calc(100% - 2.32rem) 17.027%, calc(100% - 1.6rem) 17.68%, calc(100% - 1.36rem) 18.333%, calc(100% - 1.12rem) 18.987%, calc(100% - 0.88rem) 19.64%, calc(100% - 0.8rem) 20.293%, calc(100% - 0.8rem) 20.947%, calc(100% - 0.8rem) 21.6%, calc(100% - 0.8rem) 22.253%, calc(100% - 0.96rem) 22.907%, calc(100% - 0.96rem) 23.56%, calc(100% - 1.04rem) 24.213%, calc(100% - 1.12rem) 24.867%, calc(100% - 1.28rem) 25.52%, calc(100% - 1.36rem) 26.173%, calc(100% - 1.44rem) 26.827%, calc(100% - 1.52rem) 27.48%, calc(100% - 1.68rem) 28.133%, calc(100% - 1.76rem) 28.787%, calc(100% - 1.84rem) 29.44%, calc(100% - 1.92rem) 30.093%, calc(100% - 2.08rem) 30.747%, calc(100% - 2.16rem) 31.4%, calc(100% - 2.32rem) 32.053%, calc(100% - 2.4rem) 32.707%, calc(100% - 2.64rem) 33.36%, calc(100% - 2.48rem) 34.013%, calc(100% - 2.32rem) 34.667%, calc(100% - 2.16rem) 35.32%, calc(100% - 1.68rem) 35.973%, calc(100% - 1.44rem) 36.627%, calc(100% - 1.04rem) 37.28%, calc(100% - 0.56rem) 37.933%, calc(100% - 0.24rem) 38.587%, calc(100% - 0rem) 39.24%, calc(100% - 0.24rem) 39.893%, calc(100% - 0.08rem) 40.547%, calc(100% - 0.48rem) 41.2%, calc(100% - 0.64rem) 41.853%, calc(100% - 0.72rem) 42.507%, calc(100% - 0.56rem) 43.16%, calc(100% - 0.64rem) 43.813%, calc(100% - 0.8rem) 44.467%, calc(100% - 1.04rem) 45.12%, calc(100% - 1.2rem) 45.773%, calc(100% - 1.6rem) 46.427%, calc(100% - 1.76rem) 47.08%, calc(100% - 1.92rem) 47.733%, calc(100% - 2.08rem) 48.387%, calc(100% - 2.4rem) 49.04%, calc(100% - 2.56rem) 49.693%, calc(100% - 2.72rem) 50.347%, calc(100% - 2.88rem) 51%, calc(100% - 2.64rem) 51.653%, calc(100% - 2.4rem) 52.307%, calc(100% - 2.24rem) 52.96%, calc(100% - 2.16rem) 53.613%, calc(100% - 1.92rem) 54.267%, calc(100% - 1.84rem) 54.92%, calc(100% - 1.76rem) 55.573%, calc(100% - 1.68rem) 56.227%, calc(100% - 1.52rem) 56.88%, calc(100% - 1.52rem) 57.533%, calc(100% - 1.44rem) 58.187%, calc(100% - 1.52rem) 58.84%, calc(100% - 1.52rem) 59.493%, calc(100% - 1.44rem) 60.147%, calc(100% - 1.76rem) 60.8%, calc(100% - 2.08rem) 61.453%, calc(100% - 2.08rem) 62.107%, calc(100% - 2rem) 62.76%, calc(100% - 2.08rem) 63.413%, calc(100% - 2rem) 64.067%, calc(100% - 2.88rem) 64.72%, calc(100% - 2.32rem) 65.373%, calc(100% - 1.92rem) 66.027%, calc(100% - 1.6rem) 66.68%, calc(100% - 1.12rem) 67.333%, calc(100% - 0.88rem) 67.987%, calc(100% - 0.8rem) 68.64%, calc(100% - 0.8rem) 69.293%, calc(100% - 0.8rem) 69.947%, calc(100% - 0.8rem) 70.6%, calc(100% - 0.88rem) 71.253%, calc(100% - 0.96rem) 71.907%, calc(100% - 1.04rem) 72.56%, calc(100% - 1.12rem) 73.213%, calc(100% - 1.2rem) 73.867%, calc(100% - 1.28rem) 74.52%, calc(100% - 1.44rem) 75.173%, calc(100% - 1.52rem) 75.827%, calc(100% - 1.6rem) 76.48%, calc(100% - 1.68rem) 77.133%, calc(100% - 1.84rem) 77.787%, calc(100% - 1.92rem) 78.44%, calc(100% - 2rem) 79.093%, calc(100% - 2.08rem) 79.747%, calc(100% - 2.32rem) 80.4%, calc(100% - 2.4rem) 81.053%, calc(100% - 2.56rem) 81.707%, calc(100% - 2.64rem) 82.36%, calc(100% - 2.32rem) 83.013%, calc(100% - 2.16rem) 83.667%, calc(100% - 1.92rem) 84.32%, calc(100% - 1.68rem) 84.973%, calc(100% - 1.04rem) 85.627%, calc(100% - 0.56rem) 86.28%, calc(100% - 0.08rem) 86.933%, calc(100% - 0.24rem) 87.587%, calc(100% - 0.24rem) 88.24%, calc(100% - 0.08rem) 88.893%, calc(100% - 0.24rem) 89.547%, calc(100% - 0.48rem) 90.2%, calc(100% - 0.72rem) 90.853%, calc(100% - 0.56rem) 91.507%, calc(100% - 0.8rem) 92.16%, calc(100% - 0.64rem) 92.813%, calc(100% - 1.04rem) 93.467%, calc(100% - 1.2rem) 94.12%, calc(100% - 1.36rem) 94.773%, calc(100% - 1.6rem) 95.427%, calc(100% - 1.92rem) 96.08%, calc(100% - 2.08rem) 96.733%, calc(100% - 2.24rem) 97.387%, calc(100% - 2.4rem) 98.04%, calc(100% - 2.72rem) 98.693%, calc(100% - 2.88rem) 99.347%, calc(100% - 2.88rem) 100%, calc(0% + 2.88rem) 100%, calc(0.229% + 2.88rem) 99.333%, calc(0.459% + 2.32rem) 98.667%, calc(0.688% + 2.08rem) 98%, calc(0.917% + 2rem) 97.333%, calc(1.147% + 2.08rem) 96.667%, calc(1.376% + 2rem) 96%, calc(1.605% + 1.76rem) 95.333%, calc(1.835% + 1.44rem) 94.667%, calc(2.064% + 1.52rem) 94%, calc(2.293% + 1.44rem) 93.333%, calc(2.523% + 1.44rem) 92.667%, calc(2.752% + 1.52rem) 92%, calc(2.981% + 1.52rem) 91.333%, calc(3.211% + 1.6rem) 90.667%, calc(3.44% + 1.76rem) 90%, calc(3.669% + 1.84rem) 89.333%, calc(3.899% + 1.92rem) 88.667%, calc(4.128% + 2rem) 88%, calc(4.357% + 2.24rem) 87.333%, calc(4.587% + 2.4rem) 86.667%, calc(4.816% + 2.64rem) 86%, calc(5.045% + 2.88rem) 85.333%, calc(5.275% + 2.72rem) 84.667%, calc(5.504% + 2.56rem) 84%, calc(5.733% + 2.4rem) 83.333%, calc(5.963% + 2.24rem) 82.667%, calc(6.192% + 1.92rem) 82%, calc(6.421% + 1.76rem) 81.333%, calc(6.651% + 1.6rem) 80.667%, calc(6.88% + 1.36rem) 80%, calc(7.109% + 1.04rem) 79.333%, calc(7.339% + 0.8rem) 78.667%, calc(7.568% + 0.64rem) 78%, calc(7.797% + 0.8rem) 77.333%, calc(8.027% + 0.72rem) 76.667%, calc(8.256% + 0.64rem) 76%, calc(8.485% + 0.48rem) 75.333%, calc(8.715% + 0.24rem) 74.667%, calc(8.944% + 0.24rem) 74%, calc(9.173% + 0rem) 73.333%, calc(9.403% + 0.24rem) 72.667%, calc(9.632% + 0.08rem) 72%, calc(9.861% + 1.04rem) 71.333%, calc(10.091% + 1.44rem) 70.667%, calc(10.32% + 1.68rem) 70%, calc(10.549% + 1.92rem) 69.333%, calc(10.779% + 2.32rem) 68.667%, calc(11.008% + 2.48rem) 68%, calc(11.237% + 2.64rem) 67.333%, calc(11.467% + 2.56rem) 66.667%, calc(11.696% + 2.32rem) 66%, calc(11.925% + 2.16rem) 65.333%, calc(12.155% + 2.08rem) 64.667%, calc(12.384% + 2rem) 64%, calc(12.613% + 1.84rem) 63.333%, calc(12.843% + 1.76rem) 62.667%, calc(13.072% + 1.68rem) 62%, calc(13.301% + 1.6rem) 61.333%, calc(13.531% + 1.44rem) 60.667%, calc(13.76% + 1.36rem) 60%, calc(13.989% + 1.28rem) 59.333%, calc(14.219% + 1.2rem) 58.667%, calc(14.448% + 1.04rem) 58%, calc(14.677% + 0.96rem) 57.333%, calc(14.907% + 0.96rem) 56.667%, calc(15.136% + 0.88rem) 56%, calc(15.365% + 0.8rem) 55.333%, calc(15.595% + 0.8rem) 54.667%, calc(15.824% + 0.8rem) 54%, calc(16.053% + 0.8rem) 53.333%, calc(16.283% + 1.12rem) 52.667%, calc(16.512% + 1.36rem) 52%, calc(16.741% + 1.6rem) 51.333%, calc(16.971% + 1.92rem) 50.667%, calc(17.2% + 2.88rem) 50%, calc(17.429% + 2.32rem) 49.333%, calc(17.659% + 2rem) 48.667%, calc(17.888% + 2.08rem) 48%, calc(18.117% + 2.08rem) 47.333%, calc(18.347% + 2rem) 46.667%, calc(18.576% + 2.08rem) 46%, calc(18.805% + 1.76rem) 45.333%, calc(19.035% + 1.52rem) 44.667%, calc(19.264% + 1.44rem) 44%, calc(19.493% + 1.52rem) 43.333%, calc(19.723% + 1.44rem) 42.667%, calc(19.952% + 1.52rem) 42%, calc(20.181% + 1.6rem) 41.333%, calc(20.411% + 1.68rem) 40.667%, calc(20.64% + 1.76rem) 40%, calc(20.869% + 1.92rem) 39.333%, calc(21.099% + 2rem) 38.667%, calc(21.328% + 2.16rem) 38%, calc(21.557% + 2.24rem) 37.333%, calc(21.787% + 2.64rem) 36.667%, calc(22.016% + 2.88rem) 36%, calc(22.245% + 2.88rem) 35.333%, calc(22.475% + 2.72rem) 34.667%, calc(22.704% + 2.4rem) 34%, calc(22.933% + 2.24rem) 33.333%, calc(23.163% + 2.08rem) 32.667%, calc(23.392% + 1.92rem) 32%, calc(23.621% + 1.6rem) 31.333%, calc(23.851% + 1.36rem) 30.667%, calc(24.08% + 1.2rem) 30%, calc(24.309% + 1.04rem) 29.333%, calc(24.539% + 0.64rem) 28.667%, calc(24.768% + 0.8rem) 28%, calc(24.997% + 0.56rem) 27.333%, calc(25.227% + 0.72rem) 26.667%, calc(25.456% + 0.48rem) 26%, calc(25.685% + 0.24rem) 25.333%, calc(25.915% + 0.08rem) 24.667%, calc(26.144% + 0.24rem) 24%, calc(26.373% + 0.24rem) 23.333%, calc(26.603% + 0.08rem) 22.667%, calc(26.832% + 0.56rem) 22%, calc(27.061% + 1.04rem) 21.333%, calc(27.291% + 1.68rem) 20.667%, calc(27.52% + 1.92rem) 20%, calc(27.749% + 2.16rem) 19.333%, calc(27.979% + 2.32rem) 18.667%, calc(28.208% + 2.64rem) 18%, calc(28.437% + 2.56rem) 17.333%, calc(28.667% + 2.4rem) 16.667%, calc(28.896% + 2.32rem) 16%, calc(29.125% + 2.08rem) 15.333%, calc(29.355% + 2rem) 14.667%, calc(29.584% + 1.92rem) 14%, calc(29.813% + 1.84rem) 13.333%, calc(30.043% + 1.68rem) 12.667%, calc(30.272% + 1.6rem) 12%, calc(30.501% + 1.52rem) 11.333%, calc(30.731% + 1.44rem) 10.667%, calc(30.96% + 1.28rem) 10%, calc(31.189% + 1.2rem) 9.333%, calc(31.419% + 1.12rem) 8.667%, calc(31.648% + 1.04rem) 8%, calc(31.877% + 0.96rem) 7.333%, calc(32.107% + 0.88rem) 6.667%, calc(32.336% + 0.8rem) 6%, calc(32.565% + 0.8rem) 5.333%, calc(32.795% + 0.8rem) 4.667%, calc(33.024% + 0.8rem) 4%, calc(33.253% + 0.88rem) 3.333%, calc(33.483% + 1.12rem) 2.667%, calc(33.712% + 1.6rem) 2%, calc(33.941% + 1.92rem) 1.333%, calc(34.171% + 2.32rem) 0.667%, calc(34.4% + 2.88rem) 0%); }
 
 .game-card:hover, .game-card:focus-visible {
   background: var(--coral);
   outline: none;
   transform: translateY(-0.3125rem);
-  box-shadow: 0.625rem 0.625rem 0 color-mix(in srgb, var(--coral-dark) 32%, transparent);
 }
 
 .game-card:hover::before, .game-card:focus-visible::before { background: var(--panel-soft); }
@@ -902,102 +902,49 @@ button { cursor: pointer; }
   to { transform: var(--orbit-position-transform, translate(-50%, -50%)) rotate(360deg); }
 }
 
+/* The two Hugging Face buttons: same size and look as the big buttons above, both blue.
+   Their torn left/right edge comes from the TORN EDGES section at the bottom of this file. */
 .project-links {
-  --flame-width: 4.5rem;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr)); /* two equal columns, like the buttons above */
   gap: clamp(1rem, 3vw, 2.5rem);                    /* same middle gap as the buttons above */
   margin-top: 1.5rem;
-  padding-inline: var(--flame-width);               /* room for the flame ends, so their tips line up with the buttons above */
 }
 
-/*
-  Project link buttons, sized like the two big buttons above them.
-  The outline is drawn with drop-shadow filters instead of a border, so it wraps
-  around the button AND its flame-shaped end as one single shape (no seam).
-*/
 .project-link {
   --link-fill: var(--blue);
-  --link-outline: var(--blue-dark);
-  --link-shadow: var(--blue-dark);
-  --link-shadow-offset: 0.4375rem;
-  position: relative;
-  isolation: isolate;
+  --link-depth: var(--blue-dark);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   min-width: 0;
   min-height: 5.5rem;
-  padding: 0.875rem clamp(1.5rem, 3vw, 2.5rem); /* two lines of text still fit in the same 5.5rem height as the buttons above */
+  padding: 0.875rem clamp(1.5rem, 3vw, 2.5rem) 1.25rem;
   border: 0;
-  border-radius: 0 1.25rem 1.25rem 0; /* flat on the flame side, rounded on the inner side */
+  border-radius: 0;
   background: var(--link-fill);
   color: var(--page);
   text-align: center;
-  filter:
-    drop-shadow(0.125rem 0 0 var(--link-outline))
-    drop-shadow(-0.125rem 0 0 var(--link-outline))
-    drop-shadow(0 0.125rem 0 var(--link-outline))
-    drop-shadow(0 -0.125rem 0 var(--link-outline))
-    drop-shadow(var(--link-shadow-offset) var(--link-shadow-offset) 0 var(--link-shadow));
+  box-shadow: inset 0 -0.4375rem 0 var(--link-depth);   /* the 3D "thickness" along the bottom */
   font-family: var(--display);
   font-size: clamp(0.75rem, 1.3vw, 1.125rem);
   line-height: 1.6;
   text-decoration: none;
   text-transform: uppercase;
-  transition: transform 120ms ease, color 120ms ease, background 120ms ease, opacity 120ms ease, filter 120ms ease;
-}
-
-.project-link::before {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  top: 0;
-  bottom: 0;
-  right: calc(100% - 1px);
-  width: var(--flame-width);
-  background: inherit;    
-  clip-path: polygon(100% 0%, 79% 0.4%, 59.8% 1.6%, 42.6% 3.6%, 27.4% 6.4%, 14% 10%, 21% 17.4%, 29% 23.4%, 38.2% 28.2%, 48.6% 31.8%, 60% 34%, 48% 39.8%, 36% 44.2%, 24% 47.4%, 12% 49.4%, 0% 50%, 12.8% 54.2%, 25.6% 59%, 38.4% 64.2%, 51.2% 69.8%, 64% 76%, 52.9% 78%, 43.5% 80.8%, 35.9% 84.4%, 30.1% 88.8%, 26% 94%, 39.8% 96.2%, 54.2% 97.8%, 69% 99%, 84.2% 99.8%, 100% 100%);
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
 }
 
 .project-link:hover,
 .project-link:focus-visible {
-  --link-outline: var(--blue);
-  --link-shadow-offset: 0.625rem;
-  color: var(--page);
-  background: color-mix(in srgb, var(--blue) 80%, var(--cream));
-  transform: translate(-0.1875rem, -0.1875rem);
+  background: color-mix(in srgb, var(--link-fill) 80%, var(--cream));
+  box-shadow: inset 0 -0.625rem 0 var(--link-depth);
+  transform: translateY(-0.1875rem);
   outline: none;
 }
 
-.project-link--secondary {
-  --link-fill: var(--blue);
-  --link-outline: var(--blue-dark);
-  --link-shadow: var(--blue-dark);
-  border-radius: 1.25rem 0 0 1.25rem;
-  color: var(--page);
-}
-
-.project-link--secondary::before {
-  right: auto;
-  left: calc(100% - 1px);
-  clip-path: polygon(0% 0%, 21% 0.4%, 40.2% 1.6%, 57.4% 3.6%, 72.6% 6.4%, 86% 10%, 79% 17.4%, 71% 23.4%, 61.8% 28.2%, 51.4% 31.8%, 40% 34%, 52% 39.8%, 64% 44.2%, 76% 47.4%, 88% 49.4%, 100% 50%, 87.2% 54.2%, 74.4% 59%, 61.6% 64.2%, 48.8% 69.8%, 36% 76%, 47.1% 78%, 56.5% 80.8%, 64.1% 84.4%, 69.9% 88.8%, 74% 94%, 60.2% 96.2%, 45.8% 97.8%, 31% 99%, 15.8% 99.8%, 0% 100%);
-}
-
-.project-link--secondary:hover,
-.project-link--secondary:focus-visible {
-  --link-outline: var(--blue);
-  color: var(--page);
-  background: color-mix(in srgb, var(--blue) 80%, var(--cream));
-}
-
-/* small screens: buttons stack and fill the width (same breakpoint as the buttons above), so drop the flames */
 @media (max-width: 43.75rem) {
-  .project-links { grid-template-columns: 1fr; padding-inline: 0; gap: 1rem; }
-  .project-link,
-  .project-link--secondary { border-radius: 1.25rem; }
-  .project-link::before { display: none; }
+  .project-links { grid-template-columns: 1fr; gap: 1rem; }
 }
 
 .anime-updates-link {
@@ -1013,8 +960,9 @@ button { cursor: pointer; }
   margin-top: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 1.25rem;
+  border-radius: 0;
   text-align: center;
+  clip-path: polygon(calc(100% - 2.016rem) 0%, calc(100% - 2.016rem) 1.018%, calc(100% - 1.848rem) 2.036%, calc(100% - 1.68rem) 3.055%, calc(100% - 1.568rem) 4.073%, calc(100% - 1.512rem) 5.091%, calc(100% - 1.4rem) 6.109%, calc(100% - 1.344rem) 7.127%, calc(100% - 1.288rem) 8.145%, calc(100% - 1.232rem) 9.164%, calc(100% - 1.176rem) 10.182%, calc(100% - 1.12rem) 11.2%, calc(100% - 1.064rem) 12.218%, calc(100% - 1.064rem) 13.236%, calc(100% - 1.008rem) 14.255%, calc(100% - 1.064rem) 15.273%, calc(100% - 1.008rem) 16.291%, calc(100% - 1.064rem) 17.309%, calc(100% - 1.008rem) 18.327%, calc(100% - 1.232rem) 19.345%, calc(100% - 1.456rem) 20.364%, calc(100% - 1.4rem) 21.382%, calc(100% - 1.456rem) 22.4%, calc(100% - 1.4rem) 23.418%, calc(100% - 1.456rem) 24.436%, calc(100% - 1.4rem) 25.455%, calc(100% - 1.624rem) 26.473%, calc(100% - 2.016rem) 27.491%, calc(100% - 1.624rem) 28.509%, calc(100% - 1.344rem) 29.527%, calc(100% - 1.12rem) 30.545%, calc(100% - 0.952rem) 31.564%, calc(100% - 0.784rem) 32.582%, calc(100% - 0.616rem) 33.6%, calc(100% - 0.56rem) 34.618%, calc(100% - 0.56rem) 35.636%, calc(100% - 0.56rem) 36.655%, calc(100% - 0.56rem) 37.673%, calc(100% - 0.56rem) 38.691%, calc(100% - 0.616rem) 39.709%, calc(100% - 0.672rem) 40.727%, calc(100% - 0.672rem) 41.745%, calc(100% - 0.728rem) 42.764%, calc(100% - 0.784rem) 43.782%, calc(100% - 0.84rem) 44.8%, calc(100% - 0.896rem) 45.818%, calc(100% - 0.952rem) 46.836%, calc(100% - 1.008rem) 47.855%, calc(100% - 1.064rem) 48.873%, calc(100% - 1.12rem) 49.891%, calc(100% - 1.176rem) 50.909%, calc(100% - 1.232rem) 51.927%, calc(100% - 1.288rem) 52.945%, calc(100% - 1.344rem) 53.964%, calc(100% - 1.4rem) 54.982%, calc(100% - 1.456rem) 56%, calc(100% - 1.512rem) 57.018%, calc(100% - 1.624rem) 58.036%, calc(100% - 1.68rem) 59.055%, calc(100% - 1.792rem) 60.073%, calc(100% - 1.848rem) 61.091%, calc(100% - 1.736rem) 62.109%, calc(100% - 1.624rem) 63.127%, calc(100% - 1.512rem) 64.145%, calc(100% - 1.344rem) 65.164%, calc(100% - 1.176rem) 66.182%, calc(100% - 1.008rem) 67.2%, calc(100% - 0.728rem) 68.218%, calc(100% - 0.392rem) 69.236%, calc(100% - 0.056rem) 70.255%, calc(100% - 0.168rem) 71.273%, calc(100% - 0rem) 72.291%, calc(100% - 0.168rem) 73.309%, calc(100% - 0.056rem) 74.327%, calc(100% - 0.168rem) 75.345%, calc(100% - 0.336rem) 76.364%, calc(100% - 0.448rem) 77.382%, calc(100% - 0.504rem) 78.4%, calc(100% - 0.392rem) 79.418%, calc(100% - 0.56rem) 80.436%, calc(100% - 0.448rem) 81.455%, calc(100% - 0.56rem) 82.473%, calc(100% - 0.728rem) 83.491%, calc(100% - 0.84rem) 84.509%, calc(100% - 0.952rem) 85.527%, calc(100% - 1.12rem) 86.545%, calc(100% - 1.232rem) 87.564%, calc(100% - 1.344rem) 88.582%, calc(100% - 1.456rem) 89.6%, calc(100% - 1.568rem) 90.618%, calc(100% - 1.68rem) 91.636%, calc(100% - 1.792rem) 92.655%, calc(100% - 1.904rem) 93.673%, calc(100% - 2.016rem) 94.691%, calc(100% - 2.016rem) 95.709%, calc(100% - 1.848rem) 96.727%, calc(100% - 1.68rem) 97.745%, calc(100% - 1.568rem) 98.764%, calc(100% - 1.568rem) 100%, 0.952rem 100%, 0.952rem 98.764%, 1.12rem 97.745%, 1.344rem 96.727%, 1.624rem 95.709%, 2.016rem 94.691%, 1.624rem 93.673%, 1.4rem 92.655%, 1.456rem 91.636%, 1.4rem 90.618%, 1.456rem 89.6%, 1.4rem 88.582%, 1.456rem 87.564%, 1.232rem 86.545%, 1.008rem 85.527%, 1.064rem 84.509%, 1.008rem 83.491%, 1.064rem 82.473%, 1.008rem 81.455%, 1.064rem 80.436%, 1.064rem 79.418%, 1.12rem 78.4%, 1.176rem 77.382%, 1.232rem 76.364%, 1.288rem 75.345%, 1.344rem 74.327%, 1.4rem 73.309%, 1.512rem 72.291%, 1.568rem 71.273%, 1.68rem 70.255%, 1.848rem 69.236%, 2.016rem 68.218%, 2.016rem 67.2%, 1.904rem 66.182%, 1.792rem 65.164%, 1.68rem 64.145%, 1.568rem 63.127%, 1.456rem 62.109%, 1.344rem 61.091%, 1.232rem 60.073%, 1.12rem 59.055%, 0.952rem 58.036%, 0.84rem 57.018%, 0.728rem 56%, 0.56rem 54.982%, 0.448rem 53.964%, 0.56rem 52.945%, 0.392rem 51.927%, 0.504rem 50.909%, 0.448rem 49.891%, 0.336rem 48.873%, 0.168rem 47.855%, 0.056rem 46.836%, 0.168rem 45.818%, 0rem 44.8%, 0.168rem 43.782%, 0.056rem 42.764%, 0.392rem 41.745%, 0.728rem 40.727%, 1.008rem 39.709%, 1.176rem 38.691%, 1.344rem 37.673%, 1.512rem 36.655%, 1.624rem 35.636%, 1.736rem 34.618%, 1.848rem 33.6%, 1.792rem 32.582%, 1.68rem 31.564%, 1.624rem 30.545%, 1.512rem 29.527%, 1.456rem 28.509%, 1.4rem 27.491%, 1.344rem 26.473%, 1.288rem 25.455%, 1.232rem 24.436%, 1.176rem 23.418%, 1.12rem 22.4%, 1.064rem 21.382%, 1.008rem 20.364%, 0.952rem 19.345%, 0.896rem 18.327%, 0.84rem 17.309%, 0.784rem 16.291%, 0.728rem 15.273%, 0.672rem 14.255%, 0.672rem 13.236%, 0.616rem 12.218%, 0.56rem 11.2%, 0.56rem 10.182%, 0.56rem 9.164%, 0.56rem 8.145%, 0.56rem 7.127%, 0.616rem 6.109%, 0.784rem 5.091%, 0.952rem 4.073%, 1.12rem 3.055%, 1.344rem 2.036%, 1.624rem 1.018%, 2.016rem 0%);
 }
 
 .main-feature-links .three-d-link:not(.anime-updates-link) {
@@ -1028,14 +976,15 @@ button { cursor: pointer; }
 }
 
 .three-d-link, .game-page button {
+  --btn-depth: var(--blue-dark);
   display: inline-flex;
   margin-top: 1.75rem;
-  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.5rem);
-  border: 0.125rem solid var(--blue);
-  border-radius: 0.125rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 3vw, 2.5rem) calc(clamp(1.25rem, 2.5vw, 2rem) + 0.25rem);
+  border: 0;
+  border-radius: 0;
   color: var(--page);
   background: var(--blue);
-  box-shadow: 0.4375rem 0.4375rem 0 var(--blue-dark);
+  box-shadow: inset 0 -0.4375rem 0 var(--btn-depth);   /* the 3D "thickness" along the bottom */
   font-family: var(--display);
   font-size: clamp(0.875rem, 1.5vw, 1.25rem);
   text-decoration: none;
@@ -1043,12 +992,11 @@ button { cursor: pointer; }
   transition: background 10rem ease, transform 10rem ease, box-shadow 10rem ease;
 }
 
-.three-d-link:hover, .game-page button:hover { background: color-mix(in srgb, var(--blue) 80%, var(--cream)); transform: translate(-0.1875rem, -0.1875rem); box-shadow: 0.625rem 0.625rem 0 var(--blue-dark); }
+.three-d-link:hover, .game-page button:hover { background: color-mix(in srgb, var(--blue) 80%, var(--cream)); transform: translateY(-0.1875rem); box-shadow: inset 0 -0.625rem 0 var(--btn-depth); }
 .three-d-link.locked {
-  border-color: var(--coral-dark);
+  --btn-depth: color-mix(in srgb, var(--coral-dark) 70%, var(--panel));
   color: var(--ink);
   background: var(--panel);
-  box-shadow: 0.4375rem 0.4375rem 0 color-mix(in srgb, var(--coral-dark) 55%, transparent);
   cursor: not-allowed;
   opacity: 1;
 }
@@ -1090,7 +1038,7 @@ button { cursor: pointer; }
 .chat-theme-swatch:last-child { border-right: 0; }
 .chat-theme-swatch[data-theme="crimson"] { background: #dc143c; }
 .chat-theme-swatch[data-theme="blue"] { background: #347fc2; }
-.chat-theme-swatch[data-theme="light-blue"] { background: #a8dceb; }
+.chat-theme-swatch[data-theme="light-blue"] { background: #a58ee6; }
 .chat-theme-swatch[data-theme="gold"] { background: #dba937; }
 .chat-theme-swatch[data-theme="jade"] { background: #67dda0; }
 .chat-theme-swatch[data-theme="secret"] { background: #74737a; }
@@ -1155,7 +1103,7 @@ button { cursor: pointer; }
   .main-panel { padding-top: 4rem; }
   .game-grid { display: grid; position: static; grid-template-columns: 1fr; width: 100%; margin-left: 0; min-height: 0; gap: 0.75rem; }
   .game-card { position: relative; inset: auto; width: 100%; height: auto; min-height: 8.125rem; }
-  .game-card:nth-child(n) { clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 1rem, 100% 100%, 1rem 100%, 0 calc(100% - 1rem)); }
+  .game-card:nth-child(n) { left: auto; width: 100%; clip-path: polygon(calc(100% - 2.016rem) 0%, calc(100% - 2.016rem) 0.691%, calc(100% - 1.848rem) 1.383%, calc(100% - 1.68rem) 2.074%, calc(100% - 1.568rem) 2.765%, calc(100% - 1.512rem) 3.457%, calc(100% - 1.4rem) 4.148%, calc(100% - 1.344rem) 4.84%, calc(100% - 1.288rem) 5.531%, calc(100% - 1.232rem) 6.222%, calc(100% - 1.176rem) 6.914%, calc(100% - 1.12rem) 7.605%, calc(100% - 1.064rem) 8.296%, calc(100% - 1.064rem) 8.988%, calc(100% - 1.008rem) 9.679%, calc(100% - 1.064rem) 10.37%, calc(100% - 1.008rem) 11.062%, calc(100% - 1.064rem) 11.753%, calc(100% - 1.008rem) 12.444%, calc(100% - 1.232rem) 13.136%, calc(100% - 1.456rem) 13.827%, calc(100% - 1.4rem) 14.519%, calc(100% - 1.456rem) 15.21%, calc(100% - 1.4rem) 15.901%, calc(100% - 1.456rem) 16.593%, calc(100% - 1.4rem) 17.284%, calc(100% - 1.624rem) 17.975%, calc(100% - 2.016rem) 18.667%, calc(100% - 1.624rem) 19.358%, calc(100% - 1.344rem) 20.049%, calc(100% - 1.12rem) 20.741%, calc(100% - 0.952rem) 21.432%, calc(100% - 0.784rem) 22.123%, calc(100% - 0.616rem) 22.815%, calc(100% - 0.56rem) 23.506%, calc(100% - 0.56rem) 24.198%, calc(100% - 0.56rem) 24.889%, calc(100% - 0.56rem) 25.58%, calc(100% - 0.56rem) 26.272%, calc(100% - 0.616rem) 26.963%, calc(100% - 0.672rem) 27.654%, calc(100% - 0.672rem) 28.346%, calc(100% - 0.728rem) 29.037%, calc(100% - 0.784rem) 29.728%, calc(100% - 0.84rem) 30.42%, calc(100% - 0.896rem) 31.111%, calc(100% - 0.952rem) 31.802%, calc(100% - 1.008rem) 32.494%, calc(100% - 1.064rem) 33.185%, calc(100% - 1.12rem) 33.877%, calc(100% - 1.176rem) 34.568%, calc(100% - 1.232rem) 35.259%, calc(100% - 1.288rem) 35.951%, calc(100% - 1.344rem) 36.642%, calc(100% - 1.4rem) 37.333%, calc(100% - 1.456rem) 38.025%, calc(100% - 1.512rem) 38.716%, calc(100% - 1.624rem) 39.407%, calc(100% - 1.68rem) 40.099%, calc(100% - 1.792rem) 40.79%, calc(100% - 1.848rem) 41.481%, calc(100% - 1.736rem) 42.173%, calc(100% - 1.624rem) 42.864%, calc(100% - 1.512rem) 43.556%, calc(100% - 1.344rem) 44.247%, calc(100% - 1.176rem) 44.938%, calc(100% - 1.008rem) 45.63%, calc(100% - 0.728rem) 46.321%, calc(100% - 0.392rem) 47.012%, calc(100% - 0.056rem) 47.704%, calc(100% - 0.168rem) 48.395%, calc(100% - 0rem) 49.086%, calc(100% - 0.168rem) 49.778%, calc(100% - 0.056rem) 50.469%, calc(100% - 0.168rem) 51.16%, calc(100% - 0.336rem) 51.852%, calc(100% - 0.448rem) 52.543%, calc(100% - 0.504rem) 53.235%, calc(100% - 0.392rem) 53.926%, calc(100% - 0.56rem) 54.617%, calc(100% - 0.448rem) 55.309%, calc(100% - 0.56rem) 56%, calc(100% - 0.728rem) 56.691%, calc(100% - 0.84rem) 57.383%, calc(100% - 0.952rem) 58.074%, calc(100% - 1.12rem) 58.765%, calc(100% - 1.232rem) 59.457%, calc(100% - 1.344rem) 60.148%, calc(100% - 1.456rem) 60.84%, calc(100% - 1.568rem) 61.531%, calc(100% - 1.68rem) 62.222%, calc(100% - 1.792rem) 62.914%, calc(100% - 1.904rem) 63.605%, calc(100% - 2.016rem) 64.296%, calc(100% - 2.016rem) 64.988%, calc(100% - 1.848rem) 65.679%, calc(100% - 1.68rem) 66.37%, calc(100% - 1.568rem) 67.062%, calc(100% - 1.512rem) 67.753%, calc(100% - 1.4rem) 68.444%, calc(100% - 1.344rem) 69.136%, calc(100% - 1.288rem) 69.827%, calc(100% - 1.232rem) 70.519%, calc(100% - 1.176rem) 71.21%, calc(100% - 1.12rem) 71.901%, calc(100% - 1.064rem) 72.593%, calc(100% - 1.064rem) 73.284%, calc(100% - 1.008rem) 73.975%, calc(100% - 1.064rem) 74.667%, calc(100% - 1.008rem) 75.358%, calc(100% - 1.064rem) 76.049%, calc(100% - 1.008rem) 76.741%, calc(100% - 1.232rem) 77.432%, calc(100% - 1.456rem) 78.123%, calc(100% - 1.4rem) 78.815%, calc(100% - 1.456rem) 79.506%, calc(100% - 1.4rem) 80.198%, calc(100% - 1.456rem) 80.889%, calc(100% - 1.4rem) 81.58%, calc(100% - 1.624rem) 82.272%, calc(100% - 2.016rem) 82.963%, calc(100% - 1.624rem) 83.654%, calc(100% - 1.344rem) 84.346%, calc(100% - 1.12rem) 85.037%, calc(100% - 0.952rem) 85.728%, calc(100% - 0.784rem) 86.42%, calc(100% - 0.616rem) 87.111%, calc(100% - 0.56rem) 87.802%, calc(100% - 0.56rem) 88.494%, calc(100% - 0.56rem) 89.185%, calc(100% - 0.56rem) 89.877%, calc(100% - 0.56rem) 90.568%, calc(100% - 0.616rem) 91.259%, calc(100% - 0.672rem) 91.951%, calc(100% - 0.672rem) 92.642%, calc(100% - 0.728rem) 93.333%, calc(100% - 0.784rem) 94.025%, calc(100% - 0.84rem) 94.716%, calc(100% - 0.896rem) 95.407%, calc(100% - 0.952rem) 96.099%, calc(100% - 1.008rem) 96.79%, calc(100% - 1.064rem) 97.481%, calc(100% - 1.12rem) 98.173%, calc(100% - 1.176rem) 98.864%, calc(100% - 1.232rem) 99.556%, calc(100% - 1.232rem) 100%, 0.392rem 100%, 0.392rem 99.556%, 0.504rem 98.864%, 0.448rem 98.173%, 0.336rem 97.481%, 0.168rem 96.79%, 0.056rem 96.099%, 0.168rem 95.407%, 0rem 94.716%, 0.168rem 94.025%, 0.056rem 93.333%, 0.392rem 92.642%, 0.728rem 91.951%, 1.008rem 91.259%, 1.176rem 90.568%, 1.344rem 89.877%, 1.512rem 89.185%, 1.624rem 88.494%, 1.736rem 87.802%, 1.848rem 87.111%, 1.792rem 86.42%, 1.68rem 85.728%, 1.624rem 85.037%, 1.512rem 84.346%, 1.456rem 83.654%, 1.4rem 82.963%, 1.344rem 82.272%, 1.288rem 81.58%, 1.232rem 80.889%, 1.176rem 80.198%, 1.12rem 79.506%, 1.064rem 78.815%, 1.008rem 78.123%, 0.952rem 77.432%, 0.896rem 76.741%, 0.84rem 76.049%, 0.784rem 75.358%, 0.728rem 74.667%, 0.672rem 73.975%, 0.672rem 73.284%, 0.616rem 72.593%, 0.56rem 71.901%, 0.56rem 71.21%, 0.56rem 70.519%, 0.56rem 69.827%, 0.56rem 69.136%, 0.616rem 68.444%, 0.784rem 67.753%, 0.952rem 67.062%, 1.12rem 66.37%, 1.344rem 65.679%, 1.624rem 64.988%, 2.016rem 64.296%, 1.624rem 63.605%, 1.4rem 62.914%, 1.456rem 62.222%, 1.4rem 61.531%, 1.456rem 60.84%, 1.4rem 60.148%, 1.456rem 59.457%, 1.232rem 58.765%, 1.008rem 58.074%, 1.064rem 57.383%, 1.008rem 56.691%, 1.064rem 56%, 1.008rem 55.309%, 1.064rem 54.617%, 1.064rem 53.926%, 1.12rem 53.235%, 1.176rem 52.543%, 1.232rem 51.852%, 1.288rem 51.16%, 1.344rem 50.469%, 1.4rem 49.778%, 1.512rem 49.086%, 1.568rem 48.395%, 1.68rem 47.704%, 1.848rem 47.012%, 2.016rem 46.321%, 2.016rem 45.63%, 1.904rem 44.938%, 1.792rem 44.247%, 1.68rem 43.556%, 1.568rem 42.864%, 1.456rem 42.173%, 1.344rem 41.481%, 1.232rem 40.79%, 1.12rem 40.099%, 0.952rem 39.407%, 0.84rem 38.716%, 0.728rem 38.025%, 0.56rem 37.333%, 0.448rem 36.642%, 0.56rem 35.951%, 0.392rem 35.259%, 0.504rem 34.568%, 0.448rem 33.877%, 0.336rem 33.185%, 0.168rem 32.494%, 0.056rem 31.802%, 0.168rem 31.111%, 0rem 30.42%, 0.168rem 29.728%, 0.056rem 29.037%, 0.392rem 28.346%, 0.728rem 27.654%, 1.008rem 26.963%, 1.176rem 26.272%, 1.344rem 25.58%, 1.512rem 24.889%, 1.624rem 24.198%, 1.736rem 23.506%, 1.848rem 22.815%, 1.792rem 22.123%, 1.68rem 21.432%, 1.624rem 20.741%, 1.512rem 20.049%, 1.456rem 19.358%, 1.4rem 18.667%, 1.344rem 17.975%, 1.288rem 17.284%, 1.232rem 16.593%, 1.176rem 15.901%, 1.12rem 15.21%, 1.064rem 14.519%, 1.008rem 13.827%, 0.952rem 13.136%, 0.896rem 12.444%, 0.84rem 11.753%, 0.784rem 11.062%, 0.728rem 10.37%, 0.672rem 9.679%, 0.672rem 8.988%, 0.616rem 8.296%, 0.56rem 7.605%, 0.56rem 6.914%, 0.56rem 6.222%, 0.56rem 5.531%, 0.56rem 4.84%, 0.616rem 4.148%, 0.784rem 3.457%, 0.952rem 2.765%, 1.12rem 2.074%, 1.344rem 1.383%, 1.624rem 0.691%, 2.016rem 0%); }
   .game-card strong { font-size: 1.3125rem; }
   .main-page-content h1, .three-d-page h1 { font-size: clamp(1.75rem, 10vw, 3.25rem); }
   .main-page-content .page-intro { max-width: 100%; }
@@ -1228,8 +1176,8 @@ button { cursor: pointer; }
 .app-shell[data-theme="light-blue"] .main-page-content h1,
 .app-shell[data-theme="light-blue"] .main-page-content h2,
 .app-shell[data-theme="light-blue"] .main-page-content h3 {
-  color: #102b3b;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 4px rgba(16, 43, 59, 0.14);
+  color: #1d1238;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 4px rgba(36, 22, 67, 0.14);
 }
 
 /* About / FAQ / technical-details accordions. */
@@ -1289,26 +1237,26 @@ button { cursor: pointer; }
 }
 
 .app-shell[data-theme="light-blue"] .about-page[open] {
-  background: rgba(242, 249, 252, 0.94);
-  border-color: #9bbdca;
+  background: rgba(225, 220, 244, 0.94);
+  border-color: #9a90cf;
 }
 
 .app-shell[data-theme="light-blue"] .about-page > summary {
-  color: #102b3b;
+  color: #1d1238;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .app-shell[data-theme="light-blue"] .about-page[open] > summary {
-  color: #f4fbff;
-  background: #07536b;
-  border-color: #07536b;
+  color: #f7f4ff;
+  background: #43208f;
+  border-color: #43208f;
   text-shadow: none;
 }
 
 .app-shell[data-theme="light-blue"] .about-page[open] > summary:hover,
 .app-shell[data-theme="light-blue"] .about-page[open] > summary:focus-visible {
   color: #ffffff;
-  background: #087b9a;
+  background: #6a35c8;
 }
 
 /* Cards and contact links have a clear edge without losing their theme. */
@@ -1369,8 +1317,9 @@ button { cursor: pointer; }
 }
 
 
-/* LIGHT-BLUE ACCORDION FINISH
-   Keep About / FAQ / Technical Details unboxed, like the other themes.
+/* LIGHT-BLUE (VIOLET) ACCORDION FINISH
+   About / FAQ / Technical Details headings are solid violet chips with light text,
+   so they stay readable on ANY background (light or dark).
    The expanded content panel remains separate from its summary heading. */
 .app-shell[data-theme="light-blue"] .about-page > summary,
 .app-shell[data-theme="light-blue"] .about-page[open] > summary {
@@ -1379,17 +1328,22 @@ button { cursor: pointer; }
   max-width: 100%;
   margin: 0 0 0.75rem;
   padding: 0.4rem 0.6rem !important;
-  color: #f0faff !important;
-  background: transparent !important;
+  color: #f7f4ff !important;
+  background: #43208f !important;
   border: 1px solid transparent !important;
   border-radius: 0 !important;
-  box-shadow: none !important;
-  text-shadow: 0 2px 5px rgba(0, 15, 28, 0.98), 0 0 2px rgba(0, 15, 28, 0.9) !important;
+  box-shadow: inset 0 -0.2rem 0 #6a35c8 !important;
+  text-shadow: none !important;
   line-height: 1.6;
+  /* short headings (like FAQ) are too small for the torn edge, so the chip gets slanted ends instead */
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  clip-path: polygon(0.6rem 0, 100% 0, calc(100% - 0.6rem) 100%, 0 100%);
+  padding-inline: 1.3rem !important;
 }
 
 .app-shell[data-theme="light-blue"] .about-page > summary::marker {
-  color: #d4f4ff;
+  color: #e6dcff;
 }
 
 .app-shell[data-theme="light-blue"] .about-page > summary:hover,
@@ -1397,16 +1351,16 @@ button { cursor: pointer; }
 .app-shell[data-theme="light-blue"] .about-page[open] > summary:hover,
 .app-shell[data-theme="light-blue"] .about-page[open] > summary:focus-visible {
   color: #ffffff !important;
-  background: transparent !important;
+  background: #6a35c8 !important;
   border-color: transparent !important;
-  box-shadow: none !important;
+  box-shadow: inset 0 -0.2rem 0 #43208f !important;
 }
 
 /* The expanded content stays readable, but its heading has no box. */
 .app-shell[data-theme="light-blue"] .about-page[open] {
-  color: #102b3b !important;
-  background: rgba(218, 239, 247, 0.94) !important;
-  border: 1px solid #6da7bb !important;
+  color: #1d1238 !important;
+  background: rgba(228, 223, 246, 0.94) !important;
+  border: 1px solid #7f74c4 !important;
   border-radius: 0.45rem;
 }
 
@@ -1415,17 +1369,124 @@ button { cursor: pointer; }
 .app-shell[data-theme="light-blue"] .about-page[open] .faq-item,
 .app-shell[data-theme="light-blue"] .about-page[open] .faq-item p,
 .app-shell[data-theme="light-blue"] .about-page[open] .faq-item h3 {
-  color: #102b3b !important;
+  color: #1d1238 !important;
   text-shadow: none !important;
 }
 
 .app-shell[data-theme="light-blue"] .about-page[open] a {
-  color: #07536b !important;
+  color: #43208f !important;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.2em;
 }
 
 .app-shell[data-theme="light-blue"] .about-page[open] a:hover,
 .app-shell[data-theme="light-blue"] .about-page[open] a:focus-visible {
-  color: #087b9a !important;
+  color: #6a35c8 !important;
 }
+
+/* ================================================================
+   SECTION HEADINGS (About / FAQ / Technical Details)
+   Every theme: a solid chip with slanted ends, filled with a dark shade of the theme's own colour.
+   (The violet theme has its own version of this further up, which takes priority there.)
+   ================================================================ */
+.app-shell .about-page > summary,
+.app-shell .about-page[open] > summary {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 0.75rem;
+  padding: 0.4rem 1.3rem !important;
+  color: #fff !important;
+  background: color-mix(in srgb, var(--coral-dark) 72%, #000) !important;
+  border: 1px solid transparent !important;
+  border-radius: 0 !important;
+  box-shadow: inset 0 -0.2rem 0 var(--coral) !important;
+  text-shadow: none !important;
+  line-height: 1.6;
+  clip-path: polygon(0.6rem 0, 100% 0, calc(100% - 0.6rem) 100%, 0 100%);
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+.app-shell .about-page > summary:hover,
+.app-shell .about-page > summary:focus-visible,
+.app-shell .about-page[open] > summary:hover,
+.app-shell .about-page[open] > summary:focus-visible {
+  color: #fff !important;
+  background: var(--coral-dark) !important;
+  border-color: transparent !important;
+  box-shadow: inset 0 -0.2rem 0 var(--coral) !important;
+}
+
+.app-shell .about-page > summary::marker { color: #fff; }
+
+/* ================================================================
+   TORN EDGES
+   Every button and box gets the rough, stepped left/right edge.
+   - The look comes from --torn-image / --torn-size / --torn-pos at the top of this file.
+   - To make the tears bigger or smaller, change the numbers in the two lists below
+     (L = how far each slice is cut off the left, R = the right).
+   - To add the effect to another box, add its class name to the list below.
+   - Top and bottom stay straight on purpose, so rows line up and text is never cut.
+   ================================================================ */
+
+.intro-skip,
+.contact-link,
+.app-shell .contact-link,
+.game-placeholder,
+.error-panel,
+.chat-theme-picker,
+.chat-overlay .chat-launcher,
+.chat-overlay .chat-window,
+.app-shell .main-page-content .page-intro,
+.app-shell[data-theme="light-blue"] .main-page-content .page-intro,
+.app-shell .about-page[open],
+.app-shell[data-theme="light-blue"] .about-page[open],
+.three-d-link,
+.game-page button,
+.project-link {
+  border-left-width: 0 !important;   /* a border would be cut into odd pieces by the torn edge */
+  border-right-width: 0 !important;
+  border-radius: 0 !important;
+  -webkit-mask-image: var(--torn-image);
+  mask-image: var(--torn-image);
+  -webkit-mask-size: var(--torn-size);
+  mask-size: var(--torn-size);
+  -webkit-mask-position: var(--torn-pos);
+  mask-position: var(--torn-pos);
+  -webkit-mask-repeat: var(--torn-repeat);
+  mask-repeat: var(--torn-repeat);
+}
+
+/* left-aligned text boxes get extra side padding, so the deepest tears never cut into the words */
+.app-shell .main-page-content .page-intro,
+.app-shell[data-theme="light-blue"] .main-page-content .page-intro,
+.app-shell .about-page[open],
+.app-shell[data-theme="light-blue"] .about-page[open],
+.game-placeholder,
+.error-panel,
+.dice-card { padding-inline: 2.1rem !important; }
+
+@media (max-width: 43.75rem) {
+  .app-shell .main-page-content .page-intro,
+  .app-shell[data-theme="light-blue"] .main-page-content .page-intro,
+  .app-shell .about-page[open],
+  .app-shell[data-theme="light-blue"] .about-page[open],
+  .game-placeholder,
+  .error-panel,
+  .dice-card { padding-inline: 2.2rem !important; }
+}
+
+/* the two big buttons already have a round notch mask (for the orbit), so they get their torn edge from clip-path instead */
+
+.main-feature-links .three-d-link {
+  -webkit-mask-size: auto;
+  mask-size: auto;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+/* violet theme: the small hint under the theme bar must be readable on any background */
+.app-shell[data-theme="light-blue"] .chat-theme-lock-hint { color: #f6e9ff; text-shadow: 0 1px 3px rgba(20, 0, 40, 0.95); }

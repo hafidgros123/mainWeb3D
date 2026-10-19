@@ -5,6 +5,7 @@ import { useSceneStore } from '../../store/sceneStore'
 import { ANIMATION_NAMES } from '../../three/animations'
 import './cssfiles/ChatMessages.css'
 import './cssfiles/ChatInput.css'
+import './cssfiles/ChatFrame.css'  
 
 const ellenPortrait = '/assets/hey ellen nom nom.webp'
 const userPortrait = '/assets/user.webp'

@@ -9,11 +9,11 @@
   width: 100%;
   min-height: 5.5rem;
   padding: 0 2rem;
-  border: 0.125rem solid var(--blue-dark);
-  border-radius: 1.25rem;
+  border: 0;
+  border-radius: 0;
   background: var(--blue);
   color: var(--page);
-  box-shadow: 0.4375rem 0.4375rem 0 var(--blue-dark);
+  box-shadow: inset 0 -0.4375rem 0 var(--blue-dark);   /* the 3D "thickness" along the bottom */
   font-family: var(--display);
   font-size: clamp(0.875rem, 1.5vw, 1.25rem);
   text-transform: uppercase;
@@ -23,8 +23,8 @@
 
 .dice-toggle:hover {
   background: color-mix(in srgb, var(--blue) 80%, var(--cream));
-  transform: translate(-0.1875rem, -0.1875rem);
-  box-shadow: 0.625rem 0.625rem 0 var(--blue-dark);
+  transform: translateY(-0.1875rem);
+  box-shadow: inset 0 -0.625rem 0 var(--blue-dark);
 }
 
 .dice-toggle:focus-visible { outline: 0.1875rem solid var(--coral); outline-offset: 0.25rem; }
@@ -61,8 +61,8 @@
   width: min(100%, 40rem);
   margin: 1.5rem auto 0.5rem;
   padding: clamp(1rem, 3vw, 2rem);
-  border: 0.125rem solid var(--line);
-  border-radius: 1.25rem;
+  border: 0;
+  border-radius: 0;
   background: var(--panel);
 }
 
@@ -95,8 +95,8 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 0.875rem 1.25rem;
-  border: 0.125rem solid var(--line);
-  border-radius: 0.75rem;
+  border: 0;
+  border-radius: 0;
   background: var(--panel-soft);
   color: var(--ink);
   font-family: var(--display);
@@ -120,11 +120,11 @@
 .dice-roll {
   min-width: 12rem;
   padding: 1rem 2rem;
-  border: 0.125rem solid var(--blue-dark);
-  border-radius: 0.75rem;
+  border: 0;
+  border-radius: 0;
   background: var(--blue);
   color: var(--page);
-  box-shadow: 0.25rem 0.25rem 0 var(--blue-dark);
+  box-shadow: inset 0 -0.3125rem 0 var(--blue-dark);   /* the 3D "thickness" along the bottom */
   font-family: var(--display);
   font-size: clamp(0.75rem, 1.5vw, 1rem);
   text-transform: uppercase;
@@ -132,6 +132,33 @@
   transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
 }
 
-.dice-roll:hover:not(:disabled) { transform: translate(-0.125rem, -0.125rem); box-shadow: 0.375rem 0.375rem 0 var(--blue-dark); }
+.dice-roll:hover:not(:disabled) { transform: translateY(-0.125rem); box-shadow: inset 0 -0.4375rem 0 var(--blue-dark); }
 .dice-roll:focus-visible { outline: 0.1875rem solid var(--coral); outline-offset: 0.25rem; }
 .dice-roll:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* torn left/right edge (same pattern as the rest of the site, defined in App.css) */
+.dice-toggle,
+.dice-card,
+.dice-box,
+.dice-roll {
+  -webkit-mask-image: var(--torn-image);
+  mask-image: var(--torn-image);
+  -webkit-mask-size: var(--torn-size);
+  mask-size: var(--torn-size);
+  -webkit-mask-position: var(--torn-pos);
+  mask-position: var(--torn-pos);
+  -webkit-mask-repeat: var(--torn-repeat);
+  mask-repeat: var(--torn-repeat);
+}
+
+/* ---------- video that plays after a roll ---------- */
+.video-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: #000; }
+.video-overlay-player { width: 100%; height: 100%; object-fit: contain; }
+/* a forced video ignores the mouse, so it cannot be paused or skipped by clicking */
+.video-overlay-player:not([controls]) { pointer-events: none; }
+.video-overlay-close {
+  position: absolute; top: 1rem; right: 1rem;
+  padding: 0.75rem 1.25rem; border: 0; border-radius: 0;
+  background: var(--blue); color: var(--page);
+  font-family: var(--display); font-size: 0.75rem; text-transform: uppercase; cursor: pointer;
+}

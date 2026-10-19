@@ -1,0 +1,220 @@
+/* ================================================================
+   Neon sci-fi chat frame (purple -> cyan, cut corners, glow, little decorations).
+   Lives next to the other chat css files; imported in ChatWindow.jsx.
+   Colours follow the active theme. To change the look, edit the variables just below.
+   ================================================================ */
+
+.chat-overlay {
+  /* All colours come from the current theme, so the chat changes when the theme changes. */
+  --neo-a: var(--coral);                                             /* outline + accents: left / top */
+  --neo-b: var(--blue);                                              /* outline + accents: right / bottom */
+  --neo-fill-1: color-mix(in srgb, var(--coral-dark) 80%, #05040c);  /* fill: top-left (deep) */
+  --neo-fill-2: color-mix(in srgb, var(--coral-dark) 50%, var(--blue-dark)); /* fill: middle */
+  --neo-fill-3: var(--blue);  /* fill: bottom-right (bright) */
+  --neo-glass: color-mix(in srgb, var(--coral-dark) 25%, #06050d);   /* dark glass behind the text */
+  --neo-dark-text: #0a0a14;
+  --cut: 1.5rem;           /* size of the cut corners */
+  /* the glow follows the cut-corner shape because it is applied here, on the outside */
+  filter: drop-shadow(0 0 0.3rem color-mix(in srgb, var(--neo-b) 55%, transparent)) drop-shadow(0 0 1.1rem color-mix(in srgb, var(--neo-a) 40%, transparent));
+}
+
+/* ---------- the window ---------- */
+.chat-overlay .chat-window {
+  position: relative;
+  isolation: isolate;
+  padding: 1.9rem 1.6rem 1.7rem;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;          /* the torn-edge mask from App.css is not used here */
+  background: linear-gradient(135deg, var(--neo-a) 0%, color-mix(in srgb, var(--neo-a) 50%, var(--neo-b)) 45%, var(--neo-b) 100%) !important; /* this is the outline colour */
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+
+/* the glassy purple-to-cyan fill, a hair smaller than the window so the outline shows around it */
+.chat-overlay .chat-window::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  inset: 0.2rem;
+  background: linear-gradient(150deg, var(--neo-fill-1) 0%, color-mix(in srgb, var(--neo-fill-1) 55%, var(--neo-fill-2)) 32%, var(--neo-fill-2) 60%, var(--neo-fill-3) 100%);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+  pointer-events: none;
+}
+
+/* tabs, triangles, pixels and thin lines: drawn as shapes (masks) and filled with the theme's two accent colours */
+.chat-overlay .chat-window::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(to top right, var(--neo-a) 30%, var(--neo-b) 70%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-image:
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22 L12 3 L22 22 Z' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22 L12 3 L22 22 Z' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22 L12 3 L22 22 Z' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z' fill='%23000'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z' fill='%23000'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='0' width='4' height='4'/%3E%3Crect x='0' y='4' width='4' height='4'/%3E%3Crect x='8' y='4' width='4' height='4'/%3E%3Crect x='4' y='8' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='0' width='4' height='4'/%3E%3Crect x='0' y='4' width='4' height='4'/%3E%3Crect x='8' y='4' width='4' height='4'/%3E%3Crect x='4' y='8' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='0' width='4' height='4'/%3E%3Crect x='0' y='4' width='4' height='4'/%3E%3Crect x='8' y='4' width='4' height='4'/%3E%3Crect x='4' y='8' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='12' y='12' width='2' height='2'/%3E%3Crect x='18' y='18' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='12' y='12' width='2' height='2'/%3E%3Crect x='18' y='18' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(0,0,0,.45) 50%, transparent calc(50% + 0.6px)),
+    linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(0,0,0,.35) 50%, transparent calc(50% + 0.6px));
+  mask-image:
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22 L12 3 L22 22 Z' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22 L12 3 L22 22 Z' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 22 L12 3 L22 22 Z' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z' fill='%23000'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z' fill='%23000'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='0' width='4' height='4'/%3E%3Crect x='0' y='4' width='4' height='4'/%3E%3Crect x='8' y='4' width='4' height='4'/%3E%3Crect x='4' y='8' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='0' width='4' height='4'/%3E%3Crect x='0' y='4' width='4' height='4'/%3E%3Crect x='8' y='4' width='4' height='4'/%3E%3Crect x='4' y='8' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='%23000'%3E%3Crect x='4' y='0' width='4' height='4'/%3E%3Crect x='0' y='4' width='4' height='4'/%3E%3Crect x='8' y='4' width='4' height='4'/%3E%3Crect x='4' y='8' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='12' y='12' width='2' height='2'/%3E%3Crect x='18' y='18' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cg fill='%23000'%3E%3Crect x='0' y='0' width='2' height='2'/%3E%3Crect x='6' y='6' width='2' height='2'/%3E%3Crect x='12' y='12' width='2' height='2'/%3E%3Crect x='18' y='18' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(0,0,0,.45) 50%, transparent calc(50% + 0.6px)),
+    linear-gradient(to top right, transparent calc(50% - 0.6px), rgba(0,0,0,.35) 50%, transparent calc(50% + 0.6px));
+  -webkit-mask-size:
+    34% 0.5rem,
+    0.5rem 20%,
+    32% 0.5rem,
+    0.5rem 16%,
+    1.5rem 1.5rem,
+    1.35rem 1.35rem,
+    1.6rem 1.6rem,
+    2.1rem 2.1rem,
+    1rem 1rem,
+    0.7rem 0.7rem,
+    0.8rem 0.8rem,
+    0.7rem 0.7rem,
+    2rem 2rem,
+    2rem 2rem,
+    75% 42%,
+    60% 38%;
+  mask-size:
+    34% 0.5rem,
+    0.5rem 20%,
+    32% 0.5rem,
+    0.5rem 16%,
+    1.5rem 1.5rem,
+    1.35rem 1.35rem,
+    1.6rem 1.6rem,
+    2.1rem 2.1rem,
+    1rem 1rem,
+    0.7rem 0.7rem,
+    0.8rem 0.8rem,
+    0.7rem 0.7rem,
+    2rem 2rem,
+    2rem 2rem,
+    75% 42%,
+    60% 38%;
+  -webkit-mask-position:
+    62% 0.18rem,
+    calc(100% - 0.18rem) 11%,
+    9% calc(100% - 0.18rem),
+    0.18rem 80%,
+    7% 5%,
+    88% 10%,
+    92% 78%,
+    86% 93%,
+    5% 3%,
+    78% 30%,
+    6% 88%,
+    20% 94%,
+    70% 18%,
+    12% 62%,
+    0 0,
+    100% 100%;
+  mask-position:
+    62% 0.18rem,
+    calc(100% - 0.18rem) 11%,
+    9% calc(100% - 0.18rem),
+    0.18rem 80%,
+    7% 5%,
+    88% 10%,
+    92% 78%,
+    86% 93%,
+    5% 3%,
+    78% 30%,
+    6% 88%,
+    20% 94%,
+    70% 18%,
+    12% 62%,
+    0 0,
+    100% 100%;
+  pointer-events: none;
+}
+
+/* ---------- header ---------- */
+.chat-overlay .chat-header {
+  border-radius: 0;
+  background: color-mix(in srgb, var(--neo-glass) 66%, transparent);
+  border-left: 0.2rem solid var(--neo-a);
+  margin-bottom: 0.75rem;
+}
+.chat-overlay .chat-header strong { color: #ffffff; letter-spacing: 0.04em; }
+.chat-overlay .chat-status { background: var(--neo-b); box-shadow: 0 0 0.5rem var(--neo-b); }
+.chat-overlay .chat-back-button { color: #ffffff; background: rgba(255, 255, 255, 0.14); }
+.chat-overlay .chat-back-button:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* ---------- messages ---------- */
+.chat-overlay .chat-messages {
+  padding: 0.75rem;
+  background: color-mix(in srgb, var(--neo-glass) 42%, transparent);
+  border-radius: 0.25rem;
+}
+.chat-overlay .bot .message-content { color: #f6f6fb; background: color-mix(in srgb, var(--neo-glass) 80%, transparent); border-radius: 0.125rem 0.75rem 0.75rem 0.75rem; }
+.chat-overlay .user .message-content { color: #ffffff; background: linear-gradient(135deg, var(--coral-dark), color-mix(in srgb, var(--coral-dark) 55%, var(--blue-dark))); border-radius: 0.75rem 0.125rem 0.75rem 0.75rem; }
+.chat-overlay .message-sender { color: color-mix(in srgb, var(--neo-b) 70%, #ffffff); }
+.chat-overlay .message-avatar { border-color: var(--neo-b); }
+
+/* ---------- input ---------- */
+.chat-overlay .chat-input input { color: #ffffff; background: color-mix(in srgb, var(--neo-glass) 75%, transparent); border-radius: 0; }
+.chat-overlay .chat-input input:focus { outline: 0.0625rem solid var(--neo-b); }
+.chat-overlay .chat-input input::placeholder { color: color-mix(in srgb, var(--neo-a) 60%, #ffffff); }
+.chat-overlay .chat-input button {
+  border: 0;
+  border-radius: 0;
+  color: var(--neo-dark-text);
+  background: var(--neo-b);
+  font-weight: 700;
+  clip-path: polygon(0.5rem 0, 100% 0, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0 100%, 0 0.5rem);
+}
+.chat-overlay .chat-input button:hover { color: var(--neo-dark-text); background: var(--neo-a); box-shadow: none; }
+
+/* ---------- the little button that opens the chat ---------- */
+.app-shell .chat-overlay .chat-launcher {
+  border: 0 !important;
+  border-radius: 0 !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--neo-fill-1) 0%, var(--neo-fill-2) 55%, var(--neo-fill-3) 100%) !important;
+  box-shadow: inset 0 0 0 0.15rem var(--neo-a) !important;
+  clip-path: polygon(0.9rem 0, calc(100% - 0.9rem) 0, 100% 0.9rem, 100% calc(100% - 0.9rem), calc(100% - 0.9rem) 100%, 0.9rem 100%, 0 calc(100% - 0.9rem), 0 0.9rem);
+}
+.app-shell .chat-overlay .chat-launcher:hover { color: var(--neo-dark-text) !important; background: linear-gradient(135deg, var(--neo-a) 0%, var(--neo-b) 100%) !important; }
+
+/* violet + magenta theme: brighter frame so the text and the Send button stay readable */
+.app-shell[data-theme="light-blue"] .chat-overlay {
+  --neo-a: #ff7be0;
+  --neo-b: #b794ff;
+  --neo-fill-1: #3a0f66;
+  --neo-fill-2: #7a2fc0;
+  --neo-fill-3: #c04fd8;
+  --neo-glass: #1d0638;
+}

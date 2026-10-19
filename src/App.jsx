@@ -10,11 +10,13 @@ import AnimeUpdatesPage from './pages/anime/AnimeUpdatesPage'
 import MainPage from './pages/MainPage'
 import ThreeDPage from './pages/ThreeDPage'
 import './App.css'
+import VideoPage from './pages/VideoPage'
 
 function AppContent() {
   const location = useLocation()
   const [theme, setTheme] = useState('crimson')
   const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
+  if (location.pathname === '/watch') return <VideoPage />
 
   return (
     <div className="app-shell" data-theme={theme}>

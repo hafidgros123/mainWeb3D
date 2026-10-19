@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { loadFace, newThrowUrl, preloadFaces, preloadThrow, releaseThrowUrl } from '../lib/DiceImages.js'
+import { loadFace, newThrowUrl, preloadFaces, preloadThrow, releaseThrowUrl } from '../lib/diceImages'
 import { rollDiceEven } from '../lib/rollDice'
+import { findOutcome, pickVideo } from './outcomes'
 import SingleDie from './singleDie'
 import './DiceGamble.css'
+import { useNavigate } from 'react-router-dom'
 
 const DICE_COUNT = 5
 const THROW_MS = 800        // how long the throw animation plays (milliseconds)
 const STARTING_ROLLS = 9999 // "die left" for now, you can change this later
+const RESULT_PAUSE_MS = 600 // how long the total stays visible before the video page opens (0 = instantly)
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -16,6 +19,7 @@ function DiceGamble() {
   const [isRolling, setIsRolling] = useState(false)
   const [throwSrc, setThrowSrc] = useState('')
   const [rollsLeft, setRollsLeft] = useState(STARTING_ROLLS)
+   const navigate = useNavigate()
   const mountedRef = useRef(false)
 
   // load every die picture and the throw animation once, as soon as the page opens
@@ -27,11 +31,14 @@ function DiceGamble() {
   }, [])
 
   const total = values.reduce((sum, value) => sum + value, 0)
-  const canRoll = !isRolling && rollsLeft > 0
+   const canRoll = !isRolling && rollsLeft > 0
 
   const handleRoll = async () => {
     if (!canRoll) return
-    const result = rollDiceEven(DICE_COUNT) // the result is decided now, the animation only reveals it
+    // TEST ONLY: open the site with ?roll=27 to force a total of 27. It does nothing in the real (built) site.
+    const param = new URLSearchParams(window.location.search).get('roll')
+    const forced = import.meta.env.DEV && param !== null && Number.isFinite(Number(param)) ? Number(param) : undefined
+    const result = rollDiceEven(DICE_COUNT, forced) // the result is decided now, the animation only reveals it
     const animationUrl = newThrowUrl()      // a fresh URL, so the animation always starts from the beginning
 
     setThrowSrc(animationUrl)
@@ -45,6 +52,19 @@ function DiceGamble() {
     if (!mountedRef.current) return
     setValues(result)
     setIsRolling(false)
+
+    // does this total have an outcome? if yes, go to the video page (a page with only the video)
+    const rolledTotal = result.reduce((sum, value) => sum + value, 0)
+    const outcome = findOutcome(rolledTotal)
+    if (outcome) {
+      await wait(RESULT_PAUSE_MS)
+      const unskippable = outcome.skippable === false ? '&forced=1' : ''
+     const mediaType = outcome.images ? 'image' : 'video'
+
+   navigate(
+   `/watch?src=${encodeURIComponent(pickVideo(outcome))}&type=${mediaType}${unskippable}`
+)
+    }
   }
 
   return (
@@ -91,6 +111,10 @@ function DiceGamble() {
           </div>
         </div>
       </div>
+
+     
+          
+     
     </section>
   )
 }

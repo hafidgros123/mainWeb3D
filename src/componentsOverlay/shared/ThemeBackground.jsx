@@ -1,38 +1,95 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const BACKGROUNDS = {
-  crimson: '/backgrounds/maria.webp',
-  blue: '/backgrounds/ranni.webp',
-  'light-blue': '/backgrounds/mik.webp',
-  gold: '/backgrounds/ma.webp',
-  jade: '/backgrounds/wtce.webp',
-  secret: '/backgrounds/blood.webp',
+  crimson: {
+    default: '/backgrounds/maria.webp',
+    route: '/backgrounds/maria2.webp',
+  },
+
+  blue: {
+    default: '/backgrounds/ranni.webp',
+    route: '/backgrounds/ranni2.webp',
+  },
+
+  'light-blue': {
+    default: '/backgrounds/cyber.webp',
+    route: '/backgrounds/cyber2.webp',
+  },
+
+  gold: {
+    default: '/backgrounds/ma.webp',
+    route: '/backgrounds/PUT-GOLD-3D-ANIME-IMAGE-HERE.webp',
+  },
+
+  jade: {
+    default: '/backgrounds/wtce.webp',
+    route: '/backgrounds/witcher2.webp',
+  },
+
+  secret: {
+    default: '/backgrounds/blood.webp',
+    route: '/backgrounds/ma2.webp',
+  },
 }
 
-// 'plain' = no picture (crimson theme on pages that only use the solid colour)
-const LAYERS = [...Object.keys(BACKGROUNDS), 'plain']
+const LAYERS = Object.entries(BACKGROUNDS).flatMap(([theme, images]) => [
+  { id: `${theme}-default`, src: images.default },
+  { id: `${theme}-route`, src: images.route },
+])
 
-export default function ThemeBackground({ theme, showCrimson }) {
-  const current = theme === 'crimson' && !showCrimson ? 'plain' : theme
+function isAnimeOr3DRoute(pathname) {
+  return (
+    pathname === '/3d' ||
+    pathname.startsWith('/3d/') ||
+    pathname === '/anime' ||
+    pathname.startsWith('/anime/') ||
+    pathname === '/games' ||
+    pathname.startsWith('/games/')
+  )
+}
 
-  // remember the previous layer so it stays visible underneath while the new one fades in
-  const [shown, setShown] = useState({ current, prev: null })
-  if (shown.current !== current) setShown({ current, prev: shown.current })
+export default function ThemeBackground({ theme }) {
+  const { pathname } = useLocation()
+
+  const selectedTheme = BACKGROUNDS[theme] ? theme : 'crimson'
+  const pageVersion = isAnimeOr3DRoute(pathname) ? 'route' : 'default'
+  const current = `${selectedTheme}-${pageVersion}`
+
+  const [shown, setShown] = useState({
+    current,
+    prev: null,
+  })
+
+  useEffect(() => {
+    setShown((previous) => {
+      if (previous.current === current) return previous
+
+      return {
+        current,
+        prev: previous.current,
+      }
+    })
+  }, [current])
 
   return (
     <div className="theme-bg" aria-hidden="true">
-      {LAYERS.map((name) => {
-        const state = name === shown.current ? ' is-current' : name === shown.prev ? ' is-prev' : ''
-        return BACKGROUNDS[name] ? (
+      {LAYERS.map((layer) => {
+        const state =
+          layer.id === shown.current
+            ? ' is-current'
+            : layer.id === shown.prev
+              ? ' is-prev'
+              : ''
+
+        return (
           <img
-            key={name}
-            src={BACKGROUNDS[name]}
+            key={layer.id}
+            src={layer.src}
             alt=""
             decoding="async"
             className={`theme-bg__layer${state}`}
           />
-        ) : (
-          <div key={name} className={`theme-bg__layer theme-bg__plain${state}`} />
         )
       })}
     </div>

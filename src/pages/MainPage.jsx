@@ -150,7 +150,7 @@ function MenuScreen() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            View my fine tuned model on Hugging Face
+            View my fine tuned model
           </a>
           <a
             className="project-link project-link--secondary"
@@ -158,7 +158,7 @@ function MenuScreen() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            View my rag model on Hugging Face
+            View my rag model
           </a>
         </div>
         <DiceGamble />
