@@ -893,8 +893,8 @@ button { cursor: pointer; }
   transform: translateX(-50%);
 }
 
-.feature-orbit:hover {
-  animation: feature-orbit-spin 600ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+.feature-orbit {
+  animation: feature-orbit-spin 4s linear infinite;
 }
 
 @keyframes feature-orbit-spin {
