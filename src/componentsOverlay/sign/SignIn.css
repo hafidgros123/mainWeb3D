@@ -1,0 +1,783 @@
+/* ==========================================================
+   SIGN-IN  -  torn paper pixel style, follows your 6 themes
+   Replace your whole SignIn.css with this file.
+
+   Themes: blue, light-blue, crimson, gold, jade, secret
+   The theme comes from  data-signin-theme  (set in ChatOverlay.jsx)
+========================================================== */
+
+
+/* ----------------------------------------------------------
+   FONT
+   Find the font your big "NomNom" heading uses (search your
+   project for "font-family" in index.css) and uncomment:
+
+   :root { --pixel-font: "YOUR FONT NAME", monospace; }
+---------------------------------------------------------- */
+
+
+/* ----------------------------------------------------------
+   THEME COLORS
+   panel  = dark boxes (like your welcome boxes)
+   btn    = light buttons (like ANIME UPDATES / TEST YOUR LUCK)
+---------------------------------------------------------- */
+
+/* BLUE (also the fallback) */
+:root,
+[data-signin-theme="blue"],
+html[data-theme="blue"],
+body[data-theme="blue"] {
+  --si-panel:       #0d2036;
+  --si-panel-edge:  #1c4a78;
+  --si-text:        #eaf4ff;
+  --si-muted:       #8fb4d8;
+  --si-accent:      #4aa8ff;
+  --si-btn:         #9fd4ff;
+  --si-btn-ink:     #0b1f33;
+  --si-btn-edge:    #3b7fb8;
+  --si-field:       #081626;
+  --si-field-line:  #245585;
+  --si-overlay:     rgba(2, 8, 22, 0.84);
+}
+
+/* LIGHT-BLUE (the purple cyberpunk one) */
+[data-signin-theme="light-blue"],
+html[data-theme="light-blue"],
+body[data-theme="light-blue"] {
+  --si-panel:       #241e3a;
+  --si-panel-edge:  #46388a;
+  --si-text:        #f2eeff;
+  --si-muted:       #a99fd0;
+  --si-accent:      #a98bff;
+  --si-btn:         #8f6ee8;
+  --si-btn-ink:     #140e28;
+  --si-btn-edge:    #5a37b8;
+  --si-field:       #171229;
+  --si-field-line:  #46387f;
+  --si-overlay:     rgba(8, 4, 28, 0.84);
+}
+
+/* CRIMSON */
+[data-signin-theme="crimson"],
+html[data-theme="crimson"],
+body[data-theme="crimson"] {
+  --si-panel:       #2a1118;
+  --si-panel-edge:  #7a2433;
+  --si-text:        #f8e8e4;
+  --si-muted:       #c9a3a8;
+  --si-accent:      #ff7a85;
+  --si-btn:         #ece1cb;
+  --si-btn-ink:     #2a0e14;
+  --si-btn-edge:    #b8a583;
+  --si-field:       #1b0b10;
+  --si-field-line:  #5a2a33;
+  --si-overlay:     rgba(12, 0, 4, 0.85);
+}
+
+/* GOLD */
+[data-signin-theme="gold"],
+html[data-theme="gold"],
+body[data-theme="gold"] {
+  --si-panel:       #2b2110;
+  --si-panel-edge:  #7a5c18;
+  --si-text:        #fbf1d9;
+  --si-muted:       #c9b27a;
+  --si-accent:      #f0c050;
+  --si-btn:         #e8c872;
+  --si-btn-ink:     #2a1d05;
+  --si-btn-edge:    #a07a1c;
+  --si-field:       #1c1508;
+  --si-field-line:  #5f4a1a;
+  --si-overlay:     rgba(12, 8, 0, 0.85);
+}
+
+/* JADE */
+[data-signin-theme="jade"],
+html[data-theme="jade"],
+body[data-theme="jade"] {
+  --si-panel:       #0f2a22;
+  --si-panel-edge:  #1f7a5a;
+  --si-text:        #e6fbf1;
+  --si-muted:       #8fc9b0;
+  --si-accent:      #4fe0a8;
+  --si-btn:         #8ee6c0;
+  --si-btn-ink:     #072019;
+  --si-btn-edge:    #2f9a72;
+  --si-field:       #0a1c16;
+  --si-field-line:  #1f5f48;
+  --si-overlay:     rgba(0, 10, 6, 0.85);
+}
+
+/* SECRET */
+[data-signin-theme="secret"],
+html[data-theme="secret"],
+body[data-theme="secret"] {
+  --si-panel:       #232327;
+  --si-panel-edge:  #55555e;
+  --si-text:        #efeff2;
+  --si-muted:       #a0a0aa;
+  --si-accent:      #d0d0dc;
+  --si-btn:         #c8c8d4;
+  --si-btn-ink:     #18181c;
+  --si-btn-edge:    #7a7a86;
+  --si-field:       #19191c;
+  --si-field-line:  #4a4a52;
+  --si-overlay:     rgba(4, 4, 8, 0.86);
+}
+
+
+/* ----------------------------------------------------------
+   SHARED SHAPES
+---------------------------------------------------------- */
+
+/* wrapper from ChatOverlay.jsx: doesn't affect layout */
+.signin-theme-scope {
+  display: contents;
+}
+
+.signin-overlay,
+.overlay-signin-btn {
+  --si-font: var(--pixel-font, inherit);
+
+  /* torn paper edge for buttons */
+  --si-tear-btn: polygon(
+    0 14%, 2% 0, 6% 9%, 12% 0, 20% 7%, 30% 0, 42% 8%, 55% 0, 68% 7%,
+    80% 0, 92% 8%, 98% 0, 100% 16%, 98% 42%, 100% 64%, 97% 100%,
+    88% 91%, 76% 100%, 62% 92%, 48% 100%, 34% 91%, 20% 100%, 8% 92%,
+    3% 100%, 0 82%, 2% 56%, 0 36%
+  );
+
+  /* torn paper edge for the card */
+  --si-tear-card: polygon(
+    0 1.2%, 3% 0, 8% 0.9%, 15% 0, 26% 1%, 38% 0, 50% 0.9%, 63% 0,
+    75% 1%, 88% 0, 96% 0.8%, 100% 0.3%, 99.2% 14%, 100% 32%, 99% 50%,
+    100% 68%, 99.2% 86%, 100% 99.6%, 94% 99%, 84% 100%, 70% 99%,
+    57% 100%, 44% 99%, 30% 100%, 17% 99%, 6% 100%, 0 99.4%, 0.8% 84%,
+    0 66%, 1% 48%, 0 30%, 0.8% 14%
+  );
+}
+
+
+/* ==========================================================
+   OVERLAY
+========================================================== */
+
+.signin-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  overflow-y: auto;
+
+  background: var(--si-overlay);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  animation: signin-overlay-appear 0.2s steps(4, end);
+}
+
+
+/* ==========================================================
+   CARD
+========================================================== */
+
+.signin-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+
+  padding: 54px 40px 44px;
+
+  color: var(--si-text);
+  background: var(--si-panel);
+  font-family: var(--si-font);
+
+  clip-path: var(--si-tear-card);
+  -webkit-clip-path: var(--si-tear-card);
+
+  /* accent strip on top, thick lip on the bottom */
+  box-shadow:
+    inset 0 4px 0 var(--si-accent),
+    inset 0 -7px 0 var(--si-panel-edge);
+
+  animation: signin-card-appear 0.3s steps(5, end);
+}
+
+/* stitched inner frame */
+.signin-card::before {
+  content: "";
+  position: absolute;
+  inset: 14px 12px 16px;
+
+  border: 2px dashed var(--si-panel-edge);
+  opacity: 0.7;
+
+  pointer-events: none;
+}
+
+
+/* ==========================================================
+   CLOSE BUTTON
+========================================================== */
+
+.close-modal-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  border: none;
+  border-radius: 0;
+
+  background: var(--si-btn);
+  color: var(--si-btn-ink);
+  box-shadow: 3px 3px 0 var(--si-btn-edge);
+
+  font-family: var(--si-font);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+  transition: none;
+}
+
+.close-modal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--si-btn-edge);
+}
+
+.close-modal-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--si-btn-edge);
+}
+
+.close-modal-btn:focus-visible {
+  outline: 2px solid var(--si-text);
+  outline-offset: 3px;
+}
+
+
+/* ==========================================================
+   TITLE + SUBTITLE
+========================================================== */
+
+.signin-card h2 {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  margin: 0 0 14px;
+
+  color: var(--si-text);
+
+  font-family: var(--si-font);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+
+  text-shadow: 3px 3px 0 var(--si-panel-edge);
+}
+
+.signin-card h2::before,
+.signin-card h2::after {
+  content: "\25C7";   /* ◇ same as your TEST YOUR LUCK button */
+
+  color: var(--si-accent);
+  font-size: 0.55em;
+  text-shadow: none;
+}
+
+.signin-subtitle {
+  position: relative;
+
+  margin: 0 0 32px;
+
+  color: var(--si-muted);
+
+  font-family: var(--si-font);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  line-height: 1.8;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.signin-form {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  width: 100%;
+}
+
+.input-group label {
+  color: var(--si-accent);
+
+  font-family: var(--si-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.input-group label::before {
+  content: "\25B8\00a0";   /* ▸ */
+}
+
+.password-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.forgot-password {
+  color: var(--si-muted);
+
+  font-family: var(--si-font);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-decoration: underline;
+  text-transform: uppercase;
+  text-underline-offset: 4px;
+}
+
+.forgot-password:hover {
+  color: var(--si-accent);
+}
+
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+.input-group input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  padding: 14px 14px 16px;
+
+  color: var(--si-text);
+  background: var(--si-field);
+  caret-color: var(--si-accent);
+
+  border: 2px solid var(--si-field-line);
+  border-radius: 0;
+
+  /* thick bottom lip, like your buttons */
+  box-shadow: inset 0 -4px 0 var(--si-field-line);
+
+  font-family: var(--si-font);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+
+  outline: none;
+  transition: none;
+}
+
+.input-group input::placeholder {
+  color: var(--si-muted);
+  opacity: 0.45;
+}
+
+.input-group input:hover {
+  border-color: var(--si-accent);
+}
+
+.input-group input:focus {
+  border-color: var(--si-accent);
+  background: var(--si-field);
+
+  box-shadow:
+    inset 0 -4px 0 var(--si-accent),
+    5px 5px 0 var(--si-panel-edge);
+}
+
+.input-group input:focus-visible {
+  outline: none;
+}
+
+/* stop the browser autofill from turning inputs white */
+.input-group input:-webkit-autofill,
+.input-group input:-webkit-autofill:hover,
+.input-group input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--si-text);
+  caret-color: var(--si-accent);
+  box-shadow: 0 0 0 1000px var(--si-field) inset;
+  transition: background-color 9999s ease-out;
+}
+
+
+/* ==========================================================
+   SUBMIT BUTTON  (same look as ANIME UPDATES / TEST YOUR LUCK)
+========================================================== */
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+
+  margin-top: 8px;
+  padding: 17px 18px 21px;
+
+  border: none;
+  border-radius: 0;
+
+  background: var(--si-btn);
+  color: var(--si-btn-ink);
+
+  clip-path: var(--si-tear-btn);
+  -webkit-clip-path: var(--si-tear-btn);
+  box-shadow: inset 0 -6px 0 var(--si-btn-edge);
+
+  font-family: var(--si-font);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition: none;
+}
+
+.submit-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(3px);
+  box-shadow: inset 0 -2px 0 var(--si-btn-edge);
+}
+
+.submit-btn:focus-visible {
+  outline: 2px solid var(--si-text);
+  outline-offset: 4px;
+}
+
+
+/* ==========================================================
+   SIGN-UP REDIRECT
+========================================================== */
+
+.signup-redirect {
+  position: relative;
+
+  margin: 30px 0 0;
+  padding-top: 22px;
+
+  border-top: 2px dashed var(--si-panel-edge);
+
+  color: var(--si-muted);
+
+  font-family: var(--si-font);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  line-height: 1.8;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.signup-redirect a {
+  color: var(--si-accent);
+
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.signup-redirect a:hover {
+  color: var(--si-text);
+}
+
+
+/* ==========================================================
+   PAGE SIGN-IN BUTTON  (top right corner)
+========================================================== */
+
+.overlay-signin-btn {
+  --signin-btn-top: clamp(12px, 1.5vw, 32px);
+  --signin-btn-right: clamp(12px, 1.8vw, 40px);
+
+  position: fixed;
+  top: var(--signin-btn-top);
+  right: var(--signin-btn-right);
+  z-index: 1000;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+
+  /* em padding = scales with the font size */
+  padding: 0.95em 2em 1.25em;
+
+  border: none;
+  border-radius: 0;
+
+  background: var(--si-btn);
+  color: var(--si-btn-ink);
+
+  clip-path: var(--si-tear-btn);
+  -webkit-clip-path: var(--si-tear-btn);
+  box-shadow: inset 0 -0.4em 0 var(--si-btn-edge);
+
+  font-family: var(--si-font);
+  /* min, grows with screen width, max  -> change these 3 numbers to resize */
+  font-size: clamp(14px, 0.9vw + 9px, 22px);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition: none;
+}
+
+.overlay-signin-btn::before {
+  content: "\25C7";   /* ◇ */
+  font-size: 0.9em;
+}
+
+/* use this class if you put the button inside your header instead */
+.overlay-signin-btn--inline {
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+.overlay-signin-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.overlay-signin-btn:active {
+  transform: translateY(3px);
+  box-shadow: inset 0 -2px 0 var(--si-btn-edge);
+}
+
+.overlay-signin-btn:focus-visible {
+  outline: 2px solid var(--si-text);
+  outline-offset: 4px;
+}
+
+
+/* ==========================================================
+   ANIMATIONS (stepped = pixel feel)
+========================================================== */
+
+@keyframes signin-overlay-appear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes signin-card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 480px) {
+  .signin-overlay {
+    padding: 14px;
+  }
+
+  .signin-card {
+    padding: 48px 26px 38px;
+  }
+
+  .signin-card::before {
+    inset: 12px 8px 14px;
+  }
+
+  .signin-card h2 {
+    font-size: 20px;
+    gap: 10px;
+  }
+
+  .signin-subtitle {
+    margin-bottom: 26px;
+  }
+
+  .signin-form {
+    gap: 20px;
+  }
+
+  /* the page Sign In button size is handled by clamp() above */
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .signin-overlay,
+  .signin-card {
+    animation: none;
+  }
+
+  .submit-btn:hover,
+  .submit-btn:active,
+  .overlay-signin-btn:hover,
+  .overlay-signin-btn:active,
+  .close-modal-btn:hover,
+  .close-modal-btn:active {
+    transform: none;
+  }
+}
+
+/* textarea for the sign-up description: same look as the inputs */
+.input-group textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 14px 14px 16px;
+  color: var(--si-text);
+  background: var(--si-field);
+  caret-color: var(--si-accent);
+  border: 2px solid var(--si-field-line);
+  border-radius: 0;
+  box-shadow: inset 0 -4px 0 var(--si-field-line);
+  font-family: var(--si-font);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  resize: vertical;
+  outline: none;
+}
+
+.input-group textarea::placeholder {
+  color: var(--si-muted);
+  opacity: 0.45;
+}
+
+.input-group textarea:hover,
+.input-group textarea:focus {
+  border-color: var(--si-accent);
+}
+/* Stop success music button — matches the themed torn-paper submit button */
+.stop-success-sound-btn {
+  display: block;
+  align-self: center;
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: -12px;
+  padding: 10px 16px 13px;
+
+  border: none;
+  border-radius: 0;
+  background: var(--si-btn);
+  color: var(--si-btn-ink);
+
+  clip-path: var(--si-tear-btn);
+  -webkit-clip-path: var(--si-tear-btn);
+  box-shadow: inset 0 -4px 0 var(--si-btn-edge);
+
+  font-family: var(--si-font);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition: none;
+}
+
+.stop-success-sound-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.stop-success-sound-btn:active {
+  transform: translateY(3px);
+  box-shadow: inset 0 -2px 0 var(--si-btn-edge);
+}
+
+.stop-success-sound-btn:focus-visible {
+  outline: 2px solid var(--si-text);
+  outline-offset: 4px;
+}
+
+
+/* text-style buttons: "Sign up" / "Sign in" switch and "Resend confirmation email" */
+.mode-switch-btn {
+  align-self: flex-start;
+  padding: 0;
+
+  border: none;
+  background: none;
+
+  color: var(--si-accent);
+  font-family: var(--si-font);
+  font-size: inherit;
+  font-weight: 700;
+  letter-spacing: inherit;
+  text-decoration: underline;
+  text-transform: uppercase;
+  text-underline-offset: 4px;
+
+  cursor: pointer;
+}
+
+.mode-switch-btn:hover {
+  color: var(--si-text);
+}
+
+.mode-switch-btn:focus-visible {
+  outline: 2px solid var(--si-text);
+  outline-offset: 3px;
+}

@@ -2,15 +2,14 @@ import { useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import ChatOverlay from './componentsOverlay/chat/ChatOverlay'
 import RandomImageOverlay from './componentsOverlay/random/RandomImageOverlay'
-import ErrorBoundary from './componentsOverlay/shared/ErrorBoundary'
-import ThemeBackground from './componentsOverlay/shared/ThemeBackground'
-import GameListPage from './pages/games/GameListPage'
+import ErrorBoundary from './shared/ErrorBoundary'
+import ThemeBackground from './shared/ThemeBackground'
 import GamePage from './pages/games/GamePage'
 import AnimeUpdatesPage from './pages/anime/AnimeUpdatesPage'
 import MainPage from './pages/MainPage'
-import ThreeDPage from './pages/ThreeDPage'
+import ThreeDPage from './pages/3d envir/ThreeDPage'
 import './App.css'
-import VideoPage from './pages/VideoPage'
+import VideoPage from './pages/videoPage/VideoPage'
 
 function AppContent() {
   const location = useLocation()
@@ -35,7 +34,6 @@ function AppContent() {
 
         <Routes>
           <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
-          <Route path="/games" element={<ErrorBoundary><GameListPage /></ErrorBoundary>} />
           <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
           <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
           <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
@@ -76,7 +74,7 @@ function App() {
         </button>
       )}
       <button className="intro-skip" onClick={() => setIntroComplete(true)}>
-        Skip intro
+        Skip
       </button>
     </main>
   )

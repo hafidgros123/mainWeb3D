@@ -1,4 +1,4 @@
-import { selectThreeDUnlocked, useProgression } from '../store/progressionStore'
+import { selectThreeDUnlocked, useProgression } from '../../store/progressionStore'
 
 function ThreeDPage() {
   const threeDUnlocked = useProgression(selectThreeDUnlocked)

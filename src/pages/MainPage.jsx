@@ -65,7 +65,7 @@ function MenuScreen() {
   const faqSectionRef = useRef(null)
   const centerImageInputRef = useRef(null)
   const centerImageUrlRef = useRef(null)
-  const [centerImageUrl, setCenterImageUrl] = useState('')
+  const [centerImageUrl, setCenterImageUrl] = useState('/orbit/daway.webp')
   const completedGames = useProgression((state) => state.completedGames)
   const threeDUnlocked = useProgression(selectThreeDUnlocked)
 
@@ -94,6 +94,8 @@ function MenuScreen() {
             Read the FAQ
           </a>
         </p>
+        <p className="page-intro"> hey also you will need to  sign in to be able to comment on the anime updates section.
+          </p> 
         <div className="game-grid">
           {gameDefinitions.map((game) => {
             const isComplete = completedGames.includes(game.id)
@@ -161,6 +163,7 @@ function MenuScreen() {
             View my rag model
           </a>
         </div>
+    
         <DiceGamble />
         <details className="about-page">
           <summary>About this page</summary>

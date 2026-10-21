@@ -10,8 +10,8 @@ export const OUTCOMES = [
   { min: 46, max: 51, videos: ['/46-51/mage.mp4'] },
   { min: 52, max: 55, videos: ['/52-55/cheese.mp4'] },
   { min: 56, max: 59, videos: ['/56-59/dio.mp4'] },
-
-  // { min: 67, max: 67, videos: ['/hell(67_video)/your-video.mp4'] },
+  { min: 60, max: 66, videos: ['/60-66/electro.mp4'] },
+  { min: 67, max: 67, videos: ['/hell(67_video)/subaru.mp4'] },
 
   { min: 71, max: 73, videos: ['/71-73/no_money.mp4'] },
   { min: 74, max: 76, videos: ['/74-76/taco.mp4'] },

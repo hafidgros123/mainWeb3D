@@ -14,7 +14,7 @@ function VideoPage() {
   // images never "end", so send the player back after 5 seconds
   useEffect(() => {
     if (!isImage) return
-    const t = setTimeout(goHome, 5000)
+    const t = setTimeout(goHome, 1000)
     return () => clearTimeout(t)
   }, [isImage])
 

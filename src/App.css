@@ -255,13 +255,13 @@ button { cursor: pointer; }
 
 .app-shell[data-theme="light-blue"] {
   /* A violet theme: cool lavender panels, deep violet text, violet buttons with black text. */
-  --ink: #1d1238;
+  --ink: #e3e1e7;
   --muted: #3a2d66;
   --dim: #55468a;
-  --page: #cfc9ec;
-  --panel: #e1dcf4;
-  --panel-soft: #c8c1e8;
-  --line: #7d6fc4;
+  --page: #7b74a8;
+  --panel: #262238;
+  --panel-soft: #b4a9e6;
+  --line: #795596;
   --coral: #6a35c8;
   --coral-dark: #43208f;
   --cream: #1d1238;
@@ -455,7 +455,7 @@ button { cursor: pointer; }
 }
 
 .background-image--top-right {
-  top: 4rem;
+  top: 8rem;
   right: 1.25rem;
 }
 
@@ -1314,13 +1314,14 @@ button { cursor: pointer; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  .app-shell .feature-orbit {
+    animation-duration: 4s !important;
+    animation-iteration-count: infinite !important;
+  }
 }
 
 
-/* LIGHT-BLUE (VIOLET) ACCORDION FINISH
-   About / FAQ / Technical Details headings are solid violet chips with light text,
-   so they stay readable on ANY background (light or dark).
-   The expanded content panel remains separate from its summary heading. */
 .app-shell[data-theme="light-blue"] .about-page > summary,
 .app-shell[data-theme="light-blue"] .about-page[open] > summary {
   display: block !important;
@@ -1335,7 +1336,6 @@ button { cursor: pointer; }
   box-shadow: inset 0 -0.2rem 0 #6a35c8 !important;
   text-shadow: none !important;
   line-height: 1.6;
-  /* short headings (like FAQ) are too small for the torn edge, so the chip gets slanted ends instead */
   -webkit-mask-image: none !important;
   mask-image: none !important;
   clip-path: polygon(0.6rem 0, 100% 0, calc(100% - 0.6rem) 100%, 0 100%);
@@ -1490,3 +1490,18 @@ button { cursor: pointer; }
 
 /* violet theme: the small hint under the theme bar must be readable on any background */
 .app-shell[data-theme="light-blue"] .chat-theme-lock-hint { color: #f6e9ff; text-shadow: 0 1px 3px rgba(20, 0, 40, 0.95); }
+
+
+.app-shell .contact-link {
+  align-items: center;      /* centers the content horizontally */
+  text-align: center;
+}
+
+.app-shell .contact-link-label {
+  justify-content: center;  /* centers the icon + word as one group */
+}
+
+/* the small line under the label is empty, so it only adds a gap and pushes the label up */
+.app-shell .contact-link small:empty {
+  display: none;
+}
