@@ -1,0 +1,281 @@
+/* ================================================================
+   PROFILE PAGE  (+ the small "Profile" link shown under the Sign Out button)
+   Uses the theme variables from App.css, so it follows every theme,
+   and the same torn left/right edge as the other boxes.
+   ================================================================ */
+
+/* ---------- page layout ---------- */
+
+.profile-page {
+  position: relative;
+  z-index: 1;
+  width: min(73.75rem, calc(100% - 4rem));
+  margin: 0 auto 3.5rem;
+  padding: 2.625rem 0 5.625rem;
+  border-top: 0.0625rem solid var(--line);
+}
+
+.profile-page h1 {
+  max-width: none;
+  margin: 0;
+  color: var(--cream);
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 8vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  text-shadow: 0 0 0.5rem color-mix(in srgb, var(--coral) 55%, transparent),
+              0.125rem 0.125rem 0 color-mix(in srgb, var(--coral-dark) 38%, transparent);
+}
+
+/* ---------- the box ---------- */
+
+.profile-card {
+  max-width: 40rem;
+  margin-top: 2.625rem;
+  color: var(--ink);
+  background: var(--panel);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+}
+
+.profile-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.profile-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* ---------- picture ---------- */
+
+.profile-avatar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-avatar {
+  display: block;
+  width: 6rem;
+  height: 6rem;
+  border: 0.0625rem solid var(--line);
+  object-fit: cover;
+  background: var(--panel-soft);
+}
+
+.profile-avatar--empty {
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  font-family: var(--display);
+  font-size: 1.75rem;
+}
+
+.profile-avatar-actions {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+}
+
+.profile-file-input {
+  display: none;
+}
+
+/* ---------- fields ---------- */
+
+.profile-field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.profile-field label {
+  color: var(--cream);
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.profile-input {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 0.0625rem solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--panel-soft);
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.profile-input:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* stops the browser's pale-yellow autofill colour from replacing the theme colours */
+.profile-input:-webkit-autofill {
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  box-shadow: 0 0 0 100rem var(--panel-soft) inset;
+}
+
+.profile-hint {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* ---------- status message ---------- */
+
+.profile-status {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.profile-status--error {
+  color: var(--coral);
+}
+
+.profile-status--success {
+  color: var(--cream);
+}
+
+/* ---------- buttons (white text on the dark theme colour, readable in every theme) ---------- */
+
+.profile-button {
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-radius: 0;
+  color: #fff;
+  background: var(--coral-dark);
+  box-shadow: inset 0 -0.2rem 0 var(--coral);
+  font-family: var(--pixel);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 120ms ease, transform 120ms ease;
+}
+
+.profile-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--coral-dark) 80%, var(--coral));
+  transform: translateY(-0.125rem);
+}
+
+.profile-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.profile-button--ghost {
+  color: var(--ink);
+  background: transparent;
+  box-shadow: inset 0 0 0 0.0625rem var(--line);
+}
+
+.profile-button--ghost:hover:not(:disabled) {
+  background: var(--panel-soft);
+}
+
+.profile-button--save {
+  padding: 0.75rem 1.75rem;
+  font-size: 0.9375rem;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ---------- torn left/right edge (same look as the other boxes) ---------- */
+
+.profile-card {
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+  border-radius: 0 !important;
+  padding: 1.5rem 2.1rem 1.75rem !important; /* side padding keeps text clear of the tears */
+  -webkit-mask-image: var(--torn-image);
+  mask-image: var(--torn-image);
+  -webkit-mask-size: var(--torn-size);
+  mask-size: var(--torn-size);
+  -webkit-mask-position: var(--torn-pos);
+  mask-position: var(--torn-pos);
+  -webkit-mask-repeat: var(--torn-repeat);
+  mask-repeat: var(--torn-repeat);
+}
+
+/* ---------- the profile picture (top right, on every page, only when signed in) ----------
+   Round, with a theme-coloured ring and glow. It scales with the screen:
+   change the three numbers in "clamp(smallest, grows-with-screen, biggest)" to tune it.
+   --avatar-size = how big, "top" / "right" = how far from the corner. */
+
+.overlay-profile-link {
+  --avatar-size: clamp(2.5rem, 4.5vw, 3.75rem);
+  position: fixed;
+  top: clamp(0.5rem, 1.5vw, 1rem);
+  right: clamp(0.75rem, 2vw, 1.75rem);
+  z-index: 1000;
+  display: block;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  padding: 0.1875rem; /* the thickness of the coloured ring */
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, var(--coral), var(--coral-dark), var(--coral));
+  box-shadow: 0 0 0 0.125rem color-mix(in srgb, var(--page) 75%, transparent),
+              0 0.35rem 1rem rgba(0, 0, 0, 0.45),
+              0 0 1.1rem color-mix(in srgb, var(--coral) 35%, transparent);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.overlay-profile-link:hover,
+.overlay-profile-link:focus-visible {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 0.125rem color-mix(in srgb, var(--page) 75%, transparent),
+              0 0.5rem 1.25rem rgba(0, 0, 0, 0.5),
+              0 0 1.75rem color-mix(in srgb, var(--coral) 60%, transparent);
+}
+
+.overlay-profile-link:active {
+  transform: scale(0.96);
+}
+
+.overlay-profile-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--panel-soft);
+}
+
+.overlay-profile-initial {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--coral);
+  background: radial-gradient(circle at 30% 30%, var(--panel-soft), var(--panel));
+  font-family: var(--display);
+  font-size: calc(var(--avatar-size) * 0.36); /* the letter grows with the circle */
+  line-height: 1;
+}
+
+/* ---------- mobile ---------- */
+
+@media (max-width: 43.75rem) {
+  .profile-page {
+    width: calc(100% - 2rem);
+    padding-top: 1.75rem;
+  }
+
+  .profile-card { padding-inline: 2.2rem !important; }
+}

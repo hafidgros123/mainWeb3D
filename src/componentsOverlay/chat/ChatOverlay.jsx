@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { selectSecretThemeUnlocked, useProgression } from '../../store/progressionStore'
 import ChatBubbleButton from './ChatBubbleButton'
 import ChatWindow from './ChatWindow'
 import SignIn from '../sign/SignIn'
 import { supabase } from '../../lib/supabaseClient'
+import { safeAvatarUrl } from '../../lib/avatar'
 import '../sign/SignIn.css'
-
+import '../../pages/profile/profile.css' // styles the Profile link below
 // Force a fresh sign-in after this long, counted from the user's last real sign-in.
 const SESSION_MAX_AGE_MS = 48 * 60 * 60 * 1000
 const SESSION_CHECK_EVERY_MS = 5 * 60 * 1000
@@ -55,30 +57,51 @@ function ChatOverlay({ theme, onThemeChange }) {
       return
     }
     let cancelled = false
-    supabase
-      .from('profiles')
-      .select('username, avatar_url')
-      .eq('id', userId)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (!cancelled) setProfile(data)
-      })
+
+    const loadProfile = () =>
+      supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', userId)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (!cancelled) setProfile(data)
+        })
+
+    loadProfile()
+
+    // The profile page announces "profile-updated" after saving, so the picture refreshes at once.
+    window.addEventListener('profile-updated', loadProfile)
+
     return () => {
       cancelled = true
+      window.removeEventListener('profile-updated', loadProfile)
     }
   }, [userId])
+
+  const avatarUrl = safeAvatarUrl(profile?.avatar_url)
+  const avatarInitial = (profile?.username?.[0] || user?.email?.[0] || '?').toUpperCase()
 
   return (
     <>
       <div className="signin-theme-scope" data-signin-theme={theme}>
-        <button
-          type="button"
-          className="overlay-signin-btn"
-          onClick={() => (user ? supabase.auth.signOut() : setIsSignInOpen(true))}
-          title={user ? `Signed in as ${user.email}` : undefined}
-        >
-          {user ? `Sign Out${profile?.username ? ` · ${profile.username}` : ''}` : 'Sign In'}
-        </button>
+        {!user && (
+          <button type="button" className="overlay-signin-btn" onClick={() => setIsSignInOpen(true)}>
+            Sign In
+          </button>
+        )}
+
+        {user && (
+          <Link className="overlay-profile-link" to="/profile" aria-label="Your profile" title="Your profile">
+            {avatarUrl ? (
+              <img className="overlay-profile-avatar" src={avatarUrl} alt="" referrerPolicy="no-referrer" />
+            ) : (
+              <span className="overlay-profile-initial" aria-hidden="true">
+                {avatarInitial}
+              </span>
+            )}
+          </Link>
+        )}
 
         <SignIn
           isOpen={isSignInOpen}

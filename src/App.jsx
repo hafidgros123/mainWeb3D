@@ -10,6 +10,7 @@ import MainPage from './pages/MainPage'
 import ThreeDPage from './pages/3d envir/ThreeDPage'
 import './App.css'
 import VideoPage from './pages/videoPage/VideoPage'
+import ProfilePage from './pages/profile/ProfilePage'
 
 function AppContent() {
   const location = useLocation()
@@ -37,6 +38,7 @@ function AppContent() {
           <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
           <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
           <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
+          <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} /> 
           <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
         </Routes>
       </div>
