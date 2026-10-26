@@ -11,12 +11,53 @@ const sessionCookieName = 'chat_session'
 const sessionCookieSecret = process.env.CHAT_SESSION_SECRET
   || (process.env.NODE_ENV === 'production' ? null : randomBytes(32).toString('hex'))
 
+// --- Speed settings -------------------------------------------------------
+// Change the model without touching code: GEMINI_MODEL=<model id> in your env.
+const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-3.6-flash'
+// Only the last N messages are sent to Gemini. Less input = faster reply.
+const MAX_HISTORY_MESSAGES = 10
+// Give up on Gemini before the browser's 30s axios timeout does.
+const GEMINI_TIMEOUT_MS = 25000
+// Tries to turn "thinking" off. If the model/SDK rejects it, the server
+// falls back automatically and stops trying (see the chat route).
+let thinkingConfigSupported = true
+
+const SYSTEM_INSTRUCTION = `You are Ellen, a goth girl in her early 20s.
+You still kinda try to help the user, but you are not very enthusiastic about it.
+You are a bit lazy, but you still get things done eventually.
+You never use exclamation marks or sound excited.
+You often leave comments on the user's questions, like "really?" or "wow, that's a question" or "ok, sure, whatever".
+You always answer.`
+
 if (!sessionCookieSecret) {
   throw new Error('CHAT_SESSION_SECRET must be configured in production.')
 }
 
 if (trustedProxyHops > 0) {
   app.set('trust proxy', trustedProxyHops)
+}
+
+// --- Gemini client (created once, reused for every request) ---------------
+let cachedClient = null
+let cachedClientKey = null
+
+function getClient(apiKey) {
+  if (!cachedClient || cachedClientKey !== apiKey) {
+    cachedClient = new GoogleGenerativeAI(apiKey)
+    cachedClientKey = apiKey
+  }
+  return cachedClient
+}
+
+// Keeps only the last messages, and makes sure the history starts with a
+// "user" turn (Gemini rejects histories that start with a "model" turn).
+function prepareHistory(history) {
+  if (!Array.isArray(history)) return []
+  let trimmed = history.slice(-MAX_HISTORY_MESSAGES)
+  while (trimmed.length > 0 && trimmed[0]?.role !== 'user') {
+    trimmed = trimmed.slice(1)
+  }
+  return trimmed
 }
 
 const extractSlashCommand = (message) => {
@@ -133,6 +174,44 @@ const tools = [
   },
 ]
 
+function buildGenerationConfig(isCommand, withThinkingOff) {
+  const config = {}
+  if (!isCommand) config.maxOutputTokens = 256
+  if (withThinkingOff) config.thinkingConfig = { thinkingBudget: 0 }
+  return config
+}
+
+async function runChat({ apiKey, message, history, isCommand, withThinkingOff }) {
+  const model = getClient(apiKey).getGenerativeModel(
+    {
+      model: MODEL_NAME,
+      systemInstruction: SYSTEM_INSTRUCTION,
+      generationConfig: buildGenerationConfig(isCommand, withThinkingOff),
+      ...(isCommand ? { tools } : {}),
+    },
+    { timeout: GEMINI_TIMEOUT_MS },
+  )
+  const chat = model.startChat({ history })
+  return chat.sendMessage(isCommand ? message.trim().slice(1) : message)
+}
+
+// Temporary Google errors (overloaded, rate limited, hiccups) usually clear up
+// in a second or two, so retry quietly instead of showing an error in the chat.
+const RETRYABLE_STATUSES = new Set([429, 500, 503, 504])
+
+async function withRetry(task, attempts = 3) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await task()
+    } catch (error) {
+      const canRetry = RETRYABLE_STATUSES.has(error?.status) && i < attempts - 1
+      if (!canRetry) throw error
+      console.warn(`Gemini returned ${error.status}, retrying (${i + 1}/${attempts - 1})...`)
+      await new Promise((resolve) => setTimeout(resolve, 600 * (i + 1)))
+    }
+  }
+}
+
 app.get('/api/health', (request, response) => {
   response.json({ ok: true })
 })
@@ -144,21 +223,42 @@ app.post('/api/chat', attachAnonymousSession, perIpChatLimit, perSessionChatLimi
   if (!apiKey) return response.status(500).json({ error: 'GEMINI_API_KEY is not configured' })
   if (typeof message !== 'string' || !message.trim()) return response.status(400).json({ error: 'message is required' })
 
+  const isCommand = message.trim().startsWith('/')
+  const preparedHistory = prepareHistory(history)
+  const startedAt = Date.now()
+
   try {
-    const ai = new GoogleGenerativeAI(apiKey)
-    const isCommand = message.trim().startsWith('/')
-    const model = ai.getGenerativeModel({
-      model: 'gemini-3.6-flash',
-     systemInstruction: `You are Ellen, a goth girl in her early 20s. 
-                   you still kinda try to help the user, but you are not very enthusiastic about it.
-                   You are a bit lazy, but you still get things done eventually.
-                   You never use exclamation marks or sound excited.
-                   you often leave comments on the user's questions, like "really?" or "wow, that's a question" or "ok, sure, whatever".
-                  you always answer.`,  
-      ...(isCommand ? { tools } : { generationConfig: { maxOutputTokens: 256 } }),
-    })
-    const chat = model.startChat({ history })
-    const result = await chat.sendMessage(isCommand ? message.trim().slice(1) : message)
+    let result
+
+    try {
+      result = await withRetry(() => runChat({
+        apiKey,
+        message,
+        history: preparedHistory,
+        isCommand,
+        withThinkingOff: thinkingConfigSupported,
+      }))
+    } catch (error) {
+      // If the model or SDK rejects the thinking setting, retry once without
+      // it and stop sending it from now on, so nothing breaks.
+      const rejectedThinking = thinkingConfigSupported
+        && (error?.status === 400 || /thinking/i.test(error?.message || ''))
+
+      if (!rejectedThinking) throw error
+
+      console.warn('thinkingConfig was rejected by the model/SDK, retrying without it.')
+      thinkingConfigSupported = false
+      result = await withRetry(() => runChat({
+        apiKey,
+        message,
+        history: preparedHistory,
+        isCommand,
+        withThinkingOff: false,
+      }))
+    }
+
+    console.log(`Gemini (${MODEL_NAME}) answered in ${Date.now() - startedAt}ms`)
+
     const parts = result.response.candidates?.[0]?.content?.parts ?? []
 
     response.json({
@@ -166,11 +266,11 @@ app.post('/api/chat', attachAnonymousSession, perIpChatLimit, perSessionChatLimi
       functionCall: parts.find((part) => part.functionCall)?.functionCall ?? null,
     })
   } catch (error) {
-    console.error(error)
+    console.error(`Gemini failed after ${Date.now() - startedAt}ms (status ${error?.status ?? 'none'}):`, error)
     response.status(502).json({ error: 'Gemini request failed' })
   }
 })
 
 app.listen(port, () => {
-  console.log(`Backend running at http://localhost:${port}`)
+  console.log(`Backend running at http://localhost:${port} (model: ${MODEL_NAME})`)
 })
