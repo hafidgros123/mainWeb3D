@@ -112,6 +112,7 @@ function ChatOverlay({ theme, onThemeChange }) {
       <aside className={`chat-overlay${isOpen ? ' chat-open' : ''}`}>
         <div className="chat-theme-controls">
           <div className="chat-theme-picker" role="group" aria-label="Background themes">
+            <button className="chat-theme-swatch" type="button" data-theme="ki" aria-label="Ki background" aria-pressed={theme === 'ki'} onClick={() => onThemeChange('ki')} />
             <button className="chat-theme-swatch" type="button" data-theme="blue" aria-label="Blue background" aria-pressed={theme === 'blue'} onClick={() => onThemeChange('blue')} />
             <button className="chat-theme-swatch" type="button" data-theme="light-blue" aria-label="Light blue background" aria-pressed={theme === 'light-blue'} onClick={() => onThemeChange('light-blue')} />
             <button className="chat-theme-swatch" type="button" data-theme="crimson" aria-label="Crimson background" aria-pressed={theme === 'crimson'} onClick={() => onThemeChange('crimson')} />

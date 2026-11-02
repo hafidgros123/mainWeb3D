@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const BACKGROUNDS = {
+  ki: {
+    default: '/backgrounds/ki.webp',
+    route: '/backgrounds/ki2.webp',
+  },
+
   crimson: {
     default: '/backgrounds/maria.webp',
     route: '/backgrounds/maria2.webp',
