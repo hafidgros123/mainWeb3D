@@ -160,7 +160,7 @@ function MenuScreen() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            View my rag model
+            View my mods list (with recomandations too)
           </a>
         </div>
     

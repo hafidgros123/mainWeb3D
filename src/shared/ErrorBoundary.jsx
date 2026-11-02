@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import TurnPlaceholder from './TurnPlaceholder'
 
 class ErrorBoundary extends Component {
   state = { hasError: false }
@@ -11,8 +12,11 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <section className="error-panel" role="alert">
-          <h1>This part is unavailable</h1>
-          <p>The rest of the app is still available. Return to the main menu and try again.</p>
+          <TurnPlaceholder
+            title="This part is unavailable"
+            message="error while loading this part  , please contact me so i can check it out "
+            detail="The rest of the app is still available. Return to the main menu and try again."
+          />
         </section>
       )
     }

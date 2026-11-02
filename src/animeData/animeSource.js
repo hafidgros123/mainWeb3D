@@ -39,6 +39,9 @@ function normalize(raw) {
     genres: Array.isArray(raw.genres) ? raw.genres.filter((genre) => typeof genre === 'string') : [],
     score: Number.isFinite(raw.score) ? raw.score : null,
     popularity: Number.isFinite(raw.popularity) ? raw.popularity : 0,
+    // Every season/part of the same show shares the same seasonGroupId (the
+    // smallest anime id among them), so the catalog can show one card per show.
+    seasonGroupId: Number.isInteger(raw.seasonGroupId) ? raw.seasonGroupId : raw.id,
     // filled by the bot later; the info page will read them
     latestEpisode: raw.latestEpisode ?? null,
     lastAiredAt: raw.lastAiredAt ?? null,
@@ -73,7 +76,41 @@ export function loadAnimeData() {
   return loading
 }
 
+// Collapses every season/part that shares a seasonGroupId into one card: the
+// most popular season represents the group, and `seasonCount` says how many
+// there are. Used for the main catalog grid so "Re:Zero", "Re:Zero Season 2
+// Part 1" and "...Part 2" show up as a single "Re:Zero" card instead of three.
+export function groupAnimeSeasons(anime) {
+  const groups = new Map()
+  for (const item of anime) {
+    const key = item.seasonGroupId
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key).push(item)
+  }
+
+  const result = []
+  for (const members of groups.values()) {
+    members.sort((a, b) => (a.year ?? 0) - (b.year ?? 0) || a.id - b.id)
+    const representative = members.reduce(
+      (best, item) => (item.popularity > best.popularity ? item : best),
+      members[0],
+    )
+    result.push({ ...representative, seasonCount: members.length, seasons: members })
+  }
+
+  return result.sort((a, b) => b.popularity - a.popularity)
+}
+
 export async function getAnimeById(id) {
   const { anime } = await loadAnimeData()
   return anime.find((item) => item.id === id) ?? null
+}
+
+// Every season/part that shares `anime`'s seasonGroupId, oldest first — used
+// to show a "Seasons" row on the info page so Part 1/Part 2/etc. are all reachable.
+export async function getSeasonsFor(anime) {
+  const { anime: all } = await loadAnimeData()
+  return all
+    .filter((item) => item.seasonGroupId === anime.seasonGroupId)
+    .sort((a, b) => (a.year ?? 0) - (b.year ?? 0) || a.id - b.id)
 }

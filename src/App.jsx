@@ -1,23 +1,38 @@
-import { useRef, useState } from 'react'
+import { lazy, Suspense, useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import ChatOverlay from './componentsOverlay/chat/ChatOverlay'
 import RandomImageOverlay from './componentsOverlay/random/RandomImageOverlay'
 import ErrorBoundary from './shared/ErrorBoundary'
 import ThemeBackground from './shared/ThemeBackground'
-import GamePage from './pages/games/GamePage'
-import AnimeUpdatesPage from './pages/anime/AnimeUpdatesPage'
-import MainPage from './pages/MainPage'
-import ThreeDPage from './pages/3d envir/ThreeDPage'
+import TurnPlaceholder from './shared/TurnPlaceholder'
 import './App.css'
-import VideoPage from './pages/videoPage/VideoPage'
-import ProfilePage from './pages/profile/ProfilePage'
-import AnimeInfoPage from './pages/anime/AnimeInfoPage'
+
+const MainPage = lazy(() => import('./pages/MainPage'))
+const GamePage = lazy(() => import('./pages/games/GamePage'))
+const ThreeDPage = lazy(() => import('./pages/3d envir/ThreeDPage'))
+const AnimeUpdatesPage = lazy(() => import('./pages/anime/AnimeUpdatesPage'))
+const AnimeInfoPage = lazy(() => import('./pages/anime/AnimeInfoPage'))
+const ProfilePage = lazy(() => import('./pages/profile/ProfilePage'))
+const VideoPage = lazy(() => import('./pages/videoPage/VideoPage'))
 
 function AppContent() {
   const location = useLocation()
   const [theme, setTheme] = useState('crimson')
   const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
-  if (location.pathname === '/watch') return <VideoPage />
+  if (location.pathname === '/watch') {
+    return (
+      <Suspense
+        fallback={(
+          <TurnPlaceholder
+            className="route-loading"
+            message="Loading page... you wait or I will make you wait"
+          />
+        )}
+      >
+        <VideoPage />
+      </Suspense>
+    )
+  }
 
   return (
     <div className="app-shell" data-theme={theme}>
@@ -34,15 +49,24 @@ function AppContent() {
           )}
         </header>
 
-        <Routes>
-          <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
-          <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
-          <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
-          <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
-          <Route path="/anime/:id" element={<ErrorBoundary><AnimeInfoPage /></ErrorBoundary>} />
-          <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} /> 
-          <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
-        </Routes>
+        <Suspense
+          fallback={(
+            <TurnPlaceholder
+              className="route-loading"
+              message="Loading page... you wait or I will make you wait"
+            />
+          )}
+        >
+          <Routes>
+            <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
+            <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
+            <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
+            <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
+            <Route path="/anime/:id" element={<ErrorBoundary><AnimeInfoPage /></ErrorBoundary>} />
+            <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+            <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
+          </Routes>
+        </Suspense>
       </div>
 
       <ErrorBoundary>
@@ -64,7 +88,7 @@ function App() {
       <video
         ref={videoRef}
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-label="Intro video"
         onPlay={() => setIntroStarted(true)}
         onEnded={() => setIntroComplete(true)}

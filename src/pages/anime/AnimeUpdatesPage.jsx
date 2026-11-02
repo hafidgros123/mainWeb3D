@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { loadAnimeData } from '../../animeData/animeSource'
+import { groupAnimeSeasons, loadAnimeData } from '../../animeData/animeSource'
 import { useAnimeFavorites } from '../../store/favoritesStore'
+import TurnPlaceholder from '../../shared/TurnPlaceholder'
 import AnimeCard from './AnimeCard'
 import './AnimeUpdatesPage.css'
 
@@ -10,6 +11,7 @@ function AnimeUpdatesPage() {
   const [data, setData] = useState({ status: 'loading', anime: [] }) // 'loading' | 'ready' | 'error'
   const [attempt, setAttempt] = useState(0)
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const [query, setQuery] = useState('')
   const favorites = useAnimeFavorites((state) => state.favorites)
 
   useEffect(() => {
@@ -36,7 +38,22 @@ function AnimeUpdatesPage() {
     return favorites.map((item) => byId.get(item.id)).filter(Boolean)
   }, [favorites, data.anime])
 
-  const shown = data.anime.slice(0, visibleCount)
+  // One card per show: every season/part of the same show (e.g. Re:Zero,
+  // Re:Zero Season 2 Part 1, Part 2) collapses into a single entry here.
+  const groupedAnime = useMemo(() => groupAnimeSeasons(data.anime), [data.anime])
+
+  // Filtered by the search box, matching the main title or the romaji/alt title.
+  const filteredAnime = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return groupedAnime
+    return groupedAnime.filter(
+      (anime) =>
+        anime.title.toLowerCase().includes(q) ||
+        (anime.titleAlt && anime.titleAlt.toLowerCase().includes(q)),
+    )
+  }, [groupedAnime, query])
+
+  const shown = filteredAnime.slice(0, visibleCount)
 
   return (
     <main className="anime-updates-page">
@@ -51,7 +68,9 @@ function AnimeUpdatesPage() {
           Favorites
         </h2>
 
-        {data.status === 'loading' && <p className="anime-note">Loading...</p>}
+        {data.status === 'loading' && (
+          <TurnPlaceholder message="[WRITE FUNNY MESSAGE HERE: favorites are loading]" />
+        )}
         {data.status === 'ready' && favoriteAnime.length === 0 && (
           <p className="anime-note">Press the diamond on any anime to pin it here.</p>
         )}
@@ -64,23 +83,47 @@ function AnimeUpdatesPage() {
         )}
       </section>
 
+      <div className="anime-search">
+        <svg className="anime-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="search"
+          className="anime-search-input"
+          placeholder="Search anime..."
+          value={query}
+          onChange={(event) => {
+            setQuery(event.target.value)
+            setVisibleCount(PAGE_SIZE) // reset paging whenever the search changes
+          }}
+          aria-label="Search anime"
+        />
+      </div>
+
       <section className="anime-box anime-list-area" aria-labelledby="anime-list-title">
         <h2 id="anime-list-title" className="anime-box-title">
           Anime List
         </h2>
 
-        {data.status === 'loading' && <p className="anime-note">Loading the anime catalog...</p>}
+        {data.status === 'loading' && (
+          <TurnPlaceholder message="[WRITE FUNNY MESSAGE HERE: anime catalog is loading]" />
+        )}
 
         {data.status === 'error' && (
           <div role="alert">
-            <p className="anime-note">The anime list could not be loaded.</p>
+            <TurnPlaceholder message="[WRITE FUNNY MESSAGE HERE: anime catalog failed to load]" />
             <button type="button" className="anime-button" onClick={() => setAttempt((value) => value + 1)}>
               Try again
             </button>
           </div>
         )}
 
-        {data.status === 'ready' && (
+        {data.status === 'ready' && filteredAnime.length === 0 && (
+          <p className="anime-note">No anime matches "{query}".</p>
+        )}
+
+        {data.status === 'ready' && filteredAnime.length > 0 && (
           <>
             <div className="anime-grid">
               {shown.map((anime) => (
@@ -90,9 +133,9 @@ function AnimeUpdatesPage() {
 
             <div className="anime-list-footer">
               <span className="anime-note">
-                Showing {shown.length} of {data.anime.length}, most popular first
+                Showing {shown.length} of {filteredAnime.length}, most popular first
               </span>
-              {shown.length < data.anime.length && (
+              {shown.length < filteredAnime.length && (
                 <button
                   type="button"
                   className="anime-button"

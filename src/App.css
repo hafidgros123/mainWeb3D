@@ -167,8 +167,64 @@ button { cursor: pointer; }
   font-size: 0.75rem;
 }
 
+/* ---------- Skip intro button ---------- */
 .intro-skip {
-  right: max(1.5rem, env(safe-area-inset-right));
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 8.5rem;
+  justify-content: center;
+  padding: 0.7rem 1.6rem 0.9rem;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #fff;
+  background: color-mix(in srgb, var(--coral-dark) 80%, #000);
+  box-shadow: inset 0 -0.3rem 0 var(--coral);          /* the 3D bottom edge */
+  font-family: var(--pixel);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;                                  /* never wraps or clips */
+  clip-path: polygon(0.7rem 0, 100% 0, calc(100% - 0.7rem) 100%, 0 100%);
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  opacity: 0.9;
+  transition: background 140ms ease, transform 140ms ease, opacity 140ms ease, box-shadow 140ms ease;
+  position: fixed;        /* make it stay on screen */
+    right: 0.75rem;        /* distance from the right edge  */
+    bottom: 0.75rem;         /* distance from the bottom edge */
+}
+
+.intro-skip::after {
+  content: '▶▶';
+  font-size: 0.6rem;
+  letter-spacing: -0.1em;
+  transition: transform 140ms ease;
+}
+
+.intro-skip:hover,
+.intro-skip:focus-visible {
+  opacity: 1;
+  color: #fff;
+  background: var(--coral-dark);
+  border-color: transparent;
+  box-shadow: inset 0 -0.45rem 0 var(--coral);
+  transform: translateY(-0.15rem);
+  outline: none;
+}
+
+.intro-skip:hover::after,
+.intro-skip:focus-visible::after {
+  transform: translateX(0.2rem);                        /* arrows nudge forward */
+}
+
+.intro-skip:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 4px;
+}
+
+@media (max-width: 43.75rem) {
+  .intro-skip { font-size: 0.75rem; padding: 0.6rem 1.3rem 0.8rem; }
 }
 
 .intro-play {
@@ -370,6 +426,26 @@ button { cursor: pointer; }
   --orbit-glow: rgba(213, 211, 203, 0.2);
 }
 
+.app-shell[data-theme="jaws"] {
+  --ink: #edfaff;
+  --muted: #a9cad3;
+  --dim: #83aeb9;
+  --page: #06151d;
+  --panel: #0c2530;
+  --panel-soft: #123b49;
+  --line: #2f6979;
+  --coral: #69d6e8;
+  --coral-dark: #237b91;
+  --cream: #effcff;
+  --blue: #8ce5f2;
+  --blue-dark: #277b8e;
+  --blue-soft: #103542;
+  --orbit-edge: #32899b;
+  --orbit-fill: #071d27;
+  --orbit-accent: #8ce5f2;
+  --orbit-glow: rgba(105, 214, 232, 0.24);
+}
+
 .route-transition {
   --route-enter-distance: 2.75rem;
   animation: route-enter 900ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
@@ -460,7 +536,7 @@ button { cursor: pointer; }
 
 .background-image--bottom-left {
   left: 1.25rem;
-  bottom: 1.5rem;
+  bottom: 0.5rem;
 }
 
 .background-image--rem {
@@ -1005,6 +1081,13 @@ button { cursor: pointer; }
 .game-placeholder { display: grid; min-height: 45svh; margin-top: 2.625rem; place-items: center; border: 0.0625rem dashed var(--line); color: var(--muted); background: var(--panel-soft); text-align: center; }
 .game-placeholder p { margin: 0 0 0.5rem; color: var(--cream); font-family: var(--mono); }
 .game-placeholder small { font-family: var(--mono); font-size: 0.75rem; }
+.turn-placeholder { display: grid; max-width: 32rem; margin: 0 auto; padding: 1.25rem; place-items: center; gap: 0.6rem; color: var(--muted); text-align: center; }
+.turn-placeholder-gif { display: block; width: min(7rem, 35vw); height: auto; image-rendering: auto; }
+.turn-placeholder-title { color: var(--cream); font-family: var(--pixel); font-size: 0.8rem; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+.turn-placeholder-message { margin: 0; color: var(--cream); font-family: var(--mono); line-height: 1.6; }
+.turn-placeholder-detail { font-family: var(--mono); font-size: 0.75rem; line-height: 1.5; }
+.anime-box .turn-placeholder { padding-inline: 0; }
+.error-panel .turn-placeholder { max-width: none; padding: 0; }
 .three-d-page h1 {
   max-width: none;
   white-space: nowrap;
@@ -1021,6 +1104,7 @@ button { cursor: pointer; }
 .three-d-page .game-placeholder p { color: var(--blue); }
 .error-panel { width: min(43.75rem, calc(100% - 4rem)); margin: 5rem auto; padding: 2.25rem; border: 0.0625rem solid var(--coral-dark); background: var(--panel); }
 .error-panel h1 { margin-top: 0; }
+.route-loading { min-height: 30vh; display: grid; place-items: center; color: var(--muted); font-family: var(--mono); }
 
 .chat-overlay { position: fixed; right: 1.75rem; bottom: 1.75rem; z-index: 20; width: min(28.75rem, calc(100vw - 2.5rem)); }
 .chat-overlay,
@@ -1035,6 +1119,7 @@ button { cursor: pointer; }
 .chat-theme-swatch[data-theme="gold"] { background: #dba937; }
 .chat-theme-swatch[data-theme="jade"] { background: #67dda0; }
 .chat-theme-swatch[data-theme="secret"] { background: #74737a; }
+.chat-theme-swatch[data-theme="jaws"] { background: #238aa1; }
 .chat-theme-swatch.is-locked { position: relative; background: repeating-linear-gradient(135deg, #4a494e, #4a494e 0.25rem, #38373b 0.25rem, #38373b 0.5rem); opacity: 0.85; }
 .chat-theme-swatch.is-locked::after { position: absolute; top: 50%; left: 50%; width: 0.45rem; height: 0.35rem; border-radius: 0.06rem; background: #d6d3cb; content: ''; transform: translate(-50%, -35%); }
 .chat-theme-lock-hint { color: var(--muted); font-family: var(--mono); font-size: 0.625rem; line-height: 1.35; text-align: center; }
@@ -1435,7 +1520,9 @@ button { cursor: pointer; }
 .app-shell .about-page[open],
 .app-shell[data-theme="light-blue"] .about-page[open],
 .three-d-link,
-.project-link {
+.project-link,
+.anime-search
+{
   border-left-width: 0 !important;   /* a border would be cut into odd pieces by the torn edge */
   border-right-width: 0 !important;
   border-radius: 0 !important;
@@ -1492,7 +1579,11 @@ button { cursor: pointer; }
   justify-content: center;  /* centers the icon + word as one group */
 }
 
-/* the small line under the label is empty, so it only adds a gap and pushes the label up */
+.turn-placeholder-message .loading-phrase {
+  background-color: #e8e8e8;
+  border-radius: 3px;
+  padding: 0 2px;
+}
 .app-shell .contact-link small:empty {
   display: none;
 }

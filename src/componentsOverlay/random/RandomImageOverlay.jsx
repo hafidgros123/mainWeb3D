@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const cornerFolders = [
@@ -128,18 +128,6 @@ function createRandomImage() {
 function RandomImageOverlay() {
   const location = useLocation()
   const [activeImage, setActiveImage] = useState(null)
-
-  useEffect(() => {
-    Object.values(imagesByCorner)
-      .flatMap((images) => images.slice(0, MAX_IMAGES_PER_CORNER))
-      .forEach(({ src }) => {
-      const image = new window.Image()
-      image.src = src
-      if (typeof image.decode === 'function') {
-        image.decode().catch(() => {})
-      }
-    })
-  }, [])
 
   useLayoutEffect(() => {
     const nextImage = createRandomImage()

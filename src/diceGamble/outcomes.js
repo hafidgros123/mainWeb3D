@@ -1,8 +1,8 @@
 export const OUTCOMES = [
   { min: 12, max: 15, videos: ['/12-15/kit.mp4'] },
 
-  { min: 16, max: 21, images: ['/16-21/aykabron.jpg'] },
-  { min: 22, max: 24, images: ['/22-24/echidna.gif'] },
+  { min: 16, max: 21, images: ['/16-21/aykabron.webp'] },
+  { min: 22, max: 24, images: ['/22-24/echidna.webp'] },
 
   { min: 27, max: 29, videos: ['/27-29/choose.mp4'] },
   { min: 30, max: 31, videos: ['/30-31/rat.mp4'] },

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { gameDefinitions } from '../../gamesData/gameDefinitions'
 import { useProgression } from '../../store/progressionStore'
 import GameComments from './GameComments'
+import TurnPlaceholder from '../../shared/TurnPlaceholder'
 import './gamepage.css'
 
 
@@ -113,7 +114,7 @@ function GamePage() {
   }, [currentId, completeGame])
 
   if (!game) {
-    return <p>Game not found.</p>
+    return <TurnPlaceholder message="[WRITE FUNNY MESSAGE HERE: game was not found]" />
   }
 
   return (
@@ -136,13 +137,16 @@ function GamePage() {
         </section>
       ) : (
         <section className="game-placeholder" aria-label={`${game.title} placeholder`}>
-          <p>{build === 'checking' ? 'Loading game...' : 'This game is not ready yet.'}</p>
-          <small>Put the WebGL build in public/unity/{game.id}/.</small>
+          <TurnPlaceholder
+            message={build === 'checking'
+              ? "loading the assets..may take a good moment depending on your pc (please get a better gpu and cpu) or maybe the browser is just being a chud and not loading the assets properly (try refreshing)"
+              : "ok soo.....i probably didn't finish things on this one yet (or maybe you broke it who knows at this point im not even surprised) "}
+            detail={`Put the WebGL build in public/unity/${game.id}/.`}
+          />
         </section>
       )}
 
       <GameComments gameId={game.id} />
-
 
 
         <section className="contact-section" aria-labelledby="contact-title">

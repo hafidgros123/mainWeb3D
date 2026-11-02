@@ -117,6 +117,7 @@ function ChatOverlay({ theme, onThemeChange }) {
             <button className="chat-theme-swatch" type="button" data-theme="crimson" aria-label="Crimson background" aria-pressed={theme === 'crimson'} onClick={() => onThemeChange('crimson')} />
             <button className="chat-theme-swatch" type="button" data-theme="gold" aria-label="Gold background" aria-pressed={theme === 'gold'} onClick={() => onThemeChange('gold')} />
             <button className="chat-theme-swatch" type="button" data-theme="jade" aria-label="Jade background" aria-pressed={theme === 'jade'} onClick={() => onThemeChange('jade')} />
+            <button className="chat-theme-swatch" type="button" data-theme="jaws" aria-label="Jaws background" aria-pressed={theme === 'jaws'} onClick={() => onThemeChange('jaws')} />
             <button
               className={`chat-theme-swatch chat-theme-swatch--secret${secretThemeUnlocked ? '' : ' is-locked'}`}
               type="button"
@@ -133,7 +134,12 @@ function ChatOverlay({ theme, onThemeChange }) {
           )}
         </div>
         {isOpen ? (
-          <ChatWindow onClose={() => setIsOpen(false)} onUnlockTheme={unlockSecretTheme} />
+          <ChatWindow
+            onClose={() => setIsOpen(false)}
+            onUnlockTheme={unlockSecretTheme}
+            userId={userId}
+            onRequireSignIn={() => setIsSignInOpen(true)}
+          />
         ) : (
           <ChatBubbleButton onOpen={() => setIsOpen(true)} />
         )}

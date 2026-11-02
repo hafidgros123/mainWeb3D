@@ -31,6 +31,11 @@ const BACKGROUNDS = {
     default: '/backgrounds/blood.webp',
     route: '/backgrounds/ma2.webp',
   },
+
+  jaws: {
+    default: '/backgrounds/jaws.webp',
+    route: '/backgrounds/el.webp',
+  },
 }
 
 const LAYERS = Object.entries(BACKGROUNDS).flatMap(([theme, images]) => [
@@ -74,7 +79,11 @@ export default function ThemeBackground({ theme }) {
 
   return (
     <div className="theme-bg" aria-hidden="true">
-      {LAYERS.map((layer) => {
+      {[shown.current, shown.prev]
+        .filter(Boolean)
+        .map((layerId) => LAYERS.find((layer) => layer.id === layerId))
+        .filter(Boolean)
+        .map((layer) => {
         const state =
           layer.id === shown.current
             ? ' is-current'
@@ -91,7 +100,7 @@ export default function ThemeBackground({ theme }) {
             className={`theme-bg__layer${state}`}
           />
         )
-      })}
+        })}
     </div>
   )
 }

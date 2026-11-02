@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { safeAvatarUrl } from '../../lib/avatar'
+import TurnPlaceholder from '../../shared/TurnPlaceholder'
 
 const MAX_LENGTH = 500
 
@@ -115,8 +116,12 @@ function GameComments({ gameId }) {
         </p>
       )}
 
-      {status === 'loading' && <p className="comments-note">Loading comments...</p>}
-      {status === 'error' && <p className="comments-note">Comments could not be loaded right now.</p>}
+      {status === 'loading' && (
+        <TurnPlaceholder message="loading others chuds (like you) comments....." />
+      )}
+      {status === 'error' && (
+        <TurnPlaceholder message="failed to load.....how tf did you manage to break it " />
+      )}
       {status === 'ready' && comments.length === 0 && (
         <p className="comments-note">No comments yet. Be the first!</p>
       )}

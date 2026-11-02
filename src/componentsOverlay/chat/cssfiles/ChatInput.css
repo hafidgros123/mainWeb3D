@@ -15,10 +15,58 @@
   text-transform: uppercase;
   transition: background 10rem ease, color 10rem ease, box-shadow 10rem ease, transform 10rem ease;
 }
-.chat-input button:hover { 
+.chat-input button:hover {
   color: var(--page);
   background: var(--coral);
   box-shadow: 0 0 0.75rem color-mix(in srgb, var(--coral) 42%, transparent);
   transform: translateY(-0.0625rem);
 }
+
+.chat-signin-gate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.875rem 0 0;
+  box-sizing: border-box;
+}
+.chat-signin-gate p { margin: 0; color: var(--muted); font-size: 0.8125rem; }
+.chat-signin-gate button {
+  flex-shrink: 0;
+  padding: 0.6875rem 1rem;
+  border: 0.0625rem solid var(--coral-dark);
+  border-radius: 0.1875rem;
+  color: var(--coral);
+  background: var(--panel);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: background 10rem ease, color 10rem ease, box-shadow 10rem ease, transform 10rem ease;
+}
+.chat-signin-gate button:hover {
+  color: var(--page);
+  background: var(--coral);
+  box-shadow: 0 0 0.75rem color-mix(in srgb, var(--coral) 42%, transparent);
+  transform: translateY(-0.0625rem);
+}
+
+.chat-clear-button {
+  display: grid;
+  width: 1.875rem;
+  height: 1.875rem;
+  padding: 0;
+  flex-shrink: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: var(--cream);
+  background: color-mix(in srgb, var(--panel-soft) 80%, transparent);
+  font-size: 0.875rem;
+  transition: all 10rem ease;
+}
+.chat-clear-button:hover { background: var(--panel-soft); transform: scale(1.1); }
+.chat-clear-button:disabled { opacity: 0.5; cursor: default; transform: none; }
  

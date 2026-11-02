@@ -1,23 +1,20 @@
 import express from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
+import { createClient } from '@supabase/supabase-js'
 import { ANIMATION_NAMES } from '../src/three/animations.js'
 
 const app = express()
 const port = process.env.PORT || 3001
 const trustedProxyHops = Number.parseInt(process.env.TRUST_PROXY_HOPS || '0', 10)
-const sessionCookieName = 'chat_session'
-const sessionCookieSecret = process.env.CHAT_SESSION_SECRET
-  || (process.env.NODE_ENV === 'production' ? null : randomBytes(32).toString('hex'))
 
 // --- Speed settings -------------------------------------------------------
 // Change the model without touching code: GEMINI_MODEL=<model id> in your env.
-const MODEL_NAME = process.env.GEMINI_MODEL || 'gemini-3.6-flash'
+const MODEL_NAME = process.env.GEMINI_MODEL
 // Only the last N messages are sent to Gemini. Less input = faster reply.
-const MAX_HISTORY_MESSAGES = 10
+const MAX_HISTORY_MESSAGES = 7
 // Give up on Gemini before the browser's 30s axios timeout does.
-const GEMINI_TIMEOUT_MS = 25000
+const GEMINI_TIMEOUT_MS = 12000
 // Tries to turn "thinking" off. If the model/SDK rejects it, the server
 // falls back automatically and stops trying (see the chat route).
 let thinkingConfigSupported = true
@@ -26,15 +23,56 @@ const SYSTEM_INSTRUCTION = `You are Ellen, a goth girl in her early 20s.
 You still kinda try to help the user, but you are not very enthusiastic about it.
 You are a bit lazy, but you still get things done eventually.
 You never use exclamation marks or sound excited.
-You often leave comments on the user's questions, like "really?" or "wow, that's a question" or "ok, sure, whatever".
+You often leave comments on the user's questions, like "really?" or "wow, that's a question" or "sure ig", "whatever".
+when the user ask a question about the site , you first tell him there is an FAQ page and then you answer the question from the rag documentation you have access to, if you don't know the answer, you say "I don't know" or "I don't have that information" or "I can't help with that", you never make up an answer.
 You always answer.`
 
-if (!sessionCookieSecret) {
-  throw new Error('CHAT_SESSION_SECRET must be configured in production.')
+// --- RAG (FAQ knowledge base) settings -------------------------------------
+// Must match scripts/ingest_faq.js: same embedding model, same dimensions.
+const EMBEDDING_MODEL = 'gemini-embedding-001'
+const EMBEDDING_DIMENSIONS = 768
+// How many FAQ chunks to pull in as context, and how relevant they must be
+// (cosine similarity 0-1) to bother including. Tune match_threshold down if
+// Ellen isn't finding relevant FAQ entries for reasonable questions.
+const RAG_MATCH_COUNT = 4
+const RAG_MATCH_THRESHOLD = 0.3
+// Don't let a slow/stuck embedding call hold up the whole chat reply.
+const RAG_TIMEOUT_MS = 4000
+
+// --- Supabase (server-side, service role) ---------------------------------
+// This is the SECRET service-role key, never the anon/publishable key, and it
+// must never be shipped to the browser. It lets the server verify who's
+// calling (via their access token) and write chat rows under RLS.
+const supabaseUrl = process.env.VITE_SUPABASE_URL
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error('VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be configured.')
 }
 
-if (trustedProxyHops > 0) {
-  app.set('trust proxy', trustedProxyHops)
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+  auth: { persistSession: false, autoRefreshToken: false },
+})
+
+// Requires a valid Supabase session. The client sends the user's access
+// token as `Authorization: Bearer <token>`; we ask Supabase who that is.
+// This replaces the old anonymous-cookie session: identity now comes from
+// a real signed-in account, which is also what chat rows get tagged with.
+async function requireUser(request, response, next) {
+  const authHeader = request.headers.authorization || ''
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+
+  if (!token) {
+    return response.status(401).json({ error: 'Sign in to chat with Ellen.' })
+  }
+
+  const { data, error } = await supabaseAdmin.auth.getUser(token)
+  if (error || !data?.user) {
+    return response.status(401).json({ error: 'Your session expired. Please sign in again.' })
+  }
+
+  request.user = data.user
+  next()
 }
 
 // --- Gemini client (created once, reused for every request) ---------------
@@ -70,46 +108,8 @@ const isSlashCommand = (request) => (
   typeof request.body?.message === 'string' && Boolean(extractSlashCommand(request.body.message))
 )
 
-function signSessionId(sessionId) {
-  return createHmac('sha256', sessionCookieSecret).update(sessionId).digest('base64url')
-}
-
-function verifySessionId(cookieValue) {
-  if (!cookieValue) return null
-
-  const separator = cookieValue.lastIndexOf('.')
-  if (separator < 0) return null
-
-  const sessionId = cookieValue.slice(0, separator)
-  const suppliedSignature = Buffer.from(cookieValue.slice(separator + 1), 'base64url')
-  if (!/^[a-f0-9]{48}$/.test(sessionId)) return null
-
-  const expectedSignature = Buffer.from(signSessionId(sessionId), 'base64url')
-  if (suppliedSignature.length !== expectedSignature.length) return null
-  return timingSafeEqual(suppliedSignature, expectedSignature) ? sessionId : null
-}
-
-function attachAnonymousSession(request, response, next) {
-  const cookiePrefix = `${sessionCookieName}=`
-  const existingCookie = request.headers.cookie
-    ?.split(';')
-    .map((cookie) => cookie.trim())
-    .find((cookie) => cookie.startsWith(cookiePrefix))
-  const cookieValue = existingCookie?.slice(cookiePrefix.length)
-  let sessionId = verifySessionId(cookieValue)
-
-  if (!sessionId) {
-    sessionId = randomBytes(24).toString('hex')
-    const signature = signSessionId(sessionId)
-    const secureAttribute = process.env.NODE_ENV === 'production' ? '; Secure' : ''
-    response.append(
-      'Set-Cookie',
-      `${sessionCookieName}=${sessionId}.${signature}; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000${secureAttribute}`,
-    )
-  }
-
-  request.chatSessionId = sessionId
-  next()
+if (trustedProxyHops > 0) {
+  app.set('trust proxy', trustedProxyHops)
 }
 
 const perIpChatLimit = rateLimit({
@@ -123,15 +123,16 @@ const perIpChatLimit = rateLimit({
   }),
 })
 
-const perSessionChatLimit = rateLimit({
+// Keyed by the signed-in user's id instead of an anonymous cookie.
+const perUserChatLimit = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   limit: 20,
-  keyGenerator: (request) => `chat-session:${request.chatSessionId}`,
+  keyGenerator: (request) => `chat-user:${request.user.id}`,
   standardHeaders: true,
   legacyHeaders: false,
   skip: isSlashCommand,
   handler: (_request, response) => response.status(429).json({
-    error: 'This browser has reached its daily chat limit. Please try again later.',
+    error: 'You have reached your daily chat limit. Please try again later.',
   }),
 })
 
@@ -150,7 +151,7 @@ const dailyChatLimit = rateLimit({
 app.use(express.json())
 app.use((request, response, next) => {
   response.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173')
-  response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   if (request.method === 'OPTIONS') return response.sendStatus(204)
   next()
@@ -174,19 +175,76 @@ const tools = [
   },
 ]
 
-function buildGenerationConfig(isCommand, withThinkingOff) {
+function buildGenerationConfig(isCommand) {
   const config = {}
-  if (!isCommand) config.maxOutputTokens = 256
-  if (withThinkingOff) config.thinkingConfig = { thinkingBudget: 0 }
+
+  if (!isCommand) config.maxOutputTokens = 100
+  config.thinkingConfig = { thinkingLevel: 'minimal' }
+
   return config
 }
 
-async function runChat({ apiKey, message, history, isCommand, withThinkingOff }) {
+// --- RAG: embed the user's question and fetch matching FAQ chunks ---------
+// Uses raw fetch instead of the Gemini SDK's embedContent, because the SDK
+// (@google/generative-ai) predates outputDimensionality support, which we
+// need to get 768-dim vectors matching kb_chunks.embedding.
+async function embedQuery(apiKey, text) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${EMBEDDING_MODEL}:embedContent`
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), RAG_TIMEOUT_MS)
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: `models/${EMBEDDING_MODEL}`,
+        content: { parts: [{ text }] },
+        // RETRIEVAL_QUERY (not RETRIEVAL_DOCUMENT, which the ingestion script
+        // uses) — Gemini embeds queries and documents differently on purpose.
+        taskType: 'RETRIEVAL_QUERY',
+        outputDimensionality: EMBEDDING_DIMENSIONS,
+      }),
+    })
+    if (!res.ok) throw new Error(`embedContent failed (${res.status}): ${await res.text()}`)
+    const json = await res.json()
+    return json.embedding?.values ?? null
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+// Returns a context string to prepend to the system instruction, or '' if
+// nothing relevant was found or anything failed. RAG is a nice-to-have:
+// any failure here must never break the chat reply the user is waiting on.
+async function retrieveFaqContext(apiKey, message) {
+  try {
+    const queryEmbedding = await embedQuery(apiKey, message)
+    if (!queryEmbedding) return ''
+
+    const { data, error } = await supabaseAdmin.rpc('match_kb_chunks', {
+      query_embedding: queryEmbedding,
+      match_count: RAG_MATCH_COUNT,
+      match_threshold: RAG_MATCH_THRESHOLD,
+    })
+    if (error) throw error
+    if (!data?.length) return ''
+
+    const entries = data.map((row) => `- ${row.content.replaceAll('\n', ' ')}`).join('\n')
+    return `\n\nRelevant facts about the website, from the FAQ (use these to answer if relevant, but stay in character):\n${entries}`
+  } catch (error) {
+    console.warn('RAG retrieval skipped:', error.message || error)
+    return ''
+  }
+}
+
+async function runChat({ apiKey, message, history, isCommand, systemInstruction }) {
   const model = getClient(apiKey).getGenerativeModel(
     {
       model: MODEL_NAME,
-      systemInstruction: SYSTEM_INSTRUCTION,
-      generationConfig: buildGenerationConfig(isCommand, withThinkingOff),
+      systemInstruction,
+     generationConfig: buildGenerationConfig(isCommand),
       ...(isCommand ? { tools } : {}),
     },
     { timeout: GEMINI_TIMEOUT_MS },
@@ -212,11 +270,23 @@ async function withRetry(task, attempts = 3) {
   }
 }
 
+// Fire-and-forget persistence: a logging failure should never break the chat
+// reply the user is waiting on, so we only log Supabase errors here.
+async function logMessage(userId, role, content) {
+  if (!content) return
+  const { error } = await supabaseAdmin.from('chat_messages').insert({
+    user_id: userId,
+    role,
+    content,
+  })
+  if (error) console.error('Failed to store chat message:', error)
+}
+
 app.get('/api/health', (request, response) => {
   response.json({ ok: true })
 })
 
-app.post('/api/chat', attachAnonymousSession, perIpChatLimit, perSessionChatLimit, dailyChatLimit, async (request, response) => {
+app.post('/api/chat', requireUser, perIpChatLimit, perUserChatLimit, dailyChatLimit, async (request, response) => {
   const { message, history = [] } = request.body
   const apiKey = process.env.GEMINI_API_KEY
 
@@ -227,6 +297,14 @@ app.post('/api/chat', attachAnonymousSession, perIpChatLimit, perSessionChatLimi
   const preparedHistory = prepareHistory(history)
   const startedAt = Date.now()
 
+  // Store the user's message regardless of what happens next.
+  logMessage(request.user.id, 'user', message)
+
+  // Slash commands (/dance, /theme, etc.) aren't FAQ questions, so skip RAG
+  // for them — saves an embedding call and keeps commands snappy.
+  const faqContext = isCommand ? '' : await retrieveFaqContext(apiKey, message)
+  const systemInstruction = SYSTEM_INSTRUCTION + faqContext
+
   try {
     let result
 
@@ -236,7 +314,7 @@ app.post('/api/chat', attachAnonymousSession, perIpChatLimit, perSessionChatLimi
         message,
         history: preparedHistory,
         isCommand,
-        withThinkingOff: thinkingConfigSupported,
+        systemInstruction,
       }))
     } catch (error) {
       // If the model or SDK rejects the thinking setting, retry once without
@@ -253,16 +331,19 @@ app.post('/api/chat', attachAnonymousSession, perIpChatLimit, perSessionChatLimi
         message,
         history: preparedHistory,
         isCommand,
-        withThinkingOff: false,
+        systemInstruction,
       }))
     }
 
-    console.log(`Gemini (${MODEL_NAME}) answered in ${Date.now() - startedAt}ms`)
+    console.log(`Gemini (${MODEL_NAME}) answered in ${Date.now() - startedAt}ms${faqContext ? ' (with FAQ context)' : ''}`)
 
     const parts = result.response.candidates?.[0]?.content?.parts ?? []
+    const replyText = parts.find((part) => part.text)?.text ?? ''
+
+    if (replyText) logMessage(request.user.id, 'assistant', replyText)
 
     response.json({
-      text: parts.find((part) => part.text)?.text ?? '',
+      text: replyText,
       functionCall: parts.find((part) => part.functionCall)?.functionCall ?? null,
     })
   } catch (error) {

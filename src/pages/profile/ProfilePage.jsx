@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
 import { AVATAR_TYPES, MAX_AVATAR_BYTES, safeAvatarUrl } from '../../lib/avatar'
+import TurnPlaceholder from '../../shared/TurnPlaceholder'
 import './profile.css'
 
 const EXTENSIONS = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }
@@ -192,11 +193,15 @@ function ProfilePage() {
       <h1>Profile</h1>
 
       <section className="profile-card" aria-label="Edit your profile">
-        {!authReady && <p className="profile-note">Loading...</p>}
+        {!authReady && (
+          <TurnPlaceholder message="loading chud account infos....." />
+        )}
 
         {authReady && !user && <p className="profile-note">Sign in first (top right) to edit your profile.</p>}
 
-        {authReady && user && !loaded && !status.text && <p className="profile-note">Loading your profile...</p>}
+        {authReady && user && !loaded && !status.text && (
+          <TurnPlaceholder message="loading chud account infos....." />
+        )}
 
         {authReady && user && loaded && (
           <form className="profile-form" onSubmit={handleSave}>
