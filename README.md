@@ -142,10 +142,9 @@ The gallery automatically looks for the matching image in `small version`;
 opening the card loads the full `.glb` model. You can use any funny image you
 want for the card preview.
 
-The model detail page uses the existing signed-in comments experience. Run
-`supabase_sql/03_model_comments.sql` in the Supabase SQL editor first. It adds
-the nullable `model_id` column and an index to the same `comments` table; the
-existing authenticated insert and owner-delete policies are reused.
+The model detail page uses the existing signed-in comments experience and the
+existing `comments.game_id` column. Model comments are stored with a
+`model:<model-id>` key, so no extra Supabase table, column, or policy is needed.
 
 ## Production and deployment
 

@@ -6,6 +6,7 @@ import TurnPlaceholder from '../../shared/TurnPlaceholder'
 const MAX_LENGTH = 500
 
 function ModelComments({ modelId }) {
+  const commentKey = `model:${modelId}`
   const [session, setSession] = useState(null)
   const [comments, setComments] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
@@ -20,11 +21,11 @@ function ModelComments({ modelId }) {
   }, [])
 
   const loadComments = useCallback(async () => {
-    // Keep model comments in the same table and profile join as game comments.
+    // Use the existing game_id column so the same table policies and trigger apply.
     const { data, error } = await supabase
       .from('comments')
       .select('id, user_id, author_name, avatar_url, is_admin, body, created_at, profiles:profiles!comments_user_id_profile_fkey ( username, avatar_url )')
-      .eq('model_id', modelId)
+      .eq('game_id', commentKey)
       .order('created_at', { ascending: false })
       .limit(50)
 
@@ -35,7 +36,7 @@ function ModelComments({ modelId }) {
     }
     setComments(data)
     setStatus('ready')
-  }, [modelId])
+  }, [commentKey])
 
   useEffect(() => {
     setStatus('loading')
@@ -49,7 +50,7 @@ function ModelComments({ modelId }) {
     setPosting(true)
     setFormError('')
     // The database supplies user_id, author details, and admin state.
-    const { error } = await supabase.from('comments').insert({ model_id: modelId, body })
+    const { error } = await supabase.from('comments').insert({ game_id: commentKey, body })
     setPosting(false)
     if (error) {
       setFormError('Could not post your comment. Please try again in a moment.')
