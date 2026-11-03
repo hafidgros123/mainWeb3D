@@ -108,7 +108,9 @@
 }
 
 .model-card-preview img,
+.model-card-preview video,
 .model-preview-image,
+.model-preview-video,
 .model-preview-placeholder {
   display: block;
   max-width: 100%;

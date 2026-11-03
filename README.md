@@ -128,19 +128,21 @@ npm run lint      # Run the project linter
 ### Adding a 3D model
 
 Put the full `.glb` file in `public/models/`, then put a lightweight preview
-image in `public/models/small version/` using the same filename without the
-`.glb` extension. The app checks `.webp`, `.png`, `.jpg`, and `.jpeg`. For
-example:
+in `public/models/small version/` using the same filename without the `.glb`
+extension. The app accepts `.webp` images (including animated WebP/GIF-style
+animations) and `.mp4` videos. For example:
 
 ```text
 public/models/hoshimi_miyabi.glb
 public/models/small version/hoshimi_miyabi.webp
+# or:
+public/models/small version/hoshimi_miyabi.mp4
 ```
 
 Add the model entry to `MODEL_CATALOG` in `src/pages/3d envir/modelData.js`.
-The gallery automatically looks for the matching image in `small version`;
-opening the card loads the full `.glb` model. You can use any funny image you
-want for the card preview.
+The gallery automatically looks for the matching `.webp` first, then `.mp4`;
+opening the card loads the full `.glb` model. Videos play muted and loop in the
+preview card.
 
 The model detail page uses the existing signed-in comments experience and the
 existing `comments.game_id` column. Model comments are stored with a
