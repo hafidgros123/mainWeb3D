@@ -9,6 +9,7 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
 - Game list and per-game pages using React Router
 - Chat overlay with Gemini integration and function-calling support
 - 3D scene and animation controls powered by Three.js
+- Repository-backed 3D model gallery with GLB viewers and comments
 - Anonymous browser session handling and lightweight request limiting on the backend
 - Demo-style aesthetic with custom random image overlays and animated UI
 
@@ -121,7 +122,30 @@ npm run lint      # Run the project linter
 - Chat UI belongs in `src/componentsOverlay/chat/`.
 - Gemini API logic and chat route definitions live in `src/lib/gemini.js`.
 - 3D animation names and scene-related helpers live in `src/three/`.
+- 3D model files belong in `public/models/`; register each model in `src/pages/3d envir/modelData.js`.
 - Game definitions are kept under `src/gamesData/`.
+
+### Adding a 3D model
+
+Put the full `.glb` file in `public/models/`, then put a lightweight preview
+image in `public/models/small version/` using the same filename without the
+`.glb` extension. The app checks `.webp`, `.png`, `.jpg`, and `.jpeg`. For
+example:
+
+```text
+public/models/hoshimi_miyabi.glb
+public/models/small version/hoshimi_miyabi.webp
+```
+
+Add the model entry to `MODEL_CATALOG` in `src/pages/3d envir/modelData.js`.
+The gallery automatically looks for the matching image in `small version`;
+opening the card loads the full `.glb` model. You can use any funny image you
+want for the card preview.
+
+The model detail page uses the existing signed-in comments experience. Run
+`supabase_sql/03_model_comments.sql` in the Supabase SQL editor first. It adds
+the nullable `model_id` column and an index to the same `comments` table; the
+existing authenticated insert and owner-delete policies are reused.
 
 ## Production and deployment
 
@@ -133,4 +157,3 @@ npm run lint      # Run the project linter
 ## License
 
 This project is currently without a formal license declaration in the repository.
-

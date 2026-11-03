@@ -597,7 +597,30 @@ button { cursor: pointer; }
   text-decoration: none;
 }
 
+.site-header .home-link {
+  box-sizing: border-box;
+  width: 20rem;
+  margin-left: -2rem;
+  justify-content: center;
+  padding: 0.65rem 1rem 0.7rem;
+  border: 1px solid var(--coral);
+  color: var(--cream) !important;
+  background: var(--panel);
+  box-shadow: 0 0.35rem 0 color-mix(in srgb, var(--coral-dark) 55%, transparent);
+  text-shadow: none;
+  -webkit-mask-image: var(--torn-image);
+  mask-image: var(--torn-image);
+  -webkit-mask-size: var(--torn-size);
+  mask-size: var(--torn-size);
+  -webkit-mask-position: var(--torn-pos);
+  mask-position: var(--torn-pos);
+  -webkit-mask-repeat: var(--torn-repeat);
+  mask-repeat: var(--torn-repeat);
+}
+
 .home-link-arrow {
+  position: relative;
+  z-index: 1;
   display: grid;
   width: 2.125rem;
   height: 2.125rem;
@@ -609,17 +632,48 @@ button { cursor: pointer; }
   transition: background 10rem ease, color 10rem ease;
 }
 
+.site-header .home-link-arrow {
+  flex: 0 0 2.125rem;
+  color: var(--cream);
+  border-color: var(--coral);
+}
+
 .home-link:hover .home-link-arrow,
 .home-link:focus-visible .home-link-arrow {
   color: var(--page);
   background: var(--coral);
 }
 
+.site-header .home-link:hover,
+.site-header .home-link:focus-visible {
+  color: var(--cream) !important;
+  background: color-mix(in srgb, var(--panel) 82%, var(--coral));
+}
+
 .home-link-label {
+  white-space: nowrap;
+  color: var(--cream) !important;
   font-family: var(--pixel);
   font-size: 0.9375rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.app-shell[data-theme="light-blue"] .site-header .home-link {
+  color: #fff !important;
+  background: #262238;
+  border-color: #bdb4e4;
+  box-shadow: 0 0.35rem 0 #43208f;
+}
+
+.app-shell[data-theme="light-blue"] .site-header .home-link-label {
+  color: #fff !important;
+  text-shadow: 0 1px 2px #1d1238;
+}
+
+.app-shell[data-theme="light-blue"] .site-header .home-link-arrow {
+  color: #fff;
+  border-color: #bdb4e4;
 }
 
 .AppMainMenu {

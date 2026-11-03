@@ -10,6 +10,7 @@ import './App.css'
 const MainPage = lazy(() => import('./pages/MainPage'))
 const GamePage = lazy(() => import('./pages/games/GamePage'))
 const ThreeDPage = lazy(() => import('./pages/3d envir/ThreeDPage'))
+const ThreeDModelPage = lazy(() => import('./pages/3d envir/ThreeDModelPage'))
 const AnimeUpdatesPage = lazy(() => import('./pages/anime/AnimeUpdatesPage'))
 const AnimeInfoPage = lazy(() => import('./pages/anime/AnimeInfoPage'))
 const ProfilePage = lazy(() => import('./pages/profile/ProfilePage'))
@@ -61,6 +62,7 @@ function AppContent() {
             <Route path="/" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
             <Route path="/games/:gameId" element={<ErrorBoundary><GamePage /></ErrorBoundary>} />
             <Route path="/3d" element={<ErrorBoundary><ThreeDPage /></ErrorBoundary>} />
+            <Route path="/3d/:modelId" element={<ErrorBoundary><ThreeDModelPage /></ErrorBoundary>} />
             <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
             <Route path="/anime/:id" element={<ErrorBoundary><AnimeInfoPage /></ErrorBoundary>} />
             <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />

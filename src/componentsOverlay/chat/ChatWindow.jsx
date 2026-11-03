@@ -117,7 +117,7 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
 
     if (command === '/unlock3d') {
       unlockForSession()
-      setMessages((current) => [...current, { message: '3D interactions unlocked for this session.', sender: 'ellenBot', id: `${crypto.randomUUID()}-unlock` }])
+      setMessages((current) => [...current, { message: '3D gallery unlocked for this session.', sender: 'ellenBot', id: `${crypto.randomUUID()}-unlock` }])
       return
     }
 
