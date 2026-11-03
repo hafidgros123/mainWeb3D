@@ -18,7 +18,7 @@ const VideoPage = lazy(() => import('./pages/videoPage/VideoPage'))
 
 function AppContent() {
   const location = useLocation()
-  const [theme, setTheme] = useState('crimson')
+  const [theme, setTheme] = useState('ki')
   const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
   if (location.pathname === '/watch') {
     return (

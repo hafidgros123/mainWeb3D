@@ -264,7 +264,7 @@ function MenuScreen() {
           </div>
         </details>
 
-        <details className="about-page technical-details" open>
+        <details className="about-page technical-details">
           <summary>Technical Details</summary>
           <p>This project is structured as a small multi-page app that blends a game portal, a chat assistant, and a 3D scene prototype. The main frontend lives in <code>src/</code>, while the backend API lives in the separate <code>serverless-side</code> folder.</p>
           <ul>
