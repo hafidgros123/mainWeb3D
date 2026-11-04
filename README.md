@@ -12,6 +12,8 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
 - Repository-backed 3D model gallery with GLB viewers and comments
 - Anonymous browser session handling and lightweight request limiting on the backend
 - Demo-style aesthetic with custom random image overlays and animated UI
+- Theme-aware sign-in success popup with an animated WebP celebration image
+- A 10% route-entry chance for the placeholder glitch page
 
 ## Tech stack
 
@@ -147,6 +149,19 @@ preview card.
 The model detail page uses the existing signed-in comments experience and the
 existing `comments.game_id` column. Model comments are stored with a
 `model:<model-id>` key, so no extra Supabase table, column, or policy is needed.
+
+Successful sign-ins show a large themed overlay for 20 seconds, with a close
+button and the animated `public/goodBoy/good-boy.webp` image. The popup UI is
+organized in `src/componentsOverlay/signinSuccess/`. The original GIF can
+remain in the public folder, but the app uses the WebP version.
+
+The app has a placeholder glitch route at `/glitched`. Each new route entry has
+a 10% chance of redirecting there; assets for the future experience belong in
+`public/glitched/`, and the page source is in `src/pages/glitched/`.
+
+The sign-in success music control uses the Becca assets in `public/becca/`:
+`becca-music.webp` is the animated playing state and `becca-stopped.webp` is
+the stopped state.
 
 ## Production and deployment
 

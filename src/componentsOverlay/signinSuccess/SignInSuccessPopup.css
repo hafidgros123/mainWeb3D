@@ -1,0 +1,125 @@
+.signin-success-overlay {
+  --success-tear: polygon(
+    0 1.2%, 3% 0, 8% 0.9%, 15% 0, 26% 1%, 38% 0, 50% 0.9%, 63% 0,
+    75% 1%, 88% 0, 96% 0.8%, 100% 0.3%, 99.2% 14%, 100% 32%, 99% 50%,
+    100% 68%, 99.2% 86%, 100% 99.6%, 94% 99%, 84% 100%, 70% 99%,
+    57% 100%, 44% 99%, 30% 100%, 17% 99%, 6% 100%, 0 99.4%, 0.8% 84%,
+    0 66%, 1% 48%, 0 30%, 0.8% 14%
+  );
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: var(--si-overlay);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  animation: signin-success-overlay-in 0.35s ease both;
+}
+
+.signin-success-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(42rem, 100%);
+  box-sizing: border-box;
+  padding: clamp(2.5rem, 8vw, 5rem) clamp(1.5rem, 7vw, 4rem);
+  color: var(--si-text);
+  background: var(--si-panel);
+  border: 2px solid var(--si-panel-edge);
+  box-shadow: inset 0 5px 0 var(--si-accent), inset 0 -8px 0 var(--si-panel-edge), 0 1rem 3rem rgb(0 0 0 / 42%);
+  clip-path: var(--success-tear);
+  -webkit-clip-path: var(--success-tear);
+  font-family: var(--si-font, var(--mono));
+  text-align: center;
+  animation: signin-success-card-in 0.45s steps(5, end) both;
+}
+
+.signin-success-card::before {
+  position: absolute;
+  inset: 1.25rem;
+  border: 2px dashed var(--si-panel-edge);
+  content: "";
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.signin-success-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  z-index: 1;
+  border: 0;
+  color: var(--si-text);
+  background: transparent;
+  cursor: pointer;
+  font: 1.8rem/1 var(--si-font, inherit);
+}
+
+.signin-success-image {
+  position: relative;
+  z-index: 1;
+  width: clamp(10rem, 32vw, 18rem);
+  height: clamp(10rem, 32vw, 18rem);
+  margin-bottom: 1.5rem;
+  object-fit: cover;
+  border: 2px solid var(--si-accent);
+  box-shadow: 0 0 0 0.5rem var(--si-field);
+}
+
+.signin-success-card h2,
+.signin-success-card p,
+.signin-success-dismiss {
+  position: relative;
+  z-index: 1;
+}
+
+.signin-success-card h2 {
+  margin: 0;
+  color: var(--si-accent);
+  font: clamp(1rem, 3vw, 1.7rem)/1.4 var(--si-font, inherit);
+  text-transform: uppercase;
+}
+
+.signin-success-card p {
+  margin: 0.8rem 0 1.75rem;
+  color: var(--si-text);
+  font: clamp(0.85rem, 2vw, 1.1rem)/1.5 var(--si-font, inherit);
+}
+
+.signin-success-dismiss {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--si-btn-edge);
+  color: var(--si-btn-ink);
+  background: var(--si-btn);
+  cursor: pointer;
+  font: 0.7rem var(--si-font, inherit);
+}
+
+.signin-success-close:hover,
+.signin-success-close:focus-visible,
+.signin-success-dismiss:hover,
+.signin-success-dismiss:focus-visible {
+  filter: brightness(1.15);
+}
+
+@keyframes signin-success-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes signin-success-card-in {
+  from { opacity: 0; transform: translateY(1.5rem) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 32rem) {
+  .signin-success-overlay {
+    padding: 0.75rem;
+  }
+
+  .signin-success-card::before {
+    inset: 0.75rem;
+  }
+}

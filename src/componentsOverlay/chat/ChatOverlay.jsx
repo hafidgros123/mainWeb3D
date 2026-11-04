@@ -4,6 +4,7 @@ import { selectSecretThemeUnlocked, useProgression } from '../../store/progressi
 import ChatBubbleButton from './ChatBubbleButton'
 import ChatWindow from './ChatWindow'
 import SignIn from '../sign/SignIn'
+import SignInSuccessPopup from '../signinSuccess/SignInSuccessPopup'
 import { supabase } from '../../lib/supabaseClient'
 import { safeAvatarUrl } from '../../lib/avatar'
 import '../sign/SignIn.css'
@@ -19,6 +20,8 @@ function isSessionExpired(user) {
 
 function ChatOverlay({ theme, onThemeChange }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [showSignInSuccess, setShowSignInSuccess] = useState(false)
+  const [successMusic, setSuccessMusic] = useState({ playing: false, stop: null, keepVisibleFor: 0 })
   const secretThemeUnlocked = useProgression(selectSecretThemeUnlocked)
   const unlockSecretTheme = useProgression((state) => state.unlockSecretTheme)
   const [isSignInOpen, setIsSignInOpen] = useState(false)
@@ -36,6 +39,7 @@ function ChatOverlay({ theme, onThemeChange }) {
         return
       }
       setUser(nextUser)
+      if (!nextUser) setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 0 })
     }
 
     const checkSession = () =>
@@ -81,6 +85,20 @@ function ChatOverlay({ theme, onThemeChange }) {
 
   const avatarUrl = safeAvatarUrl(profile?.avatar_url)
   const avatarInitial = (profile?.username?.[0] || user?.email?.[0] || '?').toUpperCase()
+  const closeSignInSuccess = () => {
+    setShowSignInSuccess(false)
+    setIsSignInOpen(false)
+  }
+
+  useEffect(() => {
+    if (!successMusic.keepVisibleFor) return undefined
+
+    const timer = window.setTimeout(
+      () => setSuccessMusic((current) => ({ ...current, keepVisibleFor: 0 })),
+      successMusic.keepVisibleFor
+    )
+    return () => window.clearTimeout(timer)
+  }, [successMusic.keepVisibleFor])
 
   return (
     <>
@@ -92,21 +110,38 @@ function ChatOverlay({ theme, onThemeChange }) {
         )}
 
         {user && (
-          <Link className="overlay-profile-link" to="/profile" aria-label="Your profile" title="Your profile">
-            {avatarUrl ? (
-              <img className="overlay-profile-avatar" src={avatarUrl} alt="" referrerPolicy="no-referrer" />
-            ) : (
-              <span className="overlay-profile-initial" aria-hidden="true">
-                {avatarInitial}
-              </span>
+          <div className="overlay-profile-stack">
+            <Link className="overlay-profile-link" to="/profile" aria-label="Your profile" title="Your profile">
+              {avatarUrl ? (
+                <img className="overlay-profile-avatar" src={avatarUrl} alt="" referrerPolicy="no-referrer" />
+              ) : (
+                <span className="overlay-profile-initial" aria-hidden="true">
+                  {avatarInitial}
+                </span>
+              )}
+            </Link>
+            {(successMusic.playing || successMusic.keepVisibleFor > 0) && (
+              <button
+                type="button"
+                className={`stop-success-sound-btn${successMusic.playing ? ' is-playing' : ' is-muted'}`}
+                onClick={() => successMusic.stop?.()}
+                aria-label="Stop success music"
+                title={successMusic.playing ? 'Stop success music' : 'Success music has stopped'}
+              >
+              </button>
             )}
-          </Link>
+          </div>
         )}
 
         <SignIn
           isOpen={isSignInOpen}
           onClose={() => setIsSignInOpen(false)}
+          onSuccess={() => setShowSignInSuccess(true)}
+          onSuccessSoundChange={setSuccessMusic}
         />
+        {showSignInSuccess && (
+          <SignInSuccessPopup onClose={closeSignInSuccess} />
+        )}
       </div>
 
       <aside className={`chat-overlay${isOpen ? ' chat-open' : ''}`}>

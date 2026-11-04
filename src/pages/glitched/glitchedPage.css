@@ -1,0 +1,21 @@
+.glitched-page {
+  display: grid;
+  min-height: 60svh;
+  padding: 5rem 1.5rem;
+  align-content: center;
+  justify-items: center;
+  color: var(--ink);
+  text-align: center;
+}
+
+.glitched-page h1 {
+  margin: 0.75rem 0;
+  color: var(--cream);
+  font-family: var(--pixel);
+}
+
+.glitched-page p:last-child {
+  max-width: 32rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}

@@ -182,6 +182,7 @@ body[data-theme="secret"] {
 }
 
 
+
 /* ==========================================================
    CARD
 ========================================================== */
@@ -735,6 +736,49 @@ body[data-theme="secret"] {
 
   cursor: pointer;
   transition: none;
+}
+
+.overlay-profile-stack {
+  position: fixed;
+  top: clamp(0.5rem, 1.5vw, 1rem);
+  right: clamp(0.75rem, 2vw, 1.75rem);
+  z-index: 1000;
+  display: grid;
+  justify-items: end;
+  gap: 0.45rem;
+}
+
+.overlay-profile-stack .overlay-profile-link {
+  position: relative;
+  top: auto;
+  right: auto;
+  --avatar-size: clamp(3rem, 5.5vw, 4.5rem);
+}
+
+.overlay-profile-stack .stop-success-sound-btn {
+  margin-top: 0;
+  width: 7rem;
+  min-width: 7rem;
+  height: 3.3rem;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.stop-success-sound-btn.is-playing {
+  background-image:
+    linear-gradient(rgb(0 0 0 / 18%), rgb(0 0 0 / 18%)),
+    url('/becca/becca-music.webp');
+  background-position: center;
+  background-size: cover;
+}
+
+.stop-success-sound-btn.is-muted {
+  background-image:
+    linear-gradient(rgb(0 0 0 / 18%), rgb(0 0 0 / 18%)),
+    url('/becca/becca-stopped.webp');
+  background-position: center;
+  background-size: cover;
 }
 
 .stop-success-sound-btn:hover {

@@ -20,7 +20,7 @@ async function uploadAvatar(userId, file) {
   if (profileError) console.error(profileError);
 }
 
-export default function SignIn({ isOpen, onClose }) {
+export default function SignIn({ isOpen, onClose, onSuccess, onSuccessSoundChange }) {
   const [mode, setMode] = useState('signin'); // 'signin' | 'signup'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,20 +29,26 @@ export default function SignIn({ isOpen, onClose }) {
   const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', text: '' }); // 'error' | 'success'
-  const [successPlaying, setSuccessPlaying] = useState(false);
   const successAudioRef = useRef(null);
   const closeAfterSuccessSoundRef = useRef(false);
 
   const isSignUp = mode === 'signup';
 
-  const stopSuccessSound = () => {
+  const toggleSuccessSound = () => {
     const audio = successAudioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      successAudioRef.current = null;
+    if (!audio) return;
+
+    if (audio.paused) {
+      audio.play().then(() => {
+        onSuccessSoundChange?.({ playing: true, stop: toggleSuccessSound, keepVisibleFor: 0 });
+      }).catch(() => {
+        onSuccessSoundChange?.({ playing: false, stop: toggleSuccessSound, keepVisibleFor: 10000 });
+      });
+      return;
     }
-    setSuccessPlaying(false);
+
+    audio.pause();
+    onSuccessSoundChange?.({ playing: false, stop: toggleSuccessSound, keepVisibleFor: 10000 });
 
     // Preserve the usual close-after-success behavior, while allowing the user
     // to stop the sound first. This only applies after a successful sign-in or
@@ -65,12 +71,12 @@ export default function SignIn({ isOpen, onClose }) {
     if (type === 'success') {
       successAudioRef.current = audio;
       closeAfterSuccessSoundRef.current = closeWhenFinished;
-      setSuccessPlaying(true);
+      onSuccessSoundChange?.({ playing: true, stop: toggleSuccessSound, keepVisibleFor: 0 });
 
       audio.addEventListener('ended', () => {
         if (successAudioRef.current === audio) {
           successAudioRef.current = null;
-          setSuccessPlaying(false);
+          onSuccessSoundChange?.({ playing: false, stop: null, keepVisibleFor: 0 });
           if (closeAfterSuccessSoundRef.current) {
             closeAfterSuccessSoundRef.current = false;
             onClose();
@@ -81,7 +87,7 @@ export default function SignIn({ isOpen, onClose }) {
       audio.play().catch(() => {
         if (successAudioRef.current === audio) {
           successAudioRef.current = null;
-          setSuccessPlaying(false);
+          onSuccessSoundChange?.({ playing: false, stop: null, keepVisibleFor: 0 });
           if (closeAfterSuccessSoundRef.current) {
             closeAfterSuccessSoundRef.current = false;
             onClose();
@@ -182,6 +188,8 @@ export default function SignIn({ isOpen, onClose }) {
       // the sound ends or when the user presses Stop Music.
       setPassword('');
       setAvatarFile(null);
+      setMode('signin');
+      onSuccess?.();
       playSound('success', { closeWhenFinished: true });
     } catch (err) {
       console.error(err);
@@ -352,16 +360,6 @@ export default function SignIn({ isOpen, onClose }) {
             {loading ? 'Please wait...' : isSignUp ? 'Sign Up' : 'Sign In'}
           </button>
 
-          {successPlaying && (
-            <button
-              type="button"
-              className="stop-success-sound-btn"
-              onClick={stopSuccessSound}
-              aria-label="Stop success music"
-            >
-              🔇 Stop Music
-            </button>
-          )}
         </form>
 
         <p className="signup-redirect">

@@ -1,5 +1,5 @@
-import { lazy, Suspense, useRef, useState } from 'react'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import ChatOverlay from './componentsOverlay/chat/ChatOverlay'
 import RandomImageOverlay from './componentsOverlay/random/RandomImageOverlay'
 import ErrorBoundary from './shared/ErrorBoundary'
@@ -15,11 +15,33 @@ const AnimeUpdatesPage = lazy(() => import('./pages/anime/AnimeUpdatesPage'))
 const AnimeInfoPage = lazy(() => import('./pages/anime/AnimeInfoPage'))
 const ProfilePage = lazy(() => import('./pages/profile/ProfilePage'))
 const VideoPage = lazy(() => import('./pages/videoPage/VideoPage'))
+const GlitchedPage = lazy(() => import('./pages/glitched/GlitchedPage'))
 
 function AppContent() {
   const location = useLocation()
+  const navigate = useNavigate()
+  const lastPathRef = useRef(null)
+  const glitchCooldownRef = useRef(0)
   const [theme, setTheme] = useState('ki')
   const hasRedPageBackground = location.pathname === '/' || location.pathname.startsWith('/games')
+
+  useEffect(() => {
+    const enteredNewPath = lastPathRef.current !== location.pathname
+    lastPathRef.current = location.pathname
+
+    if (!enteredNewPath || location.pathname === '/glitched') return
+
+    if (glitchCooldownRef.current > 0) {
+      glitchCooldownRef.current -= 1
+      return
+    }
+
+    if (Math.random() < 0.1) {
+      glitchCooldownRef.current = 10
+      navigate('/glitched', { state: { from: location.pathname } })
+    }
+  }, [location.pathname, navigate])
+
   if (location.pathname === '/watch') {
     return (
       <Suspense
@@ -66,6 +88,7 @@ function AppContent() {
             <Route path="/anime" element={<ErrorBoundary><AnimeUpdatesPage /></ErrorBoundary>} />
             <Route path="/anime/:id" element={<ErrorBoundary><AnimeInfoPage /></ErrorBoundary>} />
             <Route path="/profile" element={<ErrorBoundary><ProfilePage /></ErrorBoundary>} />
+            <Route path="/glitched" element={<ErrorBoundary><GlitchedPage /></ErrorBoundary>} />
             <Route path="*" element={<ErrorBoundary><MainPage /></ErrorBoundary>} />
           </Routes>
         </Suspense>
