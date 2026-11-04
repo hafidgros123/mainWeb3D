@@ -48,22 +48,63 @@ function ProfilePage() {
     let cancelled = false
     setLoaded(false)
 
-    supabase
-      .from('profiles')
-      .select('username, description, avatar_url')
-      .eq('id', userId)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (cancelled) return
-        if (error || !data) {
-          setStatus({ type: 'error', text: 'Could not load your profile.' })
+    const loadProfile = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, description, avatar_url')
+        .eq('id', userId)
+        .maybeSingle()
+
+      if (cancelled) return
+      if (error) {
+        console.error('Failed to load profile:', error)
+        if (error.code === 'PGRST301' || error.status === 401 || error.status === 403) {
+          await supabase.auth.signOut()
+          setUser(null)
+          setAuthReady(true)
+          setStatus({ type: 'error', text: 'Your account no longer exists. Please sign in again.' })
           return
         }
+        setStatus({ type: 'error', text: 'Could not load your profile.' })
+        return
+      }
+
+      if (data) {
         setUsername(data.username ?? '')
         setDescription(data.description ?? '')
         setSavedAvatar(data.avatar_url ?? null)
         setLoaded(true)
-      })
+        return
+      }
+
+      const metadata = user.user_metadata ?? {}
+      const fallbackUsername = String(metadata.username || user.email?.split('@')[0] || 'user')
+        .replace(/[^A-Za-z0-9_]/g, '_')
+        .slice(0, 20)
+        .padEnd(3, '_')
+      const { data: created, error: createError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userId,
+          username: fallbackUsername,
+          description: metadata.description || null,
+        }, { onConflict: 'id' })
+        .select('username, description, avatar_url')
+        .single()
+
+      if (cancelled) return
+      if (createError) {
+        console.error('Failed to create missing profile:', createError)
+        setStatus({ type: 'error', text: 'Could not load your profile.' })
+        return
+      }
+      setUsername(created.username ?? '')
+      setDescription(created.description ?? '')
+      setSavedAvatar(created.avatar_url ?? null)
+      setLoaded(true)
+    }
+
+    void loadProfile()
 
     return () => {
       cancelled = true

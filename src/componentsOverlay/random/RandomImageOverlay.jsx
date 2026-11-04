@@ -14,6 +14,7 @@ const imageFilesByFolder = {
     'curba.webp',
     'cutie.webp',
     'frienren.webp',
+    'ghg.webp',
     'juno.webp',
     'poorboy.webp',
   ],
@@ -22,6 +23,7 @@ const imageFilesByFolder = {
     'dog.webp',
     'durge.webp',
     'jofr.webp',
+    'maria or not maria.webp',
     'owl.webp',
     'plnareff.webp',
     'rem.webp',
@@ -29,6 +31,8 @@ const imageFilesByFolder = {
     'soukaku_sandwich.webp',
     'spino.webp',
     'warhammer.webp',
+    'yhggh.webp',
+    'yhj.webp',
   ],
   'bottom left': [
     'bea.webp',
@@ -38,6 +42,8 @@ const imageFilesByFolder = {
     'disgusted.webp',
     'elden-ring-ranni.webp',
     'fatty.webp',
+    'hyyy.webp',
+    'jgj.webp',
     'jho.webp',
     'miyabi.webp',
     'slanesh.webp',
@@ -48,7 +54,7 @@ const imagesByCorner = Object.fromEntries(
   cornerFolders.map(([folder, corner]) => [
     corner,
     imageFilesByFolder[folder].map((filename) => ({
-      src: `/assets/random/${encodeURIComponent(folder)}/${filename}`,
+      src: `/assets/random/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}`,
       isRem: filename.toLowerCase() === 'rem.webp',
     })),
   ]),

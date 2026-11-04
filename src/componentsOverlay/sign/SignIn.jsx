@@ -146,7 +146,14 @@ export default function SignIn({ isOpen, onClose, onSuccess, onSuccessSoundChang
         ? await supabase.auth.signUp({
             email,
             password,
-            options: { data: { username, description: description.trim() } },
+            options: {
+              data: { username, description: description.trim() },
+              emailRedirectTo: (() => {
+                const confirmationUrl = new URL(window.location.href)
+                confirmationUrl.searchParams.set('confirmed', '1')
+                return confirmationUrl.toString()
+              })(),
+            },
           })
         : await supabase.auth.signInWithPassword({ email, password });
 
@@ -170,12 +177,11 @@ export default function SignIn({ isOpen, onClose, onSuccess, onSuccessSoundChang
         }
 
         if (!data.session) {
-          // Email confirmation is enabled; keep the modal open so the success
-          // message and sound control remain available.
-          playSound('success');
+          // Email confirmation is enabled; wait to show the celebration until
+          // the user returns and signs in with the confirmed account.
           setStatus({
             type: 'success',
-            text: 'Account created! Check your email to confirm it, then sign in.',
+            text: 'Go to your emails (maybe the spam) and come back.',
           });
           setMode('signin');
           setPassword('');

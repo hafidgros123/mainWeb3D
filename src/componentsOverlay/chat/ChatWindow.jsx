@@ -121,6 +121,26 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
       return
     }
 
+    const numericGambleCommand = /^\/(\d+)$/.exec(messageText)
+    if (numericGambleCommand) {
+      const score = Number(numericGambleCommand[1])
+      if (score >= 0 && score <= 95) {
+        window.dispatchEvent(new CustomEvent('gamble-score', { detail: { score } }))
+        setMessages((current) => [...current, {
+          message: `Gamble result set to ${score}.`,
+          sender: 'ellenBot',
+          id: `${crypto.randomUUID()}-gamble`,
+        }])
+      } else {
+        setMessages((current) => [...current, {
+          message: 'That gamble result is unavailable. Use a number from 0 to 95.',
+          sender: 'ellenBot',
+          id: `${crypto.randomUUID()}-gamble-invalid`,
+        }])
+      }
+      return
+    }
+
     if (isCommand && ANIMATION_NAMES.includes(animationName) && threeDUnlocked) {
       triggerAnimation(animationName)
       setMessages((current) => [...current, { message: `Playing ${animationName} animation.`, sender: 'ellenBot', id: `${crypto.randomUUID()}-action` }])

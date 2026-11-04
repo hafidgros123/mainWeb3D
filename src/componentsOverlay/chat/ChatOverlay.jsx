@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { selectSecretThemeUnlocked, useProgression } from '../../store/progressionStore'
 import ChatBubbleButton from './ChatBubbleButton'
@@ -12,6 +12,7 @@ import '../../pages/profile/profile.css' // styles the Profile link below
 // Force a fresh sign-in after this long, counted from the user's last real sign-in.
 const SESSION_MAX_AGE_MS = 48 * 60 * 60 * 1000
 const SESSION_CHECK_EVERY_MS = 5 * 60 * 1000
+const CONFIRMATION_QUERY_PARAM = 'confirmed'
 
 function isSessionExpired(user) {
   const lastSignIn = Date.parse(user?.last_sign_in_at ?? '')
@@ -27,7 +28,37 @@ function ChatOverlay({ theme, onThemeChange }) {
   const [isSignInOpen, setIsSignInOpen] = useState(false)
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
+  const previousUserIdRef = useRef(null)
+  const confirmationCelebrationShownRef = useRef(false)
+  const confirmationAudioRef = useRef(null)
+  const confirmationReturnRef = useRef(
+    new URLSearchParams(window.location.search).get(CONFIRMATION_QUERY_PARAM) === '1'
+  )
   const userId = user?.id ?? null
+
+  const playConfirmationCelebration = () => {
+    const audio = new Audio('/sounds/success.mp3')
+    audio.volume = 0.6
+    confirmationAudioRef.current?.pause()
+    confirmationAudioRef.current = audio
+    const stop = () => {
+      audio.pause()
+      setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 10000 })
+    }
+    audio.addEventListener('ended', () => {
+      if (confirmationAudioRef.current === audio) {
+        confirmationAudioRef.current = null
+        setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 0 })
+      }
+    })
+    setSuccessMusic({ playing: true, stop, keepVisibleFor: 0 })
+    audio.play().catch(() => {
+      if (confirmationAudioRef.current === audio) {
+        confirmationAudioRef.current = null
+        setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 10000 })
+      }
+    })
+  }
 
   useEffect(() => {
     const applySession = (session) => {
@@ -38,20 +69,52 @@ function ChatOverlay({ theme, onThemeChange }) {
         setUser(null)
         return
       }
+      const confirmedAccountReturned = Boolean(nextUser && confirmationReturnRef.current)
+      if (
+        confirmedAccountReturned
+        && nextUser
+        && !previousUserIdRef.current
+        && !confirmationCelebrationShownRef.current
+      ) {
+        confirmationCelebrationShownRef.current = true
+        setShowSignInSuccess(true)
+        if (confirmedAccountReturned) playConfirmationCelebration()
+        if (confirmedAccountReturned) {
+          confirmationReturnRef.current = false
+          const cleanUrl = new URL(window.location.href)
+          cleanUrl.searchParams.delete(CONFIRMATION_QUERY_PARAM)
+          window.history.replaceState({}, '', cleanUrl)
+        }
+      }
       setUser(nextUser)
+      previousUserIdRef.current = nextUser?.id ?? null
       if (!nextUser) setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 0 })
     }
 
-    const checkSession = () =>
-      supabase.auth.getSession().then(({ data }) => applySession(data.session))
+    const checkSession = async () => {
+      const { data: sessionData } = await supabase.auth.getSession()
+      if (!sessionData.session) {
+        applySession(null)
+        return
+      }
+
+      const { data: userData, error } = await supabase.auth.getUser()
+      if (error || !userData.user) {
+        await supabase.auth.signOut()
+        return
+      }
+      applySession(sessionData.session)
+    }
 
     checkSession()
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => applySession(session))
     const timer = setInterval(checkSession, SESSION_CHECK_EVERY_MS)
+    window.localStorage.removeItem('pending-account-celebration')
 
     return () => {
       sub.subscription.unsubscribe()
       clearInterval(timer)
+      confirmationAudioRef.current?.pause()
     }
   }, [])
 
@@ -130,6 +193,17 @@ function ChatOverlay({ theme, onThemeChange }) {
               >
               </button>
             )}
+          </div>
+        )}
+        {!user && (successMusic.playing || successMusic.keepVisibleFor > 0) && (
+          <div className="success-sound-stack">
+            <button
+              type="button"
+              className={`stop-success-sound-btn${successMusic.playing ? ' is-playing' : ' is-muted'}`}
+              onClick={() => successMusic.stop?.()}
+              aria-label="Stop success music"
+              title={successMusic.playing ? 'Stop success music' : 'Success music has stopped'}
+            />
           </div>
         )}
 

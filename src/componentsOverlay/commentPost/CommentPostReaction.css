@@ -1,0 +1,19 @@
+.comment-post-reaction {
+  position: fixed;
+  z-index: 1000;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 0.75rem;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(0.75rem, 0.75rem) scale(0.35);
+  transform-origin: top left;
+  transition: opacity 160ms ease, transform 220ms ease;
+}
+
+.comment-post-reaction-visible {
+  opacity: 1;
+  transform: translate(0.75rem, 0.75rem) scale(1);
+}

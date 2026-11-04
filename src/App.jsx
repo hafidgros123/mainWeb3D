@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import ChatOverlay from './componentsOverlay/chat/ChatOverlay'
+import CommentPostReaction from './componentsOverlay/commentPost/CommentPostReaction'
 import RandomImageOverlay from './componentsOverlay/random/RandomImageOverlay'
 import ErrorBoundary from './shared/ErrorBoundary'
 import ThemeBackground from './shared/ThemeBackground'
@@ -97,6 +98,7 @@ function AppContent() {
       <ErrorBoundary>
         <ChatOverlay theme={theme} onThemeChange={setTheme} />
       </ErrorBoundary>
+      <CommentPostReaction />
     </div>
   )
 }

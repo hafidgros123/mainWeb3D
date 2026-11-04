@@ -748,6 +748,23 @@ body[data-theme="secret"] {
   gap: 0.45rem;
 }
 
+.success-sound-stack {
+  position: fixed;
+  top: clamp(0.5rem, 1.5vw, 1rem);
+  right: clamp(0.75rem, 2vw, 1.75rem);
+  z-index: 1000;
+}
+
+.success-sound-stack .stop-success-sound-btn {
+  width: 7rem;
+  min-width: 7rem;
+  height: 3.3rem;
+  margin-top: 0;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
 .overlay-profile-stack .overlay-profile-link {
   position: relative;
   top: auto;

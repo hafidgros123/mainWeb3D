@@ -10,7 +10,7 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
 - Chat overlay with Gemini integration and function-calling support
 - 3D scene and animation controls powered by Three.js
 - Repository-backed 3D model gallery with GLB viewers and comments
-- Anonymous browser session handling and lightweight request limiting on the backend
+- Supabase sign-in for chat and lightweight request limiting on the backend
 - Demo-style aesthetic with custom random image overlays and animated UI
 - Theme-aware sign-in success popup with an animated WebP celebration image
 - A 10% route-entry chance for the placeholder glitch page
@@ -71,14 +71,18 @@ Create a file named `serverless-side/.env` in the project root with:
 
 ```env
 GEMINI_API_KEY=your_google_gemini_api_key
-CHAT_SESSION_SECRET=your_long_random_secret
+GEMINI_MODEL=your_gemini_model_id
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 # Optional: only set this in production behind a trusted reverse proxy
 # TRUST_PROXY_HOPS=1
 ```
 
 Notes:
 - `GEMINI_API_KEY` is required for the chat backend to call the Gemini API.
-- `CHAT_SESSION_SECRET` signs the anonymous chat session cookie.
+- Chat requires a signed-in Supabase user. The publishable key is used by the
+  browser; keep `SUPABASE_SERVICE_ROLE_KEY` server-side and never commit it.
 - Do not commit `.env` to source control.
 - In production, use a secure backend proxy instead of exposing a key in the frontend.
 
@@ -113,7 +117,14 @@ npm run lint      # Run the project linter
 ## How the app works
 
 - The frontend is served by Vite and uses React Router to switch between pages.
+- Users must sign in before the chat input is enabled.
 - The chat overlay sends user messages to the backend at `/api/chat`.
+- Gamble totals from 0 through 95 can be replayed from chat with commands such as
+  `/0` or `/95`. A total of 95 grants admin status after the SQL functions in
+  `supabase_sql/gamble_account_functions.sql` have been installed. Totals from
+  96 through 100 are intentionally ignored.
+- Totals below 6 open a 30-second quiz. A wrong answer or timeout deletes the
+  signed-in account through the `delete_my_account` database function.
 - The backend validates input, applies rate limits, signs session cookies, and forwards requests to Gemini.
 - If a chat command includes a valid tool action such as a character animation, the backend returns a function call that the client can handle.
 - The 3D page reads scene state from the Zustand store and updates the animation state in the browser.

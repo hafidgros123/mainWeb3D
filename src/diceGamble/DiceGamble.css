@@ -115,6 +115,7 @@
 }
 
 .dice-left { width: min(100%, 22rem); }
+.dice-account-notice { margin: 0; color: var(--coral); text-align: center; }
 
 /* ---------- roll button ---------- */
 .dice-roll {

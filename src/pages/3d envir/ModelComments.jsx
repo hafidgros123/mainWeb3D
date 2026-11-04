@@ -57,6 +57,7 @@ function ModelComments({ modelId }) {
       return
     }
     setDraft('')
+    window.dispatchEvent(new Event('comment-posted'))
     loadComments()
   }
 
@@ -68,6 +69,7 @@ function ModelComments({ modelId }) {
       return
     }
     setComments((previous) => previous.filter((comment) => comment.id !== id))
+    window.dispatchEvent(new Event('comment-posted'))
   }
 
   return (

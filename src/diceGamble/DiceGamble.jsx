@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadFace, newThrowUrl, preloadFaces, preloadThrow, releaseThrowUrl } from '../lib/DiceImages'
 import { rollDiceEven } from '../lib/rollDice'
+import { supabase } from '../lib/supabaseClient'
+import GambleQuiz from '../gamble/GambleQuiz'
 import { findOutcome, pickVideo } from './outcomes'
 import SingleDie from './singleDie'
 import './DiceGamble.css'
@@ -54,6 +56,8 @@ function DiceGamble() {
   const [isRolling, setIsRolling] = useState(false)
   const [throwSrc, setThrowSrc] = useState('')
   const [rollsLeft, setRollsLeft] = useState(STARTING_ROLLS)
+  const [quizOpen, setQuizOpen] = useState(false)
+  const [accountNotice, setAccountNotice] = useState('')
   const navigate = useNavigate()
   const mountedRef = useRef(false)
 
@@ -67,6 +71,52 @@ function DiceGamble() {
 
   const total = sumOf(values)
   const canRoll = !isRolling && rollsLeft > 0
+
+  const processScore = useCallback(async (score) => {
+    if (!Number.isInteger(score) || score < 0 || score > 95) return
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      setAccountNotice('Sign in before using a gamble result that can affect your account.')
+      return
+    }
+
+    setAccountNotice('')
+    if (score < 6) {
+      setQuizOpen(true)
+      return
+    }
+
+    if (score === 95) {
+      const { error } = await supabase.rpc('grant_gamble_admin')
+      if (error) {
+        console.error('Failed to grant gamble admin status:', error)
+        setAccountNotice('The admin reward could not be applied. Run the gamble SQL migration first.')
+        return
+      }
+      setAccountNotice('You reached 95. Admin access was granted.')
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleCommandScore = (event) => {
+      const score = event.detail?.score
+      void processScore(score)
+
+      if (!Number.isInteger(score) || score < 6 || score > 95) return
+      const outcome = findOutcome(score)
+      if (!outcome) {
+        setAccountNotice(`Gamble result ${score} has no configured outcome.`)
+        return
+      }
+
+      const forcedFlag = outcome.skippable === false ? '&forced=1' : ''
+      const mediaType = outcome.images ? 'image' : 'video'
+      navigate(`/watch?src=${encodeURIComponent(pickVideo(outcome))}&type=${mediaType}${forcedFlag}`)
+    }
+    window.addEventListener('gamble-score', handleCommandScore)
+    return () => window.removeEventListener('gamble-score', handleCommandScore)
+  }, [navigate, processScore])
 
   const handleRoll = async () => {
     if (!canRoll) return
@@ -103,6 +153,7 @@ function DiceGamble() {
     if (!mountedRef.current) return
     setValues(result)
     setIsRolling(false)
+    void processScore(rolledTotal)
 
     // does this total have an outcome? if yes, go to the media page (video, image or gif)
     const outcome = findOutcome(rolledTotal)
@@ -152,6 +203,7 @@ function DiceGamble() {
               <span className="dice-box-label">Die left :</span>
               <strong>{rollsLeft}</strong>
             </div>
+            {accountNotice && <p className="dice-account-notice" role="status">{accountNotice}</p>}
 
             <button className="dice-roll" type="button" disabled={!canRoll} onClick={handleRoll}>
               {isRolling ? 'Rolling...' : 'Roll'}
@@ -159,6 +211,7 @@ function DiceGamble() {
           </div>
         </div>
       </div>
+      {quizOpen && <GambleQuiz onClose={() => setQuizOpen(false)} />}
     </section>
   )
 }

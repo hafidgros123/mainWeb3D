@@ -286,6 +286,56 @@ app.get('/api/health', (request, response) => {
   response.json({ ok: true })
 })
 
+app.post('/api/delete-account', requireUser, async (request, response) => {
+  const userId = request.user.id
+  const { data: adminRow, error: adminError } = await supabaseAdmin
+    .from('admins')
+    .select('user_id')
+    .eq('user_id', userId)
+    .maybeSingle()
+
+  if (adminError) {
+    console.error('Failed to check gamble admin status:', adminError)
+    return response.status(500).json({ error: 'Could not check account status.' })
+  }
+
+  if (adminRow) {
+    const { error: commentsError } = await supabaseAdmin
+      .from('comments')
+      .update({ is_admin: false })
+      .eq('user_id', userId)
+    if (commentsError) {
+      console.error('Failed to remove admin badges:', commentsError)
+      return response.status(500).json({ error: 'Could not remove admin status.' })
+    }
+
+    const { error: adminDeleteError } = await supabaseAdmin
+      .from('admins')
+      .delete()
+      .eq('user_id', userId)
+    if (adminDeleteError) {
+      console.error('Failed to demote gamble admin:', adminDeleteError)
+      return response.status(500).json({ error: 'Could not remove admin status.' })
+    }
+    return response.json({ deleted: false })
+  }
+
+  const { error: commentsError } = await supabaseAdmin.from('comments').delete().eq('user_id', userId)
+  const { error: chatError } = await supabaseAdmin.from('chat_messages').delete().eq('user_id', userId)
+  const { error: profileError } = await supabaseAdmin.from('profiles').delete().eq('id', userId)
+  if (commentsError || chatError || profileError) {
+    console.error('Failed to remove account data:', commentsError || chatError || profileError)
+    return response.status(500).json({ error: 'Could not remove account data.' })
+  }
+
+  const { error: authDeleteError } = await supabaseAdmin.auth.admin.deleteUser(userId)
+  if (authDeleteError) {
+    console.error('Failed to delete Supabase Auth account:', authDeleteError)
+    return response.status(500).json({ error: 'Could not delete the Auth account.' })
+  }
+  return response.json({ deleted: true })
+})
+
 app.post('/api/chat', requireUser, perIpChatLimit, perUserChatLimit, dailyChatLimit, async (request, response) => {
   const { message, history = [] } = request.body
   const apiKey = process.env.GEMINI_API_KEY
