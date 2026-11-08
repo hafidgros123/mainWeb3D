@@ -22,6 +22,21 @@
   animation: gamble-quiz-pop 180ms ease-out;
 }
 
+.gamble-quiz-arrow {
+  position: absolute;
+  top: 50%;
+  border: 0;
+  background: transparent;
+  color: #8deaff;
+  font-size: 2rem;
+  transform: translateY(-50%);
+}
+.gamble-quiz-arrow:hover,
+.gamble-quiz-arrow:focus-visible { color: #fff; }
+.gamble-quiz-arrow:disabled { cursor: wait; opacity: 0.5; }
+.gamble-quiz-arrow-left { left: -3rem; }
+.gamble-quiz-arrow-right { right: -3rem; }
+
 .gamble-quiz-eyebrow {
   color: #8deaff;
   font-size: 0.7rem;
@@ -74,8 +89,75 @@
 .gamble-quiz-choice-number { color: #8deaff; font-weight: 700; }
 .gamble-quiz-progress { display: block; margin-top: 1rem; color: #c6b8d8; }
 .gamble-quiz-status { color: var(--coral); font-weight: 700; }
+.gamble-quiz-text-answer { display: grid; gap: 0.7rem; margin-top: 1.25rem; }
+.gamble-quiz-text-answer input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 0.0625rem solid rgb(141 234 255 / 55%);
+  background: #fff;
+  color: #111;
+}
+.gamble-success-modal {
+  position: relative;
+  width: min(100%, 28rem);
+  padding: 2.5rem 2rem 2rem;
+  border: 0.125rem solid #55e58b;
+  background:
+    radial-gradient(circle at 50% 0%, rgb(85 229 139 / 20%), transparent 58%),
+    linear-gradient(145deg, #102d24, #071b19);
+  color: #eafff0;
+  text-align: center;
+  box-shadow: 0 0 1.5rem rgb(85 229 139 / 35%), 0 1.5rem 4rem rgb(0 0 0 / 75%);
+  animation: gamble-success-pop 260ms ease-out;
+}
+
+.gamble-success-icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1.25rem;
+  border: 0.125rem solid #55e58b;
+  border-radius: 50%;
+  color: #55e58b;
+  font-size: 2rem;
+  font-weight: 700;
+  box-shadow: 0 0 1rem rgb(85 229 139 / 45%);
+}
+
+.gamble-success-eyebrow {
+  color: #55e58b;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.gamble-success-modal h2 {
+  margin: 0.5rem 0;
+  color: #fff;
+  font-family: var(--display);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  text-transform: uppercase;
+}
+
+.gamble-success-modal p {
+  margin: 0;
+  color: #9ff5b9;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 42rem) {
+  .gamble-quiz-arrow-left { left: 0.25rem; }
+  .gamble-quiz-arrow-right { right: 0.25rem; }
+}
 
 @keyframes gamble-quiz-pop {
   from { opacity: 0; transform: scale(0.94) translateY(0.5rem); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes gamble-success-pop {
+  from { opacity: 0; transform: scale(0.82) translateY(1rem); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }

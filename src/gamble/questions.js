@@ -35,11 +35,43 @@ export const GAMBLE_QUESTIONS = [
     ],
     correctIndex: 0,
   },
+
+  {
+    id: 'is-ranni-a-baddie',
+    prompt: 'Is Ranni a baddie?',
+    choices: ['yea', 'absolutly', 'affirmative', 'what  ?? no , wtf is this question'],
+    correctIndices: [0, 1, 2],
+  },
+
+  {
+    id: 'more-fps',
+    prompt: 'What gives more FPS?',
+    choices: ['gpu and cpu (correct answer but i made it wrong so dont press it)', 'rgb', 'the mandatory anime figure', 'better monitor'],
+    correctIndices: [1, 2],
+  },
+
+  {
+    id: 'cat-names',
+    prompt: 'Write all five of my cats’ names. Hint: one is called "petit", and the second is also "petit".',
+    answerType: 'text',
+    correctAnswers: ['petit', 'petit', 'petit', 'petit', 'petit'],
+    unlimitedTime: true,
+  },
 ]
 
 export function getRandomGambleQuestion() {
   const question = GAMBLE_QUESTIONS[Math.floor(Math.random() * GAMBLE_QUESTIONS.length)]
-  return question.id === 'enemy-driving'
-    ? { ...question, stages: question.stages.map((stage) => ({ ...stage, choices: [...stage.choices] })) }
-    : { ...question, choices: [...question.choices] }
+  if (question.stages) {
+    return {
+      ...question,
+      stages: question.stages.map((stage) => ({ ...stage, choices: [...stage.choices] })),
+    }
+  }
+
+  return {
+    ...question,
+    ...(question.choices ? { choices: [...question.choices] } : {}),
+    ...(question.correctIndices ? { correctIndices: [...question.correctIndices] } : {}),
+    ...(question.correctAnswers ? { correctAnswers: [...question.correctAnswers] } : {}),
+  }
 }

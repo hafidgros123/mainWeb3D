@@ -36,6 +36,7 @@ function GameComments({ gameId }) {
         'id, user_id, author_name, avatar_url, is_admin, body, created_at, profiles:profiles!comments_user_id_profile_fkey ( username, avatar_url )'
       )
       .eq('game_id', gameId)
+      .order('is_admin', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(50)
 
