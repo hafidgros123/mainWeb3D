@@ -28,6 +28,7 @@ export default function SignIn({ isOpen, onClose, onSuccess, onSuccessSoundChang
   const [description, setDescription] = useState('');
   const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [oauthProvider, setOauthProvider] = useState('');
   const [status, setStatus] = useState({ type: '', text: '' }); // 'error' | 'success'
   const successAudioRef = useRef(null);
   const closeAfterSuccessSoundRef = useRef(false);
@@ -107,9 +108,35 @@ export default function SignIn({ isOpen, onClose, onSuccess, onSuccessSoundChang
     setStatus({ type: '', text: '' });
   };
 
+  const handleOAuthSignIn = async (provider) => {
+    if (loading || oauthProvider) return;
+
+    setOauthProvider(provider);
+    setStatus({ type: '', text: '' });
+
+    try {
+      window.localStorage.setItem('pending-oauth-signin-provider', provider);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin },
+      });
+
+      if (error) {
+        window.localStorage.removeItem('pending-oauth-signin-provider');
+        setStatus({ type: 'error', text: error.message });
+        setOauthProvider('');
+      }
+    } catch (err) {
+      window.localStorage.removeItem('pending-oauth-signin-provider');
+      console.error(err);
+      setStatus({ type: 'error', text: 'Could not start sign-in. Please try again.' });
+      setOauthProvider('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loading) return;
+    if (loading || oauthProvider) return;
 
     setLoading(true);
     setStatus({ type: '', text: '' });
@@ -374,6 +401,68 @@ export default function SignIn({ isOpen, onClose, onSuccess, onSuccessSoundChang
             {isSignUp ? 'Sign in' : 'Sign up'}
           </button>
         </p>
+
+        <div className="signin-oauth">
+          <p className="signin-oauth-label">Or continue with</p>
+          <div className="signin-oauth-buttons">
+            <button
+              type="button"
+              className="signin-oauth-btn"
+              onClick={() => handleOAuthSignIn('google')}
+              disabled={loading || Boolean(oauthProvider)}
+              aria-label="Continue with Google"
+              title="Continue with Google"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M21.35 12.23c0-.72-.06-1.42-.18-2.09H12v3.96h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.26Z" />
+                <path fill="#34A853" d="M12 21.75c2.63 0 4.83-.87 6.44-2.36l-3.14-2.45c-.87.58-1.98.93-3.3.93-2.54 0-4.69-1.71-5.46-4.01H3.3v2.53A9.73 9.73 0 0 0 12 21.75Z" />
+                <path fill="#FBBC05" d="M6.54 13.86a5.84 5.84 0 0 1 0-3.72V7.61H3.3a9.75 9.75 0 0 0 0 8.78l3.24-2.53Z" />
+                <path fill="#EA4335" d="M12 6.13c1.43 0 2.71.49 3.72 1.47l2.79-2.79C16.82 3.2 14.62 2.25 12 2.25a9.73 9.73 0 0 0-8.7 5.36l3.24 2.53c.77-2.3 2.92-4.01 5.46-4.01Z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="signin-oauth-btn"
+              onClick={() => handleOAuthSignIn('github')}
+              disabled={loading || Boolean(oauthProvider)}
+              aria-label="Continue with GitHub"
+              title="Continue with GitHub"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.68-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.65-1.24-1.65-1.01-.7.08-.69.08-.69 1.12.08 1.71 1.15 1.71 1.15 1 .1.77 2.57 3.91 1.82.1-.73.39-1.23.7-1.51-2.47-.28-5.06-1.24-5.06-5.51 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.12-1.44 3.05-1.14 3.05-1.14.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.28-2.6 5.23-5.08 5.5.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="signin-oauth-btn"
+              onClick={() => handleOAuthSignIn('facebook')}
+              disabled={loading || Boolean(oauthProvider)}
+              aria-label="Continue with Facebook"
+              title="Continue with Facebook"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M13.5 21v-8.2h2.76l.41-3.2H13.5V7.56c0-.93.26-1.56 1.59-1.56h1.7V3.14c-.29-.04-1.3-.14-2.48-.14-2.46 0-4.14 1.5-4.14 4.26V9.6H7.4v3.2h2.77V21h3.33Z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="signin-oauth-btn"
+              onClick={() => handleOAuthSignIn('discord')}
+              disabled={loading || Boolean(oauthProvider)}
+              aria-label="Continue with Discord"
+              title="Continue with Discord"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M19.27 5.33A18.2 18.2 0 0 0 14.8 3.95l-.56 1.14a16.8 16.8 0 0 0-4.48 0L9.2 3.95a18.2 18.2 0 0 0-4.47 1.38C1.9 9.5 1.14 13.57 1.52 17.58a18 18 0 0 0 5.48 2.77l1.18-1.92a11.7 11.7 0 0 1-1.86-.9l.46-.36a12.9 12.9 0 0 0 10.44 0l.46.36c-.6.36-1.23.66-1.87.9L17 20.35a18 18 0 0 0 5.48-2.77c.45-4.65-.77-8.68-3.21-12.25ZM8.73 14.9c-1.02 0-1.86-.94-1.86-2.1s.82-2.1 1.86-2.1 1.88.95 1.86 2.1c0 1.16-.82 2.1-1.86 2.1Zm6.54 0c-1.02 0-1.86-.94-1.86-2.1s.82-2.1 1.86-2.1 1.88.95 1.86 2.1c0 1.16-.82 2.1-1.86 2.1Z" />
+              </svg>
+            </button>
+          </div>
+          {oauthProvider && (
+            <p className="signin-oauth-pending" role="status">
+              Connecting to {oauthProvider}...
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

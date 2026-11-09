@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthContext'
 import { selectSecretThemeUnlocked, useProgression } from '../../store/progressionStore'
 import ChatBubbleButton from './ChatBubbleButton'
 import ChatWindow from './ChatWindow'
@@ -7,26 +8,21 @@ import SignIn from '../sign/SignIn'
 import SignInSuccessPopup from '../signinSuccess/SignInSuccessPopup'
 import { supabase } from '../../lib/supabaseClient'
 import { safeAvatarUrl } from '../../lib/avatar'
+import { isOAuthUser } from '../../lib/auth'
 import '../sign/SignIn.css'
 import '../../pages/profile/profile.css' // styles the Profile link below
-// Force a fresh sign-in after this long, counted from the user's last real sign-in.
-const SESSION_MAX_AGE_MS = 48 * 60 * 60 * 1000
-const SESSION_CHECK_EVERY_MS = 5 * 60 * 1000
 const CONFIRMATION_QUERY_PARAM = 'confirmed'
-
-function isSessionExpired(user) {
-  const lastSignIn = Date.parse(user?.last_sign_in_at ?? '')
-  return Number.isFinite(lastSignIn) && Date.now() - lastSignIn > SESSION_MAX_AGE_MS
-}
+const PENDING_OAUTH_PROVIDER_KEY = 'pending-oauth-signin-provider'
 
 function ChatOverlay({ theme, onThemeChange }) {
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [showSignInSuccess, setShowSignInSuccess] = useState(false)
   const [successMusic, setSuccessMusic] = useState({ playing: false, stop: null, keepVisibleFor: 0 })
   const secretThemeUnlocked = useProgression(selectSecretThemeUnlocked)
   const unlockSecretTheme = useProgression((state) => state.unlockSecretTheme)
   const [isSignInOpen, setIsSignInOpen] = useState(false)
-  const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const previousUserIdRef = useRef(null)
   const confirmationCelebrationShownRef = useRef(false)
@@ -36,7 +32,7 @@ function ChatOverlay({ theme, onThemeChange }) {
   )
   const userId = user?.id ?? null
 
-  const playConfirmationCelebration = () => {
+  const playSignInCelebration = () => {
     const audio = new Audio('/sounds/success.mp3')
     audio.volume = 0.6
     confirmationAudioRef.current?.pause()
@@ -61,61 +57,43 @@ function ChatOverlay({ theme, onThemeChange }) {
   }
 
   useEffect(() => {
-    const applySession = (session) => {
-      const nextUser = session?.user ?? null
-      if (nextUser && isSessionExpired(nextUser)) {
-        // Deferred: don't call auth methods synchronously inside the auth callback.
-        setTimeout(() => supabase.auth.signOut(), 0)
-        setUser(null)
-        return
-      }
-      const confirmedAccountReturned = Boolean(nextUser && confirmationReturnRef.current)
-      if (
-        confirmedAccountReturned
-        && nextUser
-        && !previousUserIdRef.current
-        && !confirmationCelebrationShownRef.current
-      ) {
+    const previousUserId = previousUserIdRef.current
+    if (user && !previousUserId) {
+      if (confirmationReturnRef.current && !confirmationCelebrationShownRef.current) {
         confirmationCelebrationShownRef.current = true
         setShowSignInSuccess(true)
-        if (confirmedAccountReturned) playConfirmationCelebration()
-        if (confirmedAccountReturned) {
-          confirmationReturnRef.current = false
-          const cleanUrl = new URL(window.location.href)
-          cleanUrl.searchParams.delete(CONFIRMATION_QUERY_PARAM)
-          window.history.replaceState({}, '', cleanUrl)
-        }
-      }
-      setUser(nextUser)
-      previousUserIdRef.current = nextUser?.id ?? null
-      if (!nextUser) setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 0 })
-    }
-
-    const checkSession = async () => {
-      const { data: sessionData } = await supabase.auth.getSession()
-      if (!sessionData.session) {
-        applySession(null)
-        return
+        playSignInCelebration()
+        confirmationReturnRef.current = false
+        const cleanUrl = new URL(window.location.href)
+        cleanUrl.searchParams.delete(CONFIRMATION_QUERY_PARAM)
+        window.history.replaceState({}, '', cleanUrl)
       }
 
-      const { data: userData, error } = await supabase.auth.getUser()
-      if (error || !userData.user) {
-        await supabase.auth.signOut()
-        return
+      const pendingOAuthProvider = window.localStorage.getItem(PENDING_OAUTH_PROVIDER_KEY)
+      const returnedFromOAuth = Boolean(
+        pendingOAuthProvider
+        && isOAuthUser(user)
+        && (
+          user.app_metadata?.provider === pendingOAuthProvider
+          || user.app_metadata?.providers?.includes(pendingOAuthProvider)
+        )
+      )
+      if (returnedFromOAuth) {
+        window.localStorage.removeItem(PENDING_OAUTH_PROVIDER_KEY)
+        setShowSignInSuccess(true)
+        playSignInCelebration()
       }
-      applySession(sessionData.session)
+      if (isOAuthUser(user) && user.user_metadata?.profile_name_chosen !== true) {
+        navigate('/profile')
+      }
     }
 
-    checkSession()
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => applySession(session))
-    const timer = setInterval(checkSession, SESSION_CHECK_EVERY_MS)
-    window.localStorage.removeItem('pending-account-celebration')
+    previousUserIdRef.current = user?.id ?? null
+    if (!user) setSuccessMusic({ playing: false, stop: null, keepVisibleFor: 0 })
+  }, [user, navigate])
 
-    return () => {
-      sub.subscription.unsubscribe()
-      clearInterval(timer)
-      confirmationAudioRef.current?.pause()
-    }
+  useEffect(() => () => {
+    confirmationAudioRef.current?.pause()
   }, [])
 
   useEffect(() => {

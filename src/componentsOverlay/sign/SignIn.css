@@ -531,6 +531,72 @@ body[data-theme="secret"] {
   color: var(--si-text);
 }
 
+.signin-oauth {
+  position: relative;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.signin-oauth-label {
+  margin: 0 0 12px;
+  color: var(--si-muted);
+  font-family: var(--si-font);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.signin-oauth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.signin-oauth-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 10px;
+  border: 2px solid var(--si-panel-edge);
+  border-radius: 0;
+  background: var(--si-field);
+  color: var(--si-text);
+  cursor: pointer;
+  transition: none;
+}
+
+.signin-oauth-btn svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.signin-oauth-btn:hover:not(:disabled) {
+  border-color: var(--si-accent);
+  color: var(--si-accent);
+  transform: translateY(-2px);
+}
+
+.signin-oauth-btn:focus-visible {
+  outline: 2px solid var(--si-text);
+  outline-offset: 3px;
+}
+
+.signin-oauth-btn:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.signin-oauth-pending {
+  margin: 12px 0 0;
+  color: var(--si-muted);
+  font-family: var(--si-font);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
 
 /* ==========================================================
    PAGE SIGN-IN BUTTON  (top right corner)
@@ -670,6 +736,7 @@ body[data-theme="secret"] {
 
   .submit-btn:hover,
   .submit-btn:active,
+  .signin-oauth-btn:hover:not(:disabled),
   .overlay-signin-btn:hover,
   .overlay-signin-btn:active,
   .close-modal-btn:hover,

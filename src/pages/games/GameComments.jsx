@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useAuth } from '../../auth/AuthContext'
 import { supabase } from '../../lib/supabaseClient'
 import { safeAvatarUrl } from '../../lib/avatar'
 import TurnPlaceholder from '../../shared/TurnPlaceholder'
@@ -14,19 +15,12 @@ function formatDate(value) {
 }
 
 function GameComments({ gameId }) {
-  const [session, setSession] = useState(null)
+  const { session } = useAuth()
   const [comments, setComments] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [draft, setDraft] = useState('')
   const [posting, setPosting] = useState(false)
   const [formError, setFormError] = useState('')
-
-  // Follow the Supabase login state (your existing sign up / sign in keeps working as is).
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession))
-    return () => data.subscription.unsubscribe()
-  }, [])
 
   const loadComments = useCallback(async () => {
     // "profiles" is joined in live, so a changed username or picture shows on every comment.

@@ -1,22 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthContext'
 import { supabase } from '../../lib/supabaseClient'
 import { AVATAR_TYPES, MAX_AVATAR_BYTES, safeAvatarUrl } from '../../lib/avatar'
+import { isOAuthUser } from '../../lib/auth'
 import TurnPlaceholder from '../../shared/TurnPlaceholder'
 import './profile.css'
 
 const EXTENSIONS = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }
 const ALL_EXTENSIONS = ['png', 'jpg', 'webp']
 const USERNAME_PATTERN = /^[A-Za-z0-9_]{3,20}$/
+const EMPTY_USER_METADATA = {}
 
 function ProfilePage() {
   const navigate = useNavigate()
-  const [authReady, setAuthReady] = useState(false)
-  const [user, setUser] = useState(null)
+  const { authReady, user } = useAuth()
   const userId = user?.id ?? null
+  const userMetadata = user?.user_metadata ?? EMPTY_USER_METADATA
+  const userEmail = user?.email ?? ''
+  const oauthNameNotChosen = isOAuthUser(user) && userMetadata.profile_name_chosen !== true
 
   const [loaded, setLoaded] = useState(false)
   const [username, setUsername] = useState('')
+  const [needsUsernameSelection, setNeedsUsernameSelection] = useState(false)
   const [description, setDescription] = useState('')
   const [savedAvatar, setSavedAvatar] = useState(null) // the picture currently saved on the profile
   const [avatarFile, setAvatarFile] = useState(null) // a new picture the user just chose
@@ -25,19 +31,6 @@ function ProfilePage() {
   const [saving, setSaving] = useState(false)
   const [status, setStatus] = useState({ type: '', text: '' }) // 'error' | 'success'
   const fileInputRef = useRef(null)
-
-  // Follow the Supabase login state.
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null)
-      setAuthReady(true)
-    })
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-      setAuthReady(true)
-    })
-    return () => data.subscription.unsubscribe()
-  }, [])
 
   // Load this user's profile.
   useEffect(() => {
@@ -60,8 +53,6 @@ function ProfilePage() {
         console.error('Failed to load profile:', error)
         if (error.code === 'PGRST301' || error.status === 401 || error.status === 403) {
           await supabase.auth.signOut()
-          setUser(null)
-          setAuthReady(true)
           setStatus({ type: 'error', text: 'Your account no longer exists. Please sign in again.' })
           return
         }
@@ -70,15 +61,32 @@ function ProfilePage() {
       }
 
       if (data) {
-        setUsername(data.username ?? '')
+        setNeedsUsernameSelection(oauthNameNotChosen)
+        setUsername(oauthNameNotChosen ? '' : data.username ?? '')
         setDescription(data.description ?? '')
         setSavedAvatar(data.avatar_url ?? null)
         setLoaded(true)
         return
       }
 
-      const metadata = user.user_metadata ?? {}
-      const fallbackUsername = String(metadata.username || user.email?.split('@')[0] || 'user')
+      const metadata = userMetadata
+      setNeedsUsernameSelection(oauthNameNotChosen)
+      if (oauthNameNotChosen) {
+        setUsername('')
+        setDescription('')
+        setSavedAvatar(null)
+        setLoaded(true)
+        return
+      }
+
+      const fallbackUsername = String(
+        metadata.username
+        || metadata.user_name
+        || metadata.preferred_username
+        || metadata.full_name
+        || userEmail.split('@')[0]
+        || 'user'
+      )
         .replace(/[^A-Za-z0-9_]/g, '_')
         .slice(0, 20)
         .padEnd(3, '_')
@@ -109,7 +117,7 @@ function ProfilePage() {
     return () => {
       cancelled = true
     }
-  }, [userId])
+  }, [userId, userEmail, userMetadata, oauthNameNotChosen])
 
   // Preview of a newly chosen picture.
   useEffect(() => {
@@ -199,12 +207,12 @@ function ProfilePage() {
 
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: userId,
           username: name,
           description: description.trim() || null,
           avatar_url: nextAvatar,
-        })
-        .eq('id', userId)
+        }, { onConflict: 'id' })
 
       if (updateError) {
         if (updateError.code === '23505') {
@@ -212,6 +220,14 @@ function ProfilePage() {
           return
         }
         throw updateError
+      }
+
+      if (needsUsernameSelection) {
+        const { error: metadataError } = await supabase.auth.updateUser({
+          data: { profile_name_chosen: true },
+        })
+        if (metadataError) throw metadataError
+        setNeedsUsernameSelection(false)
       }
 
       setUsername(name)
@@ -246,6 +262,11 @@ function ProfilePage() {
 
         {authReady && user && loaded && (
           <form className="profile-form" onSubmit={handleSave}>
+            {needsUsernameSelection && (
+              <p className="profile-note">
+                Choose the username people will see on your profile before continuing.
+              </p>
+            )}
             <div className="profile-avatar-row">
               {shownAvatar ? (
                 <img className="profile-avatar" src={shownAvatar} alt="Your profile picture" />
@@ -313,7 +334,7 @@ function ProfilePage() {
 
             <div className="profile-actions">
               <button type="submit" className="profile-button profile-button--save" disabled={saving}>
-                {saving ? 'Saving...' : 'Save profile'}
+                {saving ? 'Saving...' : needsUsernameSelection ? 'Choose username' : 'Save profile'}
               </button>
               <button type="button" className="profile-button profile-button--ghost" onClick={handleSignOut}>
                 Sign out

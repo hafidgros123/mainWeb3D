@@ -1,5 +1,6 @@
 import { lazy, Suspense, useRef, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { AuthProvider } from './auth/AuthProvider'
 import ChatOverlay from './componentsOverlay/chat/ChatOverlay'
 import CommentPostReaction from './componentsOverlay/commentPost/CommentPostReaction'
 import RandomImageOverlay from './componentsOverlay/random/RandomImageOverlay'
@@ -86,7 +87,13 @@ function App() {
   const [introStarted, setIntroStarted] = useState(false)
   const videoRef = useRef(null)
 
-  if (introComplete) return <AppContent />
+  if (introComplete) {
+    return (
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    )
+  }
 
   return (
     <main className="intro-screen">

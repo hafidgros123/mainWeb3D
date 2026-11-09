@@ -1,11 +1,11 @@
 // Add one entry here for each model placed in public/models/.
 export const MODEL_CATALOG = [
   {
-    id: 'hoshimi-miyabi',
-    title: 'Hoshimi Miyabi',
-    description: 'Hoshimi Miyabi 3D model.',
-    model: '/models/hoshimi_miyabi.glb',
-    uploadedAt: '2026-11-03',
+    id: 'smoll-ellen',
+    title: 'Smoll Ellen',
+    description: 'Smoll Ellen 3D model.',
+    model: '/models/smoll_ellen.glb',
+    uploadedAt: '2026-11-08',
   },
 ]
 

@@ -1,58 +1,39 @@
 import express from 'express'
 import { rateLimit } from 'express-rate-limit'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { createClient } from '@supabase/supabase-js'
 import { ANIMATION_NAMES } from '../src/three/animations.js'
+import { config } from './config.js'
+import { supabaseAdmin } from './supabaseAdmin.js'
 
 const app = express()
-const port = process.env.PORT || 3001
-const trustedProxyHops = Number.parseInt(process.env.TRUST_PROXY_HOPS || '0', 10)
 
 // --- Speed settings -------------------------------------------------------
 // Change the model without touching code: GEMINI_MODEL=<model id> in your env.
-const MODEL_NAME = process.env.GEMINI_MODEL
+const MODEL_NAME = config.modelName
 // Only the last N messages are sent to Gemini. Less input = faster reply.
-const MAX_HISTORY_MESSAGES = 7
-// Give up on Gemini before the browser's 30s axios timeout does.
-const GEMINI_TIMEOUT_MS = 12000
-// Tries to turn "thinking" off. If the model/SDK rejects it, the server
-// falls back automatically and stops trying (see the chat route).
-let thinkingConfigSupported = true
-
+const MAX_HISTORY_MESSAGES = config.maxHistoryMessages
+// Give up on Gemini before the browser's 30s chat timeout does.
+const GEMINI_TIMEOUT_MS = config.geminiTimeoutMs
 const SYSTEM_INSTRUCTION = `You are Ellen, a goth girl in her early 20s.
 You still kinda try to help the user, but you are not very enthusiastic about it.
 You are a bit lazy, but you still get things done eventually.
 You never use exclamation marks or sound excited.
 You often leave comments on the user's questions, like "really?" or "wow, that's a question" or "sure ig", "whatever".
 when the user ask a question about the site , you first tell him there is an FAQ page and then you answer the question from the rag documentation you have access to, if you don't know the answer, you say "I don't know" or "I don't have that information" or "I can't help with that", you never make up an answer.
+Keep replies concise and direct. Do not explain your reasoning unless asked.
 You always answer.`
 
 // --- RAG (FAQ knowledge base) settings -------------------------------------
 // Must match scripts/ingest_faq.js: same embedding model, same dimensions.
-const EMBEDDING_MODEL = 'gemini-embedding-001'
-const EMBEDDING_DIMENSIONS = 768
+const EMBEDDING_MODEL = config.embeddingModel
+const EMBEDDING_DIMENSIONS = config.embeddingDimensions
 // How many FAQ chunks to pull in as context, and how relevant they must be
 // (cosine similarity 0-1) to bother including. Tune match_threshold down if
 // Ellen isn't finding relevant FAQ entries for reasonable questions.
-const RAG_MATCH_COUNT = 4
-const RAG_MATCH_THRESHOLD = 0.3
+const RAG_MATCH_COUNT = config.ragMatchCount
+const RAG_MATCH_THRESHOLD = config.ragMatchThreshold
 // Don't let a slow/stuck embedding call hold up the whole chat reply.
-const RAG_TIMEOUT_MS = 4000
-
-// --- Supabase (server-side, service role) ---------------------------------
-// This is the SECRET service-role key, never the anon/publishable key, and it
-// must never be shipped to the browser. It lets the server verify who's
-// calling (via their access token) and write chat rows under RLS.
-const supabaseUrl = process.env.VITE_SUPABASE_URL
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!supabaseUrl || !supabaseServiceRoleKey) {
-  throw new Error('VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be configured.')
-}
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: { persistSession: false, autoRefreshToken: false },
-})
+const RAG_TIMEOUT_MS = config.ragTimeoutMs
 
 // Requires a valid Supabase session. The client sends the user's access
 // token as `Authorization: Bearer <token>`; we ask Supabase who that is.
@@ -108,8 +89,8 @@ const isSlashCommand = (request) => (
   typeof request.body?.message === 'string' && Boolean(extractSlashCommand(request.body.message))
 )
 
-if (trustedProxyHops > 0) {
-  app.set('trust proxy', trustedProxyHops)
+if (config.trustedProxyHops > 0) {
+  app.set('trust proxy', config.trustedProxyHops)
 }
 
 const perIpChatLimit = rateLimit({
@@ -244,13 +225,13 @@ async function runChat({ apiKey, message, history, isCommand, systemInstruction 
     {
       model: MODEL_NAME,
       systemInstruction,
-     generationConfig: buildGenerationConfig(isCommand),
+      generationConfig: buildGenerationConfig(isCommand),
       ...(isCommand ? { tools } : {}),
     },
     { timeout: GEMINI_TIMEOUT_MS },
   )
   const chat = model.startChat({ history })
-  return chat.sendMessage(isCommand ? message.trim().slice(1) : message)
+  return chat.sendMessageStream(isCommand ? message.trim().slice(1) : message)
 }
 
 // Temporary Google errors (overloaded, rate limited, hiccups) usually clear up
@@ -338,7 +319,7 @@ app.post('/api/delete-account', requireUser, async (request, response) => {
 
 app.post('/api/chat', requireUser, perIpChatLimit, perUserChatLimit, dailyChatLimit, async (request, response) => {
   const { message, history = [] } = request.body
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = config.geminiApiKey
 
   if (!apiKey) return response.status(500).json({ error: 'GEMINI_API_KEY is not configured' })
   if (typeof message !== 'string' || !message.trim()) return response.status(400).json({ error: 'message is required' })
@@ -356,52 +337,51 @@ app.post('/api/chat', requireUser, perIpChatLimit, perUserChatLimit, dailyChatLi
   const systemInstruction = SYSTEM_INSTRUCTION + faqContext
 
   try {
-    let result
+    const result = await withRetry(() => runChat({
+      apiKey,
+      message,
+      history: preparedHistory,
+      isCommand,
+      systemInstruction,
+    }))
 
+    response.status(200)
+    response.setHeader('Content-Type', 'application/x-ndjson; charset=utf-8')
+    response.setHeader('Cache-Control', 'no-cache, no-transform')
+    response.setHeader('X-Accel-Buffering', 'no')
+    response.flushHeaders()
+
+    let streamedText = ''
     try {
-      result = await withRetry(() => runChat({
-        apiKey,
-        message,
-        history: preparedHistory,
-        isCommand,
-        systemInstruction,
-      }))
+      for await (const chunk of result.stream) {
+        const parts = chunk.candidates?.[0]?.content?.parts ?? []
+        for (const part of parts) {
+          if (part.text) {
+            streamedText += part.text
+            response.write(`${JSON.stringify({ type: 'token', text: part.text })}\n`)
+          }
+        }
+      }
+
+      const finalResponse = await result.response
+      const parts = finalResponse.candidates?.[0]?.content?.parts ?? []
+      const replyText = streamedText || parts.find((part) => part.text)?.text || ''
+      const functionCall = parts.find((part) => part.functionCall)?.functionCall ?? null
+      if (replyText) logMessage(request.user.id, 'assistant', replyText)
+      response.end(`${JSON.stringify({ type: 'done', functionCall })}\n`)
+      console.log(`Gemini (${MODEL_NAME}) answered in ${Date.now() - startedAt}ms${faqContext ? ' (with FAQ context)' : ''}`)
     } catch (error) {
-      // If the model or SDK rejects the thinking setting, retry once without
-      // it and stop sending it from now on, so nothing breaks.
-      const rejectedThinking = thinkingConfigSupported
-        && (error?.status === 400 || /thinking/i.test(error?.message || ''))
-
-      if (!rejectedThinking) throw error
-
-      console.warn('thinkingConfig was rejected by the model/SDK, retrying without it.')
-      thinkingConfigSupported = false
-      result = await withRetry(() => runChat({
-        apiKey,
-        message,
-        history: preparedHistory,
-        isCommand,
-        systemInstruction,
-      }))
+      console.error(`Gemini stream failed after ${Date.now() - startedAt}ms:`, error)
+      if (!response.destroyed) {
+        response.end(`${JSON.stringify({ type: 'error', message: 'Gemini request failed' })}\n`)
+      }
     }
-
-    console.log(`Gemini (${MODEL_NAME}) answered in ${Date.now() - startedAt}ms${faqContext ? ' (with FAQ context)' : ''}`)
-
-    const parts = result.response.candidates?.[0]?.content?.parts ?? []
-    const replyText = parts.find((part) => part.text)?.text ?? ''
-
-    if (replyText) logMessage(request.user.id, 'assistant', replyText)
-
-    response.json({
-      text: replyText,
-      functionCall: parts.find((part) => part.functionCall)?.functionCall ?? null,
-    })
   } catch (error) {
     console.error(`Gemini failed after ${Date.now() - startedAt}ms (status ${error?.status ?? 'none'}):`, error)
     response.status(502).json({ error: 'Gemini request failed' })
   }
 })
 
-app.listen(port, () => {
-  console.log(`Backend running at http://localhost:${port} (model: ${MODEL_NAME})`)
+app.listen(config.port, () => {
+  console.log(`Backend running at http://localhost:${config.port} (model: ${MODEL_NAME})`)
 })

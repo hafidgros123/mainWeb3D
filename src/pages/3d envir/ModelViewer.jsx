@@ -26,8 +26,8 @@ function ModelViewer({ model }) {
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
     controls.enablePan = false
-    controls.minDistance = 1
-    controls.maxDistance = 12
+    controls.minDistance = 0.1
+    controls.maxDistance = 100
     controls.target.set(0, 0, 0)
 
     scene.add(new THREE.HemisphereLight('#fff7e8', '#354247', 2.8))
@@ -37,13 +37,14 @@ function ModelViewer({ model }) {
 
     const loader = new GLTFLoader()
     let loadedObject
-    let frameId
-    let cancelled = false
+    const frame = { id: null }
+    let intersectsViewport = true
+    const lifecycle = { cancelled: false }
 
     loader.load(
       model.model,
       (gltf) => {
-        if (cancelled) return
+        if (lifecycle.cancelled) return
         setLoadProgress(100)
         loadedObject = gltf.scene
         loadedObject.traverse((child) => {
@@ -52,17 +53,23 @@ function ModelViewer({ model }) {
             child.receiveShadow = false
           }
         })
-        const box = new THREE.Box3().setFromObject(loadedObject)
-        const size = box.getSize(new THREE.Vector3())
-        const center = box.getCenter(new THREE.Vector3())
-        const scale = 3.2 / Math.max(size.x, size.y, size.z, 0.01)
-        loadedObject.scale.setScalar(scale)
-        loadedObject.position.sub(center.multiplyScalar(scale))
         scene.add(loadedObject)
-        const fittedBox = new THREE.Box3().setFromObject(loadedObject)
-        const fittedCenter = fittedBox.getCenter(new THREE.Vector3())
-        loadedObject.position.sub(fittedCenter)
-        loadedObject.position.x -= 0.18
+
+        const box = new THREE.Box3().setFromObject(loadedObject)
+        const center = box.getCenter(new THREE.Vector3())
+        loadedObject.position.sub(center)
+        const sphere = box.getBoundingSphere(new THREE.Sphere())
+        const radius = Math.max(sphere.radius, 0.01)
+        const distance = (radius / Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)) * 1.25
+        const viewDirection = new THREE.Vector3(2.8, 1.8, 3.2).normalize()
+
+        camera.position.copy(viewDirection).multiplyScalar(distance)
+        camera.near = Math.max(radius / 100, 0.001)
+        camera.far = Math.max(radius * 100, 100)
+        camera.updateProjectionMatrix()
+        controls.target.set(0, 0, 0)
+        controls.minDistance = radius * 0.2
+        controls.maxDistance = radius * 20
         setStatus('ready')
       },
       (progressEvent) => {
@@ -72,7 +79,7 @@ function ModelViewer({ model }) {
       },
       (error) => {
         console.error(`Could not load 3D model: ${model.model}`, error)
-        if (!cancelled) setStatus('error')
+        if (!lifecycle.cancelled) setStatus('error')
       },
     )
 
@@ -87,17 +94,42 @@ function ModelViewer({ model }) {
     observer.observe(canvas.parentElement)
     resize()
 
+    function stopAnimation() {
+      if (frame.id === null) return
+      cancelAnimationFrame(frame.id)
+      frame.id = null
+    }
+
     function animate() {
-      frameId = requestAnimationFrame(animate)
+      frame.id = null
+      if (lifecycle.cancelled || !intersectsViewport || document.hidden) return
       if (loadedObject && autoRotateRef.current) loadedObject.rotation.y += 0.005
       controls.update()
       renderer.render(scene, camera)
+      frame.id = requestAnimationFrame(animate)
     }
-    animate()
+
+    function syncAnimation() {
+      if (intersectsViewport && !document.hidden && frame.id === null) {
+        frame.id = requestAnimationFrame(animate)
+      } else if (!intersectsViewport || document.hidden) {
+        stopAnimation()
+      }
+    }
+
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      intersectsViewport = entry.isIntersecting
+      syncAnimation()
+    })
+    visibilityObserver.observe(canvas)
+    document.addEventListener('visibilitychange', syncAnimation)
+    syncAnimation()
 
     return () => {
-      cancelled = true
-      cancelAnimationFrame(frameId)
+      lifecycle.cancelled = true
+      stopAnimation()
+      document.removeEventListener('visibilitychange', syncAnimation)
+      visibilityObserver.disconnect()
       observer.disconnect()
       controls.dispose()
       renderer.dispose()

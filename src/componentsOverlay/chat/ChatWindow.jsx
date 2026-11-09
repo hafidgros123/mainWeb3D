@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { askGemini } from '../../lib/gemini'
 import { supabase } from '../../lib/supabaseClient'
 import { selectThreeDUnlocked, useProgression } from '../../store/progressionStore'
@@ -19,11 +19,18 @@ const HISTORY_LIMIT = 50
 function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
   const [messages, setMessages] = useState([GREETING])
   const [text, setText] = useState('')
+  const [isSending, setIsSending] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
   const [clearing, setClearing] = useState(false)
+  const messagesContainerRef = useRef(null)
   const threeDUnlocked = useProgression(selectThreeDUnlocked)
   const unlockForSession = useProgression((state) => state.unlockForSession)
   const triggerAnimation = useSceneStore((state) => state.triggerAnimation)
+
+  useEffect(() => {
+    const container = messagesContainerRef.current
+    if (container) container.scrollTop = container.scrollHeight
+  }, [messages])
 
   // Signed-in users get their saved conversation back; signed-out users
   // (or ones who sign out mid-session) just see the greeting.
@@ -96,6 +103,7 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
   }
 
   const sendMessage = async () => {
+    if (isSending) return
     if (!userId) {
       onRequireSignIn()
       return
@@ -152,22 +160,47 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
       return
     }
 
+    const replyId = crypto.randomUUID()
+    const history = messages
+      .filter((message) => message.id !== GREETING.id)
+      .map((message) => ({
+        role: message.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: message.message }],
+      }))
+    setMessages((current) => [...current, {
+      message: '',
+      sender: 'ellenBot',
+      id: replyId,
+    }])
+    setIsSending(true)
+
     try {
-      const response = await askGemini(messageText)
+      const response = await askGemini(messageText, history, (token) => {
+        setMessages((current) => current.map((message) => (
+          message.id === replyId
+            ? { ...message, message: message.message + token }
+            : message
+        )))
+      })
       const functionCall = response.functionCall
       if (isCommand && functionCall?.name === 'playAnimation') triggerAnimation(functionCall.args?.animation)
-      if (response.text) setMessages((current) => [...current, { message: response.text, sender: 'ellenBot', id: `${crypto.randomUUID()}-reply` }])
-      if (!response.text && isCommand && functionCall) setMessages((current) => [...current, { message: 'I triggered that action for you.', sender: 'ellenBot', id: `${Date.now()}-action` }])
+      if (!response.text && isCommand && functionCall) {
+        setMessages((current) => current.map((message) => (
+          message.id === replyId
+            ? { ...message, message: 'I triggered that action for you.' }
+            : message
+        )))
+      }
     } catch (error) {
-      const errorMessage = error.message === 'AUTH_REQUIRED'
+      const errorMessage = error.message === 'AUTH_REQUIRED' || error.status === 401
         ? 'Your session expired. Please sign in again.'
-        : error.response?.status === 429
-          ? error.response.data?.error || 'The chat limit has been reached. Please try again later.'
-          : error.response?.status === 401
-            ? 'Your session expired. Please sign in again.'
+        : error.status === 429
+          ? error.data?.error || 'The chat limit has been reached. Please try again later.'
             : 'The chat service is unavailable right now.'
       setMessages((current) => [...current, { message: errorMessage, sender: 'ellenBot', id: `${crypto.randomUUID()}-error` }])
-      if (error.message === 'AUTH_REQUIRED' || error.response?.status === 401) onRequireSignIn()
+      if (error.message === 'AUTH_REQUIRED' || error.status === 401) onRequireSignIn()
+    } finally {
+      setIsSending(false)
     }
   }
 
@@ -189,7 +222,7 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
           </button>
         )}
       </div>
-      <div className="chat-messages">
+      <div className="chat-messages" ref={messagesContainerRef}>
         {historyLoading && <div className="chat-history-loading">Loading your conversation...</div>}
         {messages.map((message) => {
           const isBot = message.sender === 'ellenBot'
@@ -202,8 +235,8 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
       </div>
       {userId ? (
         <div className="chat-input">
-          <input value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && sendMessage()} placeholder="Type a message..." aria-label="Chat message" />
-          <button type="button" onClick={sendMessage}>Send</button>
+          <input value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(event) => event.key === 'Enter' && sendMessage()} placeholder="Type a message..." aria-label="Chat message" disabled={isSending} />
+          <button type="button" onClick={sendMessage} disabled={isSending}>{isSending ? '...' : 'Send'}</button>
         </div>
       ) : (
         <div className="chat-signin-gate">

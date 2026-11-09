@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useAuth } from '../../auth/AuthContext'
 import { supabase } from '../../lib/supabaseClient'
 import { safeAvatarUrl } from '../../lib/avatar'
 import TurnPlaceholder from '../../shared/TurnPlaceholder'
@@ -7,18 +8,12 @@ const MAX_LENGTH = 500
 
 function ModelComments({ modelId }) {
   const commentKey = `model:${modelId}`
-  const [session, setSession] = useState(null)
+  const { session } = useAuth()
   const [comments, setComments] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [draft, setDraft] = useState('')
   const [posting, setPosting] = useState(false)
   const [formError, setFormError] = useState('')
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession))
-    return () => data.subscription.unsubscribe()
-  }, [])
 
   const loadComments = useCallback(async () => {
     // Use the existing game_id column so the same table policies and trigger apply.
