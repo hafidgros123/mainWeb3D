@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "server": "node --env-file=serverless-side/.env serverless-side/server.js",
+    "server": "node --env-file=serverless-side/.env serverless-side/start.js",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview"

@@ -77,8 +77,9 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
   client. Never import that admin client into browser code.
 - During local development, Vite forwards `/api` requests to the Express server
   at `localhost:3001`. A production deployment must also host the Express API
-  and route `/api` requests to it; deploying only the Vite frontend does not
-  run `serverless-side/server.js`.
+  and route `/api` requests to it. Vercel currently hosts only the frontend;
+  chat and account deletion will not work there until `/api` is connected to a
+  backend. `vercel.json` provides SPA route fallback.
 - Route-level lazy loading keeps page code out of the initial bundle. The GLB
   viewer stops its render loop when it is off-screen or the browser tab is
   hidden.
@@ -100,9 +101,8 @@ GEMINI_API_KEY=your_google_gemini_api_key
 GEMINI_MODEL=your_gemini_model_id
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-# Optional: only set this in production behind a trusted reverse proxy
-# TRUST_PROXY_HOPS=1
 ```
 
 Notes:
@@ -111,6 +111,42 @@ Notes:
   browser; keep `SUPABASE_SERVICE_ROLE_KEY` server-side and never commit it.
 - Do not commit `.env` to source control.
 - In production, use a secure backend proxy instead of exposing a key in the frontend.
+
+### Deploy to Vercel
+
+Import the repository into Vercel and use the Vite framework preset. The
+included `vercel.json` serves the built frontend and falls back to `index.html`
+for client-side routes. This deploys the frontend and static assets only; it
+does not deploy the Express backend.
+
+Add these environment variables in the Vercel project settings for the
+Production, Preview, and Development environments as needed:
+
+- `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the browser build.
+
+The current frontend chat and account-deletion features call `/api` and will
+remain unavailable on this frontend-only deployment until a backend is
+connected. Do not add service-role or Gemini secrets to Vercel's `VITE_*`
+variables. In Supabase **Authentication → URL Configuration**, set the Site
+URL to the deployed site and add its Vercel production URL (and any preview
+URLs you intend to use) to the allowed Redirect URLs.
+
+### Supabase chat quotas
+
+The chat API enforces a shared limit of 20 Gemini requests per signed-in user
+and 100 requests across the whole site per UTC day. These quotas are stored and
+atomically checked in Supabase, so they apply across instances of the current
+Express backend.
+Each request accepted for Gemini processing counts, including requests where
+Gemini later returns an error. The additional 30-requests-per-IP/15-minute
+burst guard uses process memory, so it is best-effort when the backend runs
+across multiple instances.
+
+Before running the backend, open your Supabase project's **SQL Editor**, run
+[`supabase_sql/03_chat_daily_limits.sql`](./supabase_sql/03_chat_daily_limits.sql),
+and confirm it completes successfully. The API uses the existing server-only
+`SUPABASE_SERVICE_ROLE_KEY` to call the quota function. Do not expose that key
+to the browser.
 
 ### 3) Enable Google, GitHub, Facebook, and Discord sign-in
 
@@ -158,6 +194,56 @@ npm run dev
 
 Then open `http://localhost:5173` in the browser.
 
+### Run the full app with Docker
+
+Docker builds the frontend and API in containers, so Linux does not need
+Node.js, npm, or a host-side `npm install`. The Docker files and Git line
+endings are configured to work when you commit from Windows and run the same
+repository on Linux. Commit the Docker files and `.env.docker.example`, but
+never commit `.env.docker` or any file containing real credentials.
+
+On Windows, if you want to test the Docker setup locally, open PowerShell in
+the repository root and create the private environment file:
+
+```powershell
+Copy-Item .env.docker.example .env.docker
+```
+
+On the Linux machine, install Docker Engine and the Docker Compose plugin,
+clone the repository (or pull the latest changes in its existing checkout),
+then create its private environment file from the repository root:
+
+```bash
+cp .env.docker.example .env.docker
+```
+
+Edit `.env.docker` and fill in the Supabase URL and publishable key, Supabase
+service-role key, Gemini API key, and Gemini model. Keep `.env.docker` private;
+it is ignored by Git and should be created separately on each machine. The
+Vite Supabase values are embedded into the built browser app, so the
+publishable key is public by design. Never put a service-role key or Gemini
+key in either `VITE_*` variable. `TRUST_PROXY_HOPS=1` is correct for direct
+access through the included Nginx container; change it to the actual number of
+trusted proxy hops if you put another reverse proxy in front.
+
+Then build and start the app:
+
+```bash
+docker compose --env-file .env.docker up --build -d
+```
+
+Open `http://localhost:8080`. To stop it, run:
+
+```bash
+docker compose down
+```
+
+For updates, first pull the changes (`git pull`) and then run
+`docker compose --env-file .env.docker up --build -d` again. Compose restarts
+the containers automatically if they stop or the Linux machine reboots. The
+Docker setup is for running the project yourself; it does not deploy the site
+to Vercel.
+
 ## Available scripts
 
 ```bash
@@ -181,7 +267,8 @@ npm run lint      # Run the project linter
   96 through 100 are intentionally ignored.
 - Totals below 6 open a 30-second quiz. A wrong answer or timeout deletes the
   signed-in account through the `delete_my_account` database function.
-- The backend validates input, applies rate limits, signs session cookies, and forwards requests to Gemini.
+- The backend validates input, applies shared daily quotas and a best-effort
+  per-IP burst limit, and forwards requests to Gemini.
 - Chat responses use Gemini's minimal thinking level. The backend streams text
   chunks and sends any command function call in the final stream event.
 - The 3D page reads scene state from the Zustand store and updates the animation state in the browser.

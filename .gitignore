@@ -26,3 +26,4 @@ dist-ssr
 # Serverless
 serverless-side/.env
 .env
+.env.docker

@@ -104,39 +104,7 @@ const perIpChatLimit = rateLimit({
   }),
 })
 
-// Keyed by the signed-in user's id instead of an anonymous cookie.
-const perUserChatLimit = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
-  limit: 20,
-  keyGenerator: (request) => `chat-user:${request.user.id}`,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: isSlashCommand,
-  handler: (_request, response) => response.status(429).json({
-    error: 'You have reached your daily chat limit. Please try again later.',
-  }),
-})
-
-const dailyChatLimit = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
-  limit: 100,
-  keyGenerator: () => 'all-normal-chat',
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: isSlashCommand,
-  handler: (_request, response) => response.status(429).json({
-    error: 'The chatbot has reached its daily limit. Please try again later.',
-  }),
-})
-
 app.use(express.json())
-app.use((request, response, next) => {
-  response.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173')
-  response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-  if (request.method === 'OPTIONS') return response.sendStatus(204)
-  next()
-})
 
 const tools = [
   {
@@ -317,12 +285,32 @@ app.post('/api/delete-account', requireUser, async (request, response) => {
   return response.json({ deleted: true })
 })
 
-app.post('/api/chat', requireUser, perIpChatLimit, perUserChatLimit, dailyChatLimit, async (request, response) => {
+app.post('/api/chat', requireUser, perIpChatLimit, async (request, response) => {
   const { message, history = [] } = request.body
   const apiKey = config.geminiApiKey
 
   if (!apiKey) return response.status(500).json({ error: 'GEMINI_API_KEY is not configured' })
   if (typeof message !== 'string' || !message.trim()) return response.status(400).json({ error: 'message is required' })
+
+  const { data: limitRows, error: limitError } = await supabaseAdmin.rpc('consume_chat_message_limit', {
+    p_user_id: request.user.id,
+  })
+  if (limitError) {
+    console.error('Failed to enforce daily chat limits:', limitError)
+    return response.status(503).json({ error: 'Chat limits are temporarily unavailable. Please try again later.' })
+  }
+
+  const limit = limitRows?.[0]
+  if (!limit || typeof limit.allowed !== 'boolean') {
+    console.error('The daily chat limit function returned an invalid result:', limitRows)
+    return response.status(503).json({ error: 'Chat limits are temporarily unavailable. Please try again later.' })
+  }
+  if (!limit.allowed) {
+    const error = limit.reason === 'user'
+      ? 'You have reached your daily chat limit. Please try again after the daily reset.'
+      : 'The chatbot has reached its daily limit. Please try again after the daily reset.'
+    return response.status(429).json({ error })
+  }
 
   const isCommand = message.trim().startsWith('/')
   const preparedHistory = prepareHistory(history)
@@ -382,6 +370,4 @@ app.post('/api/chat', requireUser, perIpChatLimit, perUserChatLimit, dailyChatLi
   }
 })
 
-app.listen(config.port, () => {
-  console.log(`Backend running at http://localhost:${config.port} (model: ${MODEL_NAME})`)
-})
+export default app
