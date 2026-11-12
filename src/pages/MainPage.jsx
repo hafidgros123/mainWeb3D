@@ -266,13 +266,13 @@ function MenuScreen() {
 
         <details className="about-page technical-details">
           <summary>Technical Details</summary>
-          <p>This project is structured as a small multi-page app that blends a game portal, a chat assistant, and a 3D scene prototype. The main frontend lives in <code>src/</code>, while the backend API lives in the separate <code>serverless-side</code> folder.</p>
+          <p>This project is structured as a small multi-page app that blends a game portal, a chat assistant, and a 3D scene prototype. The main frontend lives in <code>src/</code>, while the backend API lives in the <code>worker/</code> folder.</p>
           <ul>
             <li><strong>Frontend:</strong> React + Vite power the UI, with route-based screens under <code>src/pages</code> and reusable pieces under <code>src/componentsOverlay</code>.</li>
             <li><strong>State:</strong> Zustand keeps the game progression and 3D scene state in sync across screens. Progress is saved to <code>localStorage</code>, and special unlocks can be temporary for the current session.</li>
             <li><strong>Routing:</strong> React Router controls navigation between the main menu, game pages, the anime section, and the 3D experience.</li>
             <li><strong>3D layer:</strong> Three.js and scene helpers in <code>src/three</code> are intended for the interactive environment, with animation actions driven by the app state.</li>
-            <li><strong>Backend:</strong> Express handles chat requests, session rules, and validation before forwarding prompts to Gemini.</li>
+            <li><strong>Backend:</strong> The Cloudflare Worker handles chat requests, session rules, and validation before forwarding prompts to Gemini.</li>
             <li><strong>AI chat:</strong> The chat flow uses the Google Generative AI SDK and is configured in <code>src/lib/gemini.js</code>. The app calls the backend endpoint <code>/api/chat</code> instead of exposing the key in the client.</li>
           </ul>
           <p>Game completion is tracked in the progression store, and unlocking the 3D route is tied to both progression and chat commands. The command <code>/unlock3D</code> grants a temporary session unlock, while finishing a game permanently enables access to the 3D page.</p>

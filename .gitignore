@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 # Serverless
-serverless-side/.env
+secret/
 .env
 .env.docker

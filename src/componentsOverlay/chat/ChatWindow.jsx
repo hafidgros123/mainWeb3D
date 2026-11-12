@@ -197,7 +197,11 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
         : error.status === 429
           ? error.data?.error || 'The chat limit has been reached. Please try again later.'
             : 'The chat service is unavailable right now.'
-      setMessages((current) => [...current, { message: errorMessage, sender: 'ellenBot', id: `${crypto.randomUUID()}-error` }])
+      setMessages((current) => current.map((message) => (
+        message.id === replyId
+          ? { ...message, message: errorMessage }
+          : message
+      )))
       if (error.message === 'AUTH_REQUIRED' || error.status === 401) onRequireSignIn()
     } finally {
       setIsSending(false)
@@ -228,7 +232,14 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
           const isBot = message.sender === 'ellenBot'
           return <div key={message.id} className={`chat-message ${isBot ? 'bot' : 'user'}`}>
             {isBot && <img className="message-avatar" src={ellenPortrait} alt="Ellen" />}
-            <div className="message-content"><div className="message-sender">{isBot ? 'Ellen' : 'You'}</div><div className="message-bubble">{message.message}</div></div>
+            <div className="message-content">
+              <div className="message-sender">{isBot ? 'Ellen' : 'You'}</div>
+              <div className="message-bubble">
+                {isSending && isBot && !message.message
+                  ? <img className="message-loading-gif" src="/orbit/ellen-joe-spin-ellen-joe.gif" alt="Ellen Joe spinning while Ellen responds" />
+                  : message.message}
+              </div>
+            </div>
             {!isBot && <img className="message-avatar" src={userPortrait} alt="You" />}
           </div>
         })}

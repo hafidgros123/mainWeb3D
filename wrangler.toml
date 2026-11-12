@@ -1,0 +1,16 @@
+name = "ellenbot-backend"
+main = "worker/index.js"
+compatibility_date = "2026-11-01"
+
+[observability]
+enabled = true
+
+# Secrets (GEMINI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
+# GEMINI_MODEL, ALLOWED_ORIGIN) are NOT set here. Set them with:
+#   wrangler secret put GEMINI_API_KEY
+#   wrangler secret put SUPABASE_URL
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   wrangler secret put GEMINI_MODEL
+#   wrangler secret put ALLOWED_ORIGIN
+# (run each one, it'll prompt you to paste the value — never put real
+# keys in this file since it gets committed to git)

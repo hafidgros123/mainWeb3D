@@ -18,7 +18,7 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
 ## Tech stack
 
 - Frontend: React 19, Vite, React Router, Zustand, Three.js
-- Backend: Express, Google Generative AI SDK
+- Backend: Cloudflare Workers (Wrangler, Hono), Google Generative AI SDK
 - Styling: custom CSS modules and component-level styles
 
 ## Project structure
@@ -29,10 +29,10 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
 ├── package.json
 ├── vite.config.js
 ├── public/
-├── serverless-side/
-│   ├── config.js
-│   ├── server.js
-│   └── supabaseAdmin.js
+├── worker/
+│   └── index.js
+├── secret/
+│   └── .env
 ├── src/
 │   ├── auth/
 │   │   ├── AuthContext.js
@@ -71,15 +71,13 @@ A React + Vite project that combines a themed game portal, a Gemini-powered chat
   the chat, sign-in, and other shared overlays. `src/lib/` contains integrations
   such as the browser Supabase client, auth-provider helpers, and chat API
   client. `src/store/` contains client-side progression and scene state.
-- `serverless-side/server.js` is the Express API entry point and handles API
-  routes, rate limits, and Gemini/RAG requests. `config.js` centralizes its
-  runtime settings, while `supabaseAdmin.js` is the server-only service-role
-  client. Never import that admin client into browser code.
-- During local development, Vite forwards `/api` requests to the Express server
-  at `localhost:3001`. A production deployment must also host the Express API
-  and route `/api` requests to it. Vercel currently hosts only the frontend;
-  chat and account deletion will not work there until `/api` is connected to a
-  backend. `vercel.json` provides SPA route fallback.
+- `worker/index.js` is the Cloudflare Worker API entry point. It handles API
+  routes, rate limits, and Gemini/RAG requests. Keep service-role credentials
+  in Worker secrets and never expose them to browser code.
+- During local development, Vite forwards `/api` requests to the Wrangler
+  Worker at `localhost:3001`. Deploy the API with Wrangler and configure the
+  frontend's `VITE_API_BASE_URL` to the deployed Worker URL. Vercel hosts the
+  frontend only; `vercel.json` provides SPA route fallback.
 - Route-level lazy loading keeps page code out of the initial bundle. The GLB
   viewer stops its render loop when it is off-screen or the browser tab is
   hidden.
@@ -94,7 +92,7 @@ npm install
 
 ### 2) Set up environment variables
 
-Create a file named `serverless-side/.env` in the project root with:
+Create a file named `secret/.env` in the project root with:
 
 ```env
 GEMINI_API_KEY=your_google_gemini_api_key
@@ -112,35 +110,37 @@ Notes:
 - Do not commit `.env` to source control.
 - In production, use a secure backend proxy instead of exposing a key in the frontend.
 
-### Deploy to Vercel
+### Deploy the frontend to Vercel
 
 Import the repository into Vercel and use the Vite framework preset. The
 included `vercel.json` serves the built frontend and falls back to `index.html`
 for client-side routes. This deploys the frontend and static assets only; it
-does not deploy the Express backend.
+does not deploy the Worker API.
 
 Add these environment variables in the Vercel project settings for the
 Production, Preview, and Development environments as needed:
 
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` for the browser build.
 
-The current frontend chat and account-deletion features call `/api` and will
-remain unavailable on this frontend-only deployment until a backend is
-connected. Do not add service-role or Gemini secrets to Vercel's `VITE_*`
-variables. In Supabase **Authentication → URL Configuration**, set the Site
-URL to the deployed site and add its Vercel production URL (and any preview
-URLs you intend to use) to the allowed Redirect URLs.
+Set `VITE_API_BASE_URL` to the deployed Worker's URL (without a trailing slash)
+so chat and account-deletion requests reach the API. Do not add service-role
+or Gemini secrets to Vercel's `VITE_*` variables. In Supabase
+**Authentication → URL Configuration**, set the Site URL to the deployed site
+and add its Vercel production URL (and any preview URLs you intend to use) to
+the allowed Redirect URLs.
+
+Deploy the Worker from the project root with `npx wrangler deploy`. Set
+`GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_MODEL`,
+and `ALLOWED_ORIGIN` as Wrangler secrets before deploying.
 
 ### Supabase chat quotas
 
 The chat API enforces a shared limit of 20 Gemini requests per signed-in user
 and 100 requests across the whole site per UTC day. These quotas are stored and
-atomically checked in Supabase, so they apply across instances of the current
-Express backend.
+atomically checked in Supabase, so they apply across Worker instances.
 Each request accepted for Gemini processing counts, including requests where
 Gemini later returns an error. The additional 30-requests-per-IP/15-minute
-burst guard uses process memory, so it is best-effort when the backend runs
-across multiple instances.
+burst guard uses isolate memory, so it is best-effort across Worker isolates.
 
 Before running the backend, open your Supabase project's **SQL Editor**, run
 [`supabase_sql/03_chat_daily_limits.sql`](./supabase_sql/03_chat_daily_limits.sql),
@@ -176,13 +176,14 @@ Discord users. If OAuth sign-in succeeds but profile editing does not work,
 check that the `profiles` table's row-level security policies allow the
 signed-in user to create and update their own row.
 
-### 4) Start the local backend
+### 4) Start the local Worker API
 
 ```bash
 npm run server
 ```
 
-This starts the Express API on `http://localhost:3001`.
+This starts the Worker locally on `http://localhost:3001`, loading local
+variables from `secret/.env`.
 
 ### 5) Start the frontend
 
@@ -196,7 +197,7 @@ Then open `http://localhost:5173` in the browser.
 
 ### Run the full app with Docker
 
-Docker builds the frontend and API in containers, so Linux does not need
+Docker builds the frontend and Worker API in containers, so Linux does not need
 Node.js, npm, or a host-side `npm install`. The Docker files and Git line
 endings are configured to work when you commit from Windows and run the same
 repository on Linux. Commit the Docker files and `.env.docker.example`, but
@@ -248,7 +249,7 @@ to Vercel.
 
 ```bash
 npm run dev       # Start the Vite frontend
-npm run server    # Start the Express backend
+npm run server    # Start the local Worker API
 npm run build     # Create a production build
 npm run preview   # Preview the production build locally
 npm run lint      # Run the project linter

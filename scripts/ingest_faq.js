@@ -16,9 +16,9 @@ import { fileURLToPath } from 'node:url'
 import dotenv from 'dotenv'
 import { createClient } from '@supabase/supabase-js'
 
-// Load serverless-side/.env no matter where this script is run from.
+// Load secret/.env no matter where this script is run from.
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const envPath = path.resolve(__dirname, '..', 'serverless-side', '.env')
+const envPath = path.resolve(__dirname, '..', 'secret', '.env')
 const envResult = dotenv.config({ path: envPath })
 if (envResult.error) {
   console.error(`Could not load .env from ${envPath}`)
@@ -47,7 +47,7 @@ const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 const geminiApiKey = process.env.GEMINI_API_KEY
 
 if (!supabaseUrl || !supabaseServiceRoleKey || !geminiApiKey) {
-  console.error('Missing VITE_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, or GEMINI_API_KEY in serverless-side/.env')
+  console.error('Missing VITE_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, or GEMINI_API_KEY in secret/.env')
   process.exit(1)
 }
 

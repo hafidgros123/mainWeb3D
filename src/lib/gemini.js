@@ -2,6 +2,16 @@ import { supabase } from './supabaseClient'
 
 const MAX_HISTORY_MESSAGES = 10
 
+// In local dev, leave VITE_API_BASE_URL unset if your Vite dev server
+// already proxies /api to your local backend (check vite.config.js for a
+// `server.proxy` entry — if it's there, this stays empty and nothing
+// changes for local testing).
+//
+// In production, set VITE_API_BASE_URL in Vercel's env vars to your
+// deployed Worker's URL, no trailing slash, e.g.:
+//   https://ellenbot-backend.<your-subdomain>.workers.dev
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+
 export async function askGemini(message, history = [], onToken = () => {}) {
   const trimmedHistory = history.slice(-MAX_HISTORY_MESSAGES)
 
@@ -13,7 +23,7 @@ export async function askGemini(message, history = [], onToken = () => {}) {
   const timeoutId = setTimeout(() => controller.abort(), 30000)
 
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -70,3 +80,4 @@ export async function askGemini(message, history = [], onToken = () => {}) {
     clearTimeout(timeoutId)
   }
 }
+

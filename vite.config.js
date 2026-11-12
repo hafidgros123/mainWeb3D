@@ -21,7 +21,7 @@ export default defineConfig({
     },
     react(),
   ],
-  envDir: 'serverless-side',
+  envDir: 'secret',
   server: {
     proxy: {
       '/api': 'http://localhost:3001',

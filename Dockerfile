@@ -15,18 +15,11 @@ FROM nginx:alpine AS frontend
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend-build /app/dist /usr/share/nginx/html
 
-FROM node:22-alpine AS api-dependencies
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
-
-FROM node:22-alpine AS api
+FROM dependencies AS api
 WORKDIR /app
 ENV NODE_ENV=production
-ENV PORT=3001
-COPY --from=api-dependencies /app/node_modules ./node_modules
-COPY package.json ./
-COPY serverless-side ./serverless-side
+COPY wrangler.toml ./
+COPY worker ./worker
 COPY src/three/animations.js ./src/three/animations.js
 EXPOSE 3001
-CMD ["node", "serverless-side/start.js"]
+CMD ["npx", "wrangler", "dev", "--ip", "0.0.0.0", "--port", "3001"]
