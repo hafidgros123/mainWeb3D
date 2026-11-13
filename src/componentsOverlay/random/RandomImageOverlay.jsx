@@ -1,3 +1,4 @@
+
 import { useLayoutEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
@@ -6,6 +7,7 @@ const cornerFolders = [
   ['top right', 'top-right'],
   ['bottom left', 'bottom-left'],
 ]
+
 const imageFilesByFolder = {
   'top left': [
     'background-removed.webp',
@@ -16,8 +18,10 @@ const imageFilesByFolder = {
     'frienren.webp',
     'ghg.webp',
     'juno.webp',
+    'teto.webp',
     'poorboy.webp',
   ],
+
   'top right': [
     'ciri.webp',
     'dog.webp',
@@ -33,7 +37,9 @@ const imageFilesByFolder = {
     'warhammer.webp',
     'yhggh.webp',
     'yhj.webp',
+    'food.webp',
   ],
+
   'bottom left': [
     'bea.webp',
     'beq.webp',
@@ -47,6 +53,7 @@ const imageFilesByFolder = {
     'jho.webp',
     'miyabi.webp',
     'slanesh.webp',
+    'brainless.webp',
   ],
 }
 
@@ -59,7 +66,9 @@ const imagesByCorner = Object.fromEntries(
     })),
   ]),
 )
+
 const corners = cornerFolders.map(([, corner]) => corner)
+
 const MAX_IMAGES_PER_CORNER = 100
 
 const RANDOM_IMAGE_KEY = 'random-image-overlay-last-change'
@@ -71,6 +80,7 @@ function shuffleCorners(availableCorners) {
 
   for (let index = shuffledCorners.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
+
     ;[shuffledCorners[index], shuffledCorners[randomIndex]] = [
       shuffledCorners[randomIndex],
       shuffledCorners[index],
@@ -78,8 +88,12 @@ function shuffleCorners(availableCorners) {
   }
 
   const lastCorner = window.localStorage.getItem(LAST_CORNER_KEY)
+
   if (shuffledCorners.length > 1 && shuffledCorners[0] === lastCorner) {
-    ;[shuffledCorners[0], shuffledCorners[1]] = [shuffledCorners[1], shuffledCorners[0]]
+    ;[shuffledCorners[0], shuffledCorners[1]] = [
+      shuffledCorners[1],
+      shuffledCorners[0],
+    ]
   }
 
   return shuffledCorners
@@ -87,8 +101,11 @@ function shuffleCorners(availableCorners) {
 
 function getNextCorner(availableCorners) {
   let cornerQueue
+
   try {
-    cornerQueue = JSON.parse(window.localStorage.getItem(CORNER_QUEUE_KEY) || '[]')
+    cornerQueue = JSON.parse(
+      window.localStorage.getItem(CORNER_QUEUE_KEY) || '[]',
+    )
   } catch {
     cornerQueue = []
   }
@@ -97,14 +114,25 @@ function getNextCorner(availableCorners) {
     cornerQueue = []
   }
 
-  cornerQueue = [...new Set(cornerQueue.filter((corner) => availableCorners.includes(corner)))]
+  cornerQueue = [
+    ...new Set(
+      cornerQueue.filter((corner) => availableCorners.includes(corner)),
+    ),
+  ]
+
   if (cornerQueue.length === 0) {
     cornerQueue = shuffleCorners(availableCorners)
   }
 
   const [nextCorner, ...remainingCorners] = cornerQueue
-  window.localStorage.setItem(CORNER_QUEUE_KEY, JSON.stringify(remainingCorners))
+
+  window.localStorage.setItem(
+    CORNER_QUEUE_KEY,
+    JSON.stringify(remainingCorners),
+  )
+
   window.localStorage.setItem(LAST_CORNER_KEY, nextCorner)
+
   return nextCorner
 }
 
@@ -112,18 +140,40 @@ function createRandomImage() {
   const availableCorners = corners.filter(
     (corner) => imagesByCorner[corner].length > 0,
   )
-  const corner = getNextCorner(availableCorners)
-  const cornerImages = imagesByCorner[corner].slice(0, MAX_IMAGES_PER_CORNER)
-  const indexStorageKey = `${RANDOM_IMAGE_KEY}-${corner}-index`
-  const storedIndex = window.localStorage.getItem(indexStorageKey)
-  const previousIndex = storedIndex === null ? -1 : Number(storedIndex)
-  const nextIndex = Number.isInteger(previousIndex)
-    && previousIndex >= -1
-    && previousIndex < cornerImages.length
-    ? (previousIndex + 1) % cornerImages.length
-    : 0
 
-  window.localStorage.setItem(indexStorageKey, String(nextIndex))
+  if (availableCorners.length === 0) {
+    return null
+  }
+
+  const corner = getNextCorner(availableCorners)
+
+  const cornerImages = imagesByCorner[corner].slice(
+    0,
+    MAX_IMAGES_PER_CORNER,
+  )
+
+  if (cornerImages.length === 0) {
+    return null
+  }
+
+  const indexStorageKey = `${RANDOM_IMAGE_KEY}-${corner}-index`
+
+  const storedIndex = window.localStorage.getItem(indexStorageKey)
+
+  const previousIndex =
+    storedIndex === null ? -1 : Number(storedIndex)
+
+  const nextIndex =
+    Number.isInteger(previousIndex) &&
+    previousIndex >= -1 &&
+    previousIndex < cornerImages.length
+      ? (previousIndex + 1) % cornerImages.length
+      : 0
+
+  window.localStorage.setItem(
+    indexStorageKey,
+    String(nextIndex),
+  )
 
   return {
     ...cornerImages[nextIndex],
@@ -133,10 +183,15 @@ function createRandomImage() {
 
 function RandomImageOverlay() {
   const location = useLocation()
+
   const [activeImage, setActiveImage] = useState(null)
 
   useLayoutEffect(() => {
     const nextImage = createRandomImage()
+
+    // The image must update synchronously with route changes
+    // to avoid displaying the previous page's image.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setActiveImage(nextImage)
   }, [location.pathname])
 
