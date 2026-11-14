@@ -319,7 +319,12 @@ app.post('/api/chat', requireUser, async (c) => {
   const preparedHistory = prepareHistory(history)
   const startedAt = Date.now()
 
-  logMessage(supabaseAdmin, user.id, 'user', message)
+  // Save the user's message (skip anything containing a /command).
+  // Awaited so it is always stored before Ellen's reply.
+  const saveToHistory = !extractSlashCommand(message)
+  if (saveToHistory) {
+    await logMessage(supabaseAdmin, user.id, 'user', message)
+  }
 
   const faqContext = isCommand ? '' : await retrieveFaqContext(supabaseAdmin, apiKey, message)
   const systemInstruction = SYSTEM_INSTRUCTION + faqContext
@@ -359,7 +364,13 @@ app.post('/api/chat', requireUser, async (c) => {
         const parts = finalResponse.candidates?.[0]?.content?.parts ?? []
         const replyText = streamedText || parts.find((part) => part.text)?.text || ''
         const functionCall = parts.find((part) => part.functionCall)?.functionCall ?? null
-        if (replyText) logMessage(supabaseAdmin, user.id, 'assistant', replyText)
+
+        // waitUntil keeps the Worker alive after the response closes,
+        // so the insert is not cancelled.
+        if (replyText && saveToHistory) {
+          c.executionCtx.waitUntil(logMessage(supabaseAdmin, user.id, 'assistant', replyText))
+        }
+
         controller.enqueue(encoder.encode(`${JSON.stringify({ type: 'done', functionCall })}\n`))
         console.log(`Gemini (${modelName}) answered in ${Date.now() - startedAt}ms${faqContext ? ' (with FAQ context)' : ''}`)
       } catch (error) {
