@@ -47,10 +47,19 @@ function getGeminiClient(apiKey) {
   return cachedGemini
 }
 
-// --- CORS: your frontend's real domain goes in the ALLOWED_ORIGIN secret --
+// --- CORS: production/custom domains go in the ALLOWED_ORIGIN secret ------
+// (comma-separated, e.g. https://nomnomjawspage.vercel.app,https://mydomain.com)
+// Vercel deployment/branch URLs of this project are allowed by the pattern below.
+const PREVIEW_ORIGIN = /^https:\/\/main-web3-[a-z0-9-]+-just-me-ffa5\.vercel\.app$/
+
 app.use('/api/*', async (c, next) => {
+  const allowed = (c.env.ALLOWED_ORIGIN || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean)
   const corsMiddleware = cors({
-    origin: c.env.ALLOWED_ORIGIN || 'http://localhost:5173',
+    origin: (origin) =>
+      allowed.includes(origin) || PREVIEW_ORIGIN.test(origin) ? origin : null,
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['GET', 'POST', 'OPTIONS'],
   })
@@ -118,17 +127,29 @@ const tools = [
   },
 ]
 
-function buildGenerationConfig(isCommand) {
+function buildGenerationConfig(isCommand, modelName = '') {
   const generationConfig = {}
   if (!isCommand) generationConfig.maxOutputTokens = 100
-  generationConfig.thinkingConfig = { thinkingLevel: 'minimal' }
+  // Only send a thinking setting the model actually supports
+  if (modelName.startsWith('gemini-3')) {
+    generationConfig.thinkingConfig = { thinkingLevel: 'minimal' }
+  } else if (modelName.includes('2.5-flash')) {
+    generationConfig.thinkingConfig = { thinkingBudget: 0 }
+  }
   return generationConfig
 }
 
 function prepareHistory(history) {
   if (!Array.isArray(history)) return []
-  let trimmed = history.slice(-MAX_HISTORY_MESSAGES)
-  while (trimmed.length > 0 && trimmed[0]?.role !== 'user') {
+  // Gemini only accepts the roles "user" and "model" ("assistant" -> "model")
+  let trimmed = history
+    .slice(-MAX_HISTORY_MESSAGES)
+    .map((m) => ({
+      role: m?.role === 'assistant' ? 'model' : m?.role,
+      parts: m?.parts ?? [{ text: m?.content ?? m?.text ?? '' }],
+    }))
+    .filter((m) => (m.role === 'user' || m.role === 'model') && m.parts[0]?.text)
+  while (trimmed.length > 0 && trimmed[0].role !== 'user') {
     trimmed = trimmed.slice(1)
   }
   return trimmed
@@ -185,7 +206,7 @@ async function runChat({ apiKey, modelName, message, history, isCommand, systemI
     {
       model: modelName,
       systemInstruction,
-      generationConfig: buildGenerationConfig(isCommand),
+      generationConfig: buildGenerationConfig(isCommand, modelName),
       ...(isCommand ? { tools } : {}),
     },
     { timeout: GEMINI_TIMEOUT_MS },
