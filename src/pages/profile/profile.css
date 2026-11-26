@@ -33,7 +33,7 @@
 
 .profile-card {
   max-width: 40rem;
-  margin-top: 2.625rem;
+  margin-top: 0;   /* the space above now belongs to .profile-card-wrap (Hanger.css) */
   color: var(--ink);
   background: var(--panel);
   font-family: var(--mono);

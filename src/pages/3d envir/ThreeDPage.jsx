@@ -12,7 +12,7 @@ function ThreeDPage() {
   if (!threeDUnlocked) {
     return (
       <main className="game-page three-d-page">
-        <Hanger src="/hang/ellenj.gif" />
+        <Hanger className="hanger--right" src="/hang/ellenj.gif" />
         <h1>3D gallery locked</h1>
         <TurnPlaceholder
           className="three-d-locked-placeholder"
@@ -25,7 +25,7 @@ function ThreeDPage() {
 
   return (
     <main className="game-page three-d-page">
-      <Hanger src="/hang/ellenj.gif" />
+      <Hanger className="hanger--right" src="/hang/ellenj.gif" />
       <p className="eyebrow">Interactive collection</p>
       <h1>3D Gallery</h1>
       <p className="three-d-intro">Browse the weird/funny models . Open one to spin it around and leave a comment or wrtie a command</p>

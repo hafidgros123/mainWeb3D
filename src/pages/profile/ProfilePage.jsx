@@ -247,10 +247,11 @@ function ProfilePage() {
 
   return (
     <main className="profile-page">
-      <Hanger src="/hang/ell.gif" />
       <p className="eyebrow">Account</p>
       <h1>Profile</h1>
 
+      <div className="profile-card-wrap">
+      <Hanger className="hanger--card" src="/hang/ell.gif" />
       <section className="profile-card" aria-label="Edit your profile">
         {!authReady && (
           <TurnPlaceholder message="loading chud account infos....." />
@@ -351,6 +352,7 @@ function ProfilePage() {
           </p>
         )}
       </section>
+      </div>
     </main>
   )
 }

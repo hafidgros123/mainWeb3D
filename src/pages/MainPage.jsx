@@ -88,8 +88,10 @@ function MenuScreen() {
   return (
     <main className="AppMainMenu">
       <section className="main-panel main-page-content" aria-labelledby="main-page-title">
-        <Hanger src="/hang/ellen.gif" />
-        <h1 id="main-page-title">NomNom....?? Main</h1>
+        <div className="title-with-hanger">
+          <Hanger className="hanger--sit" src="/hang/ellen.gif" />
+          <h1 id="main-page-title">NomNom....?? Main</h1>
+        </div>
         <p className="page-intro">
           Welcome to my personal web page! Pick any game to unlock the 3D environment, or catch up on anime news and new episode releases.{' '}
           <a href="#faq" onClick={() => { faqSectionRef.current.open = true }}>
