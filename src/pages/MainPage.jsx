@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { gameDefinitions } from '../gamesData/gameDefinitions'
 import { selectThreeDUnlocked, useProgression } from '../store/progressionStore'
 import DiceGamble from '../diceGamble/DiceGamble'
+import Hanger from '../shared/Hanger'
 
 const contactLinks = [
   { label: 'Email', icon: 'email', value: 'your@email.com', href: 'mailto:your@email.com' },
@@ -87,6 +88,7 @@ function MenuScreen() {
   return (
     <main className="AppMainMenu">
       <section className="main-panel main-page-content" aria-labelledby="main-page-title">
+        <Hanger src="/hang/ellen.gif" />
         <h1 id="main-page-title">NomNom....?? Main</h1>
         <p className="page-intro">
           Welcome to my personal web page! Pick any game to unlock the 3D environment, or catch up on anime news and new episode releases.{' '}
@@ -148,7 +150,7 @@ function MenuScreen() {
         <div className="project-links">
           <a
             className="project-link"
-            href="https://huggingface.co"
+            href="https://huggingface.co/puckiest"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -156,7 +158,7 @@ function MenuScreen() {
           </a>
           <a
             className="project-link project-link--secondary"
-            href="https://huggingface.co"
+            href="https://huggingface.co/puckiest"
             target="_blank"
             rel="noopener noreferrer"
           >

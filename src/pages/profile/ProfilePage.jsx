@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabaseClient'
 import { AVATAR_TYPES, MAX_AVATAR_BYTES, safeAvatarUrl } from '../../lib/avatar'
 import { isOAuthUser } from '../../lib/auth'
 import TurnPlaceholder from '../../shared/TurnPlaceholder'
+import Hanger from '../../shared/Hanger'
 import './profile.css'
 
 const EXTENSIONS = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp' }
@@ -246,6 +247,7 @@ function ProfilePage() {
 
   return (
     <main className="profile-page">
+      <Hanger src="/hang/ell.gif" />
       <p className="eyebrow">Account</p>
       <h1>Profile</h1>
 

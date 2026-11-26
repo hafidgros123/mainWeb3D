@@ -53,13 +53,20 @@
 .dice-panel.is-open { grid-template-rows: 1fr; }
 .dice-panel-inner { min-height: 0; overflow: hidden; }
 
+/* wraps the card so the hanger can sit on its corner without being cut by the torn edge */
+.dice-card-wrap {
+  position: relative;
+  width: min(100%, 40rem);
+  margin: 1.5rem auto 2rem;   /* extra room underneath so the corner picture is not cut off */
+}
+
 .dice-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  width: min(100%, 40rem);
-  margin: 1.5rem auto 0.5rem;
+  width: 100%;
+  margin: 0;
   padding: clamp(1rem, 3vw, 2rem);
   border: 0;
   border-radius: 0;

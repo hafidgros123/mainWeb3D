@@ -1,0 +1,47 @@
+/* The boxes that carry a hanger need a position, so the picture can be placed against their top-left corner */
+.main-panel,
+.three-d-page,
+.profile-page,
+.dice-gamble {
+  position: relative;
+}
+
+/* ---------- page hangers (main, 3D, profile) ----------
+   --hanger-size = how big (change this one line to resize them all)
+   The picture hangs from the top-left corner, and its lower part sits a little over the title.
+   It swings slowly from its top edge. */
+.hanger {
+  --hanger-size: clamp(7rem, 15vw, 12.5rem);
+  position: absolute;
+  top: calc(var(--hanger-size) * -0.62);        /* more negative = higher, less negative = more over the title */
+  left: clamp(0rem, 1vw, 0.75rem);
+  z-index: 3;
+  width: var(--hanger-size);
+  height: auto;
+  object-fit: contain;
+  transform-origin: 50% 0;                      /* swings from the top, like it is hanging */
+  animation: hanger-swing 5s ease-in-out infinite alternate;
+  pointer-events: none;                         /* never blocks a click on what is under it */
+  user-select: none;
+  filter: drop-shadow(0 0.35rem 0.5rem rgba(0, 0, 0, 0.5));
+}
+
+@keyframes hanger-swing {
+  from { transform: rotate(-4deg); }
+  to   { transform: rotate(3deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hanger { animation: none; transform: rotate(-3deg); }
+}
+
+/* ---------- the one in the "test your luck" box: bottom-right corner, half over the edge ---------- */
+.hanger--corner {
+  top: 85%;
+  right: 0;
+  left: auto;
+  width: clamp(6.5rem, 32%, 13rem);
+  transform-origin: 50% 50%;
+  animation: none;
+  transform: translate(50%, -50%) rotate(6deg);
+}

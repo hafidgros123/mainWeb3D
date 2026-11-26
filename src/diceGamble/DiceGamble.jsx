@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabaseClient'
 import GambleQuiz from '../gamble/GambleQuiz'
 import { findOutcome, pickVideo } from './outcomes'
 import SingleDie from './singleDie'
+import Hanger from '../shared/Hanger'
 import './DiceGamble.css'
 
 const DICE_COUNT = 5
@@ -182,6 +183,8 @@ function DiceGamble() {
 
       <div id="dice-panel" className={`dice-panel${isOpen ? ' is-open' : ''}`}>
         <div className="dice-panel-inner">
+          <div className="dice-card-wrap">
+            <Hanger className="hanger--corner" src="/hang/el.png" />
           <div className="dice-card">
             <div className="dice-stage">
               {values.map((value, index) => (
@@ -208,6 +211,7 @@ function DiceGamble() {
             <button className="dice-roll" type="button" disabled={!canRoll} onClick={handleRoll}>
               {isRolling ? 'Rolling...' : 'Roll'}
             </button>
+          </div>
           </div>
         </div>
       </div>
