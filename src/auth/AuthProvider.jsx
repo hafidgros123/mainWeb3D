@@ -12,7 +12,25 @@ function isSessionExpired(user) {
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [authReady, setAuthReady] = useState(false)
+  // null = still checking, true / false = known. Asked to the database (public.is_admin), never decided here.
+  const [isAdmin, setIsAdmin] = useState(null)
   const expirySignOutTimerRef = useRef(null)
+  const userId = session?.user?.id ?? null
+
+  useEffect(() => {
+    if (!userId) {
+      setIsAdmin(false)
+      return undefined
+    }
+    let cancelled = false
+    setIsAdmin(null)
+    supabase.rpc('is_admin').then(({ data, error }) => {
+      if (cancelled) return
+      if (error) console.error('Could not check the admin status:', error)
+      setIsAdmin(!error && data === true)
+    })
+    return () => { cancelled = true }
+  }, [userId])
 
   useEffect(() => {
     const lifecycle = { active: true }
@@ -73,8 +91,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   const value = useMemo(
-    () => ({ session, user: session?.user ?? null, authReady }),
-    [session, authReady],
+    () => ({ session, user: session?.user ?? null, authReady, isAdmin }),
+    [session, authReady, isAdmin],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

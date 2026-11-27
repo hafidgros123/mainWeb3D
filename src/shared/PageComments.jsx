@@ -18,7 +18,7 @@ function formatDate(value) {
 // database (comments.section_id): a game is "game-one", a 3D model "model:<id>", an anime
 // "anime-<id>", the main page "main-page".
 function PageComments({ sectionId }) {
-  const { session } = useAuth()
+  const { session, isAdmin } = useAuth()
   const [comments, setComments] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [draft, setDraft] = useState('')
@@ -30,7 +30,7 @@ function PageComments({ sectionId }) {
     const { data, error } = await supabase
       .from('comments')
       .select(
-        'id, user_id, author_name, avatar_url, is_admin, body, created_at, profiles:profiles!comments_user_id_profile_fkey ( username, avatar_url )'
+        'id, user_id, author_name, avatar_url, is_admin, body, created_at, profiles:profiles!comments_user_id_profile_fkey ( username, avatar_url, title )'
       )
       .eq('section_id', sectionId)
       .order('is_admin', { ascending: false })
@@ -149,11 +149,13 @@ function PageComments({ sectionId }) {
                     />
                   )}
                   <span className="comment-author">{name}</span>
-                  {comment.is_admin && <span className="comment-badge">Sorcerer Supreme</span>}
+                  {/* an admin's title (set on the profile page) is shown next to the name; "Supreme" until they pick one */}
+                  {comment.is_admin && <span className="comment-badge">{profile?.title || 'Supreme'}</span>}
                   <time className="comment-date" dateTime={comment.created_at}>
                     {formatDate(comment.created_at)}
                   </time>
-                  {session?.user?.id === comment.user_id && (
+                  {/* everyone can delete their own comments, admins can delete anybody's (the database checks it too) */}
+                  {(isAdmin === true || session?.user?.id === comment.user_id) && (
                     <button type="button" className="comment-delete" onClick={() => handleDelete(comment.id)}>
                       Delete
                     </button>

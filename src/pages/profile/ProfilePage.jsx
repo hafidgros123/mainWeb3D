@@ -15,7 +15,7 @@ const EMPTY_USER_METADATA = {}
 
 function ProfilePage() {
   const navigate = useNavigate()
-  const { authReady, user } = useAuth()
+  const { authReady, user, isAdmin } = useAuth()
   const userId = user?.id ?? null
   const userMetadata = user?.user_metadata ?? EMPTY_USER_METADATA
   const userEmail = user?.email ?? ''
@@ -25,6 +25,7 @@ function ProfilePage() {
   const [username, setUsername] = useState('')
   const [needsUsernameSelection, setNeedsUsernameSelection] = useState(false)
   const [description, setDescription] = useState('')
+  const [title, setTitle] = useState('') // admin-only: shown next to the name on comments
   const [savedAvatar, setSavedAvatar] = useState(null) // the picture currently saved on the profile
   const [avatarFile, setAvatarFile] = useState(null) // a new picture the user just chose
   const [removeAvatar, setRemoveAvatar] = useState(false)
@@ -45,7 +46,7 @@ function ProfilePage() {
     const loadProfile = async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, description, avatar_url')
+        .select('username, description, avatar_url, title')
         .eq('id', userId)
         .maybeSingle()
 
@@ -65,6 +66,7 @@ function ProfilePage() {
         setNeedsUsernameSelection(oauthNameNotChosen)
         setUsername(oauthNameNotChosen ? '' : data.username ?? '')
         setDescription(data.description ?? '')
+        setTitle(data.title ?? '')
         setSavedAvatar(data.avatar_url ?? null)
         setLoaded(true)
         return
@@ -98,7 +100,7 @@ function ProfilePage() {
           username: fallbackUsername,
           description: metadata.description || null,
         }, { onConflict: 'id' })
-        .select('username, description, avatar_url')
+        .select('username, description, avatar_url, title')
         .single()
 
       if (cancelled) return
@@ -109,6 +111,7 @@ function ProfilePage() {
       }
       setUsername(created.username ?? '')
       setDescription(created.description ?? '')
+      setTitle(created.title ?? '')
       setSavedAvatar(created.avatar_url ?? null)
       setLoaded(true)
     }
@@ -213,6 +216,8 @@ function ProfilePage() {
           username: name,
           description: description.trim() || null,
           avatar_url: nextAvatar,
+          // only an admin can set a title (the database refuses it for everybody else anyway)
+          ...(isAdmin === true ? { title: title.trim() || null } : {}),
         }, { onConflict: 'id' })
 
       if (updateError) {
@@ -327,6 +332,29 @@ function ProfilePage() {
                 rows={3}
               />
               <small className="profile-hint">{description.length}/200</small>
+            </div>
+
+            <div className="profile-field">
+              <label htmlFor="profile-title">Title</label>
+              {isAdmin === true && (
+                <>
+                  <input
+                    id="profile-title"
+                    className="profile-input"
+                    type="text"
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                    maxLength={24}
+                    placeholder="Supreme"
+                    autoComplete="off"
+                  />
+                  <small className="profile-hint">Shown next to your name on your comments. Empty = Supreme. {title.length}/24</small>
+                </>
+              )}
+              {isAdmin === false && (
+                <p id="profile-title" className="profile-locked">{"you filthy worm, you don't have access to this"}</p>
+              )}
+              {isAdmin === null && <small className="profile-hint">checking...</small>}
             </div>
 
             {status.text && (

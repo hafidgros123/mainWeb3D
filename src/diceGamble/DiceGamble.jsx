@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadFace, newThrowUrl, preloadFaces, preloadThrow, releaseThrowUrl } from '../lib/DiceImages'
 import { rollDiceEven } from '../lib/rollDice'
+import { useAuth } from '../auth/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import GambleQuiz from '../gamble/GambleQuiz'
 import { findOutcome, pickVideo } from './outcomes'
@@ -11,7 +12,8 @@ import './DiceGamble.css'
 
 const DICE_COUNT = 5
 const THROW_MS = 800         // how long the throw animation plays (milliseconds)
-const STARTING_ROLLS = 9999  // "die left" for now, you can change this later
+const DAILY_ROLLS = 10       // rolls per day for everybody except admins (admins are unlimited). The day changes at midnight UTC.
+const GUEST_ROLLS_KEY = 'diceGambleDailyRolls' // signed-out visitors: counted in this browser (signed-in people are counted by the database)
 const RESULT_PAUSE_MS = 600  // how long the total stays visible before the video page opens (0 = instantly)
 
 const COOLDOWN_ROLLS = 10    // after something comes up, it can't come up again for this many rolls
@@ -36,6 +38,24 @@ function saveCooldown(state) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) } catch { /* ignore */ }
 }
 
+// ---- daily roll counter for signed-out visitors (signed-in people are counted by Supabase: consume_dice_roll) ----
+const todayUtc = () => new Date().toISOString().slice(0, 10)
+
+function loadGuestUsed() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(GUEST_ROLLS_KEY))
+    if (saved && saved.day === todayUtc() && Number.isInteger(saved.used)) return saved.used
+  } catch { /* ignore broken or blocked storage */ }
+  return 0
+}
+
+function takeGuestRoll() {
+  const used = loadGuestUsed()
+  if (used >= DAILY_ROLLS) return { allowed: false, left: 0 }
+  try { localStorage.setItem(GUEST_ROLLS_KEY, JSON.stringify({ day: todayUtc(), used: used + 1 })) } catch { /* ignore */ }
+  return { allowed: true, left: DAILY_ROLLS - used - 1 }
+}
+
 // the key we put on cooldown for a given total
 function cooldownKey(total) {
   if (COOLDOWN_MODE === 'outcome') {
@@ -56,7 +76,10 @@ function DiceGamble() {
   const [values, setValues] = useState(() => Array(DICE_COUNT).fill(0))
   const [isRolling, setIsRolling] = useState(false)
   const [throwSrc, setThrowSrc] = useState('')
-  const [rollsLeft, setRollsLeft] = useState(STARTING_ROLLS)
+  const [rollsLeft, setRollsLeft] = useState(null) // null = still loading, -1 = unlimited (admin)
+  const [checking, setChecking] = useState(false)
+  const { authReady, user, isAdmin } = useAuth()
+  const userId = user?.id ?? null
   const [quizOpen, setQuizOpen] = useState(false)
   const [accountNotice, setAccountNotice] = useState('')
   const navigate = useNavigate()
@@ -71,7 +94,57 @@ function DiceGamble() {
   }, [])
 
   const total = sumOf(values)
-  const canRoll = !isRolling && rollsLeft > 0
+  const unlimited = rollsLeft === -1
+  const canRoll = !isRolling && !checking && rollsLeft !== null && (unlimited || rollsLeft > 0)
+
+  // how many rolls are left today: admins unlimited, signed-in people from the database, visitors from this browser
+  useEffect(() => {
+    if (!authReady) return undefined
+    if (!userId) {
+      setRollsLeft(DAILY_ROLLS - loadGuestUsed())
+      return undefined
+    }
+    if (isAdmin === null) {
+      setRollsLeft(null)
+      return undefined
+    }
+    if (isAdmin) {
+      setRollsLeft(-1)
+      return undefined
+    }
+    let cancelled = false
+    supabase.rpc('dice_rolls_left').then(({ data, error }) => {
+      if (cancelled) return
+      if (error) {
+        console.error('Could not read the daily rolls:', error)
+        setRollsLeft(0)
+        return
+      }
+      setRollsLeft(data)
+    })
+    return () => { cancelled = true }
+  }, [authReady, userId, isAdmin])
+
+  // uses up one of today's rolls; false = none left today
+  const takeRoll = async () => {
+    if (isAdmin === true) return true // admins: unlimited
+    if (userId) {
+      const { data, error } = await supabase.rpc('consume_dice_roll')
+      const row = Array.isArray(data) ? data[0] : data
+      if (error || !row) {
+        console.error('Could not count the roll:', error)
+        setAccountNotice('Could not count your roll. Please try again in a moment.')
+        return false
+      }
+      setRollsLeft(row.rolls_left)
+      if (!row.allowed) setAccountNotice('No rolls left today. They come back tomorrow.')
+      return row.allowed === true
+    }
+    const guest = takeGuestRoll()
+    setRollsLeft(guest.left)
+    if (!guest.allowed) setAccountNotice('No rolls left today. They come back tomorrow.')
+    return guest.allowed
+  }
 
   const processScore = useCallback(async (score) => {
     if (!Number.isInteger(score) || score < 0 || score > 95) return
@@ -95,7 +168,7 @@ function DiceGamble() {
         setAccountNotice('The admin reward could not be applied. Run the gamble SQL migration first.')
         return
       }
-      setAccountNotice('You reached 95. Admin access was granted.')
+      setAccountNotice('You reached 95. youre now a gambling master and have been granted admin status. delete comments and you choose youre own title')
     }
   }, [])
 
@@ -122,6 +195,13 @@ function DiceGamble() {
   const handleRoll = async () => {
     if (!canRoll) return
 
+    setChecking(true)
+    setAccountNotice('')
+    const allowed = await takeRoll()
+    if (!mountedRef.current) return
+    setChecking(false)
+    if (!allowed) return
+
     // TEST ONLY: open the site with ?roll=27 to force a total of 27. It does nothing in the real (built) site.
     const param = new URLSearchParams(window.location.search).get('roll')
     const forced = import.meta.env.DEV && param !== null && Number.isFinite(Number(param)) ? Number(param) : undefined
@@ -145,7 +225,6 @@ function DiceGamble() {
     const animationUrl = newThrowUrl() // a fresh URL, so the animation always starts from the beginning
     setThrowSrc(animationUrl)
     setIsRolling(true)
-    setRollsLeft((left) => left - 1)
 
     // show the result only after BOTH the animation time has passed AND the new faces are loaded
     await Promise.all([wait(THROW_MS), ...result.map(loadFace)])
@@ -204,7 +283,7 @@ function DiceGamble() {
 
             <div className="dice-box dice-left">
               <span className="dice-box-label">Die left :</span>
-              <strong>{rollsLeft}</strong>
+              <strong>{rollsLeft === null ? '...' : unlimited ? '\u221e' : rollsLeft}</strong>
             </div>
             {accountNotice && <p className="dice-account-notice" role="status">{accountNotice}</p>}
 
