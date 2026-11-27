@@ -4,6 +4,9 @@ import { gameDefinitions } from '../gamesData/gameDefinitions'
 import { selectThreeDUnlocked, useProgression } from '../store/progressionStore'
 import DiceGamble from '../diceGamble/DiceGamble'
 import Hanger from '../shared/Hanger'
+import PageComments from '../shared/PageComments'
+import './games/gamepage.css' // holds the comment styles, shared with the game / anime / 3D pages
+import './gameShards.css'
 
 const contactLinks = [
   { label: 'Email', icon: 'email', value: 'your@email.com', href: 'mailto:your@email.com' },
@@ -100,16 +103,39 @@ function MenuScreen() {
         </p>
         <p className="page-intro"> hey also you will need to  sign in to be able to comment on the anime updates section.
           </p> 
-        <div className="game-grid">
+        <div className="shard-grid">
           {gameDefinitions.map((game) => {
             const isComplete = completedGames.includes(game.id)
 
             return (
-              <Link className="game-card" to={`/games/${game.id}`} key={game.id}>
-                <span className="game-number">{game.number}</span>
-                <span>
-                  <strong>{game.title}</strong>
-                  <small>{isComplete ? 'Completed' : 'Available'}</small>
+              <Link className="shard-card" to={`/games/${game.id}`} key={game.id}>
+                <span className="shard-back" aria-hidden="true" />
+                <span className="shard-frame" aria-hidden="true">
+                  <span className="shard-image">
+                    {game.image ? (
+                      <img src={game.image} alt="" loading="lazy" />
+                    ) : (
+                      <span className="shard-image-empty">image</span>
+                    )}
+                  </span>
+                </span>
+                <span className="shard-bits" aria-hidden="true"><i /><i /><i /><i /></span>
+                <span className="shard-info">
+                  <span className="shard-info-main">
+                    <span className="shard-head">
+                      <svg className="shard-pad" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M7 6h10a5 5 0 0 1 4.8 3.6l1 4a3 3 0 0 1-5 2.8L16 14H8l-1.8 2.4a3 3 0 0 1-5-2.8l1-4A5 5 0 0 1 7 6z" />
+                        <path fill="#130e29" d="M7.6 8.6h1.2v1.2H10v1.2H8.8v1.2H7.6V11H6.4V9.8h1.2z" />
+                        <circle cx="15.4" cy="9.4" r="0.9" fill="#130e29" />
+                        <circle cx="17.6" cy="11.4" r="0.9" fill="#130e29" />
+                      </svg>
+                      <span className="shard-number">{game.number}</span>
+                      <strong>{game.title}</strong>
+                    </span>
+                    <small className="shard-desc">{game.description}</small>
+                    <small className="shard-status">{isComplete ? 'Completed' : 'Available'}</small>
+                  </span>
+                  <span className="shard-arrow" aria-hidden="true">&#8594;</span>
                 </span>
               </Link>
             )
@@ -282,6 +308,9 @@ function MenuScreen() {
           <p>Game completion is tracked in the progression store, and unlocking the 3D route is tied to both progression and chat commands. The command <code>/unlock3D</code> grants a temporary session unlock, while finishing a game permanently enables access to the 3D page.</p>
           <p>Once unlocked, the app can request animation actions such as <code>idle</code>, <code>dance</code>, <code>wave</code>, <code>jump</code>, and <code>sit</code>. These actions are used to drive the character state in the 3D scene and are coordinated between the frontend state, the chat tool layer, and the animation helpers.</p>
         </details>
+
+        {/* the main page's comment section is named "main-page" in the database */}
+        <PageComments sectionId="main-page" />
 
         <section className="contact-section" aria-labelledby="contact-title">
           <h2 id="contact-title">Contact</h2>

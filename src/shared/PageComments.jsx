@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAuth } from '../../auth/AuthContext'
-import { supabase } from '../../lib/supabaseClient'
-import { safeAvatarUrl } from '../../lib/avatar'
-import TurnPlaceholder from '../../shared/TurnPlaceholder'
+import { useAuth } from '../auth/AuthContext'
+import { supabase } from '../lib/supabaseClient'
+import { safeAvatarUrl } from '../lib/avatar'
+import TurnPlaceholder from './TurnPlaceholder'
 
 const MAX_LENGTH = 500
 
@@ -14,7 +14,10 @@ function formatDate(value) {
   })
 }
 
-function GameComments({ gameId }) {
+// One comment box for every page. "sectionId" is the name of the page's comment section in the
+// database (comments.section_id): a game is "game-one", a 3D model "model:<id>", an anime
+// "anime-<id>", the main page "main-page".
+function PageComments({ sectionId }) {
   const { session } = useAuth()
   const [comments, setComments] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
@@ -29,7 +32,7 @@ function GameComments({ gameId }) {
       .select(
         'id, user_id, author_name, avatar_url, is_admin, body, created_at, profiles:profiles!comments_user_id_profile_fkey ( username, avatar_url )'
       )
-      .eq('game_id', gameId)
+      .eq('section_id', sectionId)
       .order('is_admin', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(50)
@@ -41,7 +44,7 @@ function GameComments({ gameId }) {
     }
     setComments(data)
     setStatus('ready')
-  }, [gameId])
+  }, [sectionId])
 
   useEffect(() => {
     setStatus('loading')
@@ -55,8 +58,8 @@ function GameComments({ gameId }) {
 
     setPosting(true)
     setFormError('')
-    // Only the game and the text are sent. The user id and admin badge are set by the database.
-    const { error } = await supabase.from('comments').insert({ game_id: gameId, body })
+    // Only the section and the text are sent. The user id and admin badge are set by the database.
+    const { error } = await supabase.from('comments').insert({ section_id: sectionId, body })
     setPosting(false)
 
     if (error) {
@@ -166,4 +169,4 @@ function GameComments({ gameId }) {
   )
 }
 
-export default GameComments
+export default PageComments

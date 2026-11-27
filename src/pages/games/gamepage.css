@@ -250,7 +250,7 @@
 /* Small buttons for the comment section.
    They must beat the big 3D ".game-page button" rules above, including the violet theme one,
    so they are written with the same weight and placed after them. */
-.app-shell .game-page .comments button {
+.app-shell :is(.game-page, .main-panel) .comments button {
   margin: 0;
   padding: 0.4rem 1rem;
   border: 0;
@@ -265,19 +265,19 @@
   mask-image: none;
 }
 
-.app-shell .game-page .comments button:hover:not(:disabled) {
+.app-shell :is(.game-page, .main-panel) .comments button:hover:not(:disabled) {
   color: #fff;
   background: color-mix(in srgb, var(--coral-dark) 80%, var(--coral));
   box-shadow: inset 0 -0.2rem 0 var(--coral);
   transform: none;
 }
 
-.app-shell .game-page .comments button:disabled {
+.app-shell :is(.game-page, .main-panel) .comments button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.app-shell .game-page .comments .comment-delete {
+.app-shell :is(.game-page, .main-panel) .comments .comment-delete {
   padding: 0.0625rem 0.5rem;
   color: var(--muted);
   background: transparent;
@@ -286,7 +286,7 @@
   text-decoration: underline;
 }
 
-.app-shell .game-page .comments .comment-delete:hover:not(:disabled) {
+.app-shell :is(.game-page, .main-panel) .comments .comment-delete:hover:not(:disabled) {
   color: var(--coral);
   background: transparent;
   box-shadow: none;

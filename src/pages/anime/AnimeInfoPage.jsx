@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { episodesLabel, getAnimeById, getSeasonsFor, statusLabel } from '../../animeData/animeSource'
-import GameComments from '../games/GameComments' // the same comment box as the game pages
+import PageComments from '../../shared/PageComments' // the same comment box as the game pages
 import FavoriteDiamond from './FavoriteDiamond'
 import TurnPlaceholder from '../../shared/TurnPlaceholder'
 import '../games/gamepage.css' // holds the comment styles (loaded once, shared with the game pages)
@@ -138,8 +138,8 @@ function AnimeInfoPage() {
             </div>
           </section>
 
-          {/* "gameId" is just the name of the comment thread; an anime uses "anime-<id>" */}
-          <GameComments gameId={`anime-${anime.id}`} />
+          {/* the anime's comment section is named "anime-<id>" in the database */}
+          <PageComments sectionId={`anime-${anime.id}`} />
         </>
       )}
     </main>

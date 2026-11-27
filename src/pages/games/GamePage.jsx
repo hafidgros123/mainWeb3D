@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { gameDefinitions } from '../../gamesData/gameDefinitions'
 import { useProgression } from '../../store/progressionStore'
-import GameComments from './GameComments'
+import PageComments from '../../shared/PageComments'
 import TurnPlaceholder from '../../shared/TurnPlaceholder'
 import './gamepage.css'
 
@@ -146,7 +146,7 @@ function GamePage() {
         </section>
       )}
 
-      <GameComments gameId={game.id} />
+      <PageComments sectionId={game.id} />
 
 
         <section className="contact-section" aria-labelledby="contact-title">

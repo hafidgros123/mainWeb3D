@@ -1,0 +1,284 @@
+/* ================================================================
+   GAME CARDS: BROKEN-GLASS SHARDS  (the three cards on the main page)
+   Built from the mockup: a big glowing glass shard with the picture inside, a second glass sheet
+   sticking out behind it, loose fragments around it, and a slanted dark info bar (game-pad icon,
+   title, description, arrow) overlapping the bottom. The bar keeps the site's old torn left/right edge.
+   Things you will want to change:
+   - the 3 vertical levels ........ .shard-card:nth-child(n) { margin-top } below
+   - a shard's shape ............... --shard-shape (x% y% corners); --back-shape is the sheet behind it
+   - a card's glow colours ......... --shard-a / --shard-b
+   - picture + text ................ gamesData/gameDefinitions.js (image, description)
+   ================================================================ */
+
+.shard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  width: calc(100% + 5rem);          /* wider than the text column so the shards can be big */
+  margin-left: -2.5rem;
+  padding: 1.5rem 0 2rem;
+}
+
+.shard-card {
+  --shard-a: #9b7bff;
+  --shard-b: #c9a8ff;
+  --glass-dark: rgba(19, 14, 41, 0.93);
+  position: relative;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  isolation: isolate;
+  /* the glow follows the shape, because it sits on the parent of the clipped pieces */
+  filter: drop-shadow(0 0.5rem 1rem rgba(0, 0, 0, 0.55)) drop-shadow(0 0 0.8rem color-mix(in srgb, var(--shard-a) 55%, transparent));
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+/* three slightly different levels (the middle one is the highest) */
+.shard-card:nth-child(1) { margin-top: 1.25rem; }
+.shard-card:nth-child(2) { margin-top: 0; }
+.shard-card:nth-child(3) { margin-top: 3rem; }
+
+/* purple / blue / pink glass, like the mockup */
+.shard-card:nth-child(1) { --shard-a: #9b7bff; --shard-b: #c9a8ff; }
+.shard-card:nth-child(2) { --shard-a: #5fb4ff; --shard-b: #b6e3ff; }
+.shard-card:nth-child(3) { --shard-a: #ff5c86; --shard-b: #b85cff; }
+
+/* the glass piece with the picture (sharp corners + a few small torn notches) */
+.shard-card:nth-child(1) {
+  --shard-shape: polygon(10% 22%, 52% 8%, 78% 0%, 86% 10%, 100% 18%, 94% 26%, 100% 34%, 90% 50%, 78% 74%, 60% 100%, 24% 94%, 0% 74%, 6% 44%);
+  --back-shape: polygon(20% 10%, 70% 0%, 100% 28%, 86% 70%, 56% 100%, 18% 88%, 4% 52%);
+  --back-move: translate(-0.9rem, 0.9rem) rotate(-3deg) scale(1.04);
+}
+
+.shard-card:nth-child(2) {
+  --shard-shape: polygon(32% 6%, 94% 0%, 100% 8%, 90% 16%, 100% 26%, 88% 44%, 94% 56%, 70% 88%, 50% 100%, 30% 94%, 0% 100%, 14% 76%, 6% 62%, 20% 50%, 10% 36%);
+  --back-shape: polygon(40% 0%, 100% 14%, 96% 52%, 74% 96%, 40% 100%, 8% 90%, 16% 50%, 22% 22%);
+  --back-move: translate(1.2rem, -0.9rem) rotate(2.5deg) scale(1.03);
+}
+
+.shard-card:nth-child(3) {
+  --shard-shape: polygon(40% 0%, 82% 6%, 100% 0%, 96% 24%, 100% 34%, 92% 50%, 100% 66%, 84% 100%, 40% 94%, 12% 100%, 0% 78%, 10% 56%, 4% 44%, 14% 30%, 6% 18%);
+  --back-shape: polygon(30% 6%, 90% 0%, 100% 30%, 98% 72%, 70% 100%, 24% 96%, 0% 70%, 12% 30%);
+  --back-move: translate(0.9rem, -1rem) rotate(3deg) scale(1.03);
+}
+
+.shard-card:hover,
+.shard-card:focus-visible {
+  outline: none;
+  transform: translateY(-0.4rem);
+  filter: drop-shadow(0 0.8rem 1.3rem rgba(0, 0, 0, 0.6)) drop-shadow(0 0 1.3rem color-mix(in srgb, var(--shard-a) 90%, transparent));
+}
+
+/* ---------- second glass sheet sticking out behind the main shard ---------- */
+.shard-back {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: -1;
+  display: block;
+  aspect-ratio: 1 / 1;
+  clip-path: var(--back-shape);
+  transform: var(--back-move);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--shard-a) 60%, transparent), rgba(255, 255, 255, 0.07) 55%, color-mix(in srgb, var(--shard-b) 45%, transparent));
+}
+
+/* ---------- the main glass piece (bright broken rim + the picture area) ---------- */
+.shard-frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  clip-path: var(--shard-shape);
+  background: linear-gradient(135deg, #fff, var(--shard-a) 28%, rgba(255, 255, 255, 0.55) 52%, var(--shard-b) 78%, #fff);
+}
+
+.shard-image {
+  position: absolute;
+  inset: 0.3125rem;
+  display: block;
+  overflow: hidden;
+  clip-path: var(--shard-shape);
+  background: #0e0a22;
+}
+
+.shard-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* empty placeholder until real pictures exist */
+.shard-image-empty {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.4);
+  background:
+    repeating-linear-gradient(135deg, transparent 0 0.9rem, color-mix(in srgb, var(--shard-a) 12%, transparent) 0.9rem 1.8rem),
+    linear-gradient(160deg, #1b1440, #0e0a22 72%);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* glass facets along the edges + hairline cracks + a diagonal shine, over the picture (never blocks clicks) */
+.shard-image::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cg fill='white' fill-opacity='.11'%3E%3Cpolygon points='0,0 36,0 20,16 0,24'/%3E%3Cpolygon points='64,0 100,0 100,28 84,14'/%3E%3Cpolygon points='100,58 100,100 70,100 86,78'/%3E%3Cpolygon points='0,68 18,84 8,100 0,100'/%3E%3Cpolygon points='38,100 56,84 68,100'/%3E%3C/g%3E%3Cg fill='none' stroke='white' stroke-opacity='.45' stroke-width='1'%3E%3Cpath vector-effect='non-scaling-stroke' d='M100 8 L78 24 L70 44 L48 52 L30 74 L34 100'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M78 24 L84 4'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M70 44 L92 58 L100 54'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M48 52 L40 34 L16 28 L0 36'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M30 74 L10 84 L0 80'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M20 16 L36 0'/%3E%3Cpath vector-effect='non-scaling-stroke' d='M86 78 L70 100'/%3E%3C/g%3E%3C/svg%3E") center / 100% 100% no-repeat,
+    linear-gradient(115deg, transparent 26%, rgba(255, 255, 255, 0.15) 34%, transparent 42%, transparent 60%, rgba(255, 255, 255, 0.08) 66%, transparent 72%);
+}
+
+.shard-card:nth-child(2) .shard-image::after { transform: scaleX(-1); }
+.shard-card:nth-child(3) .shard-image::after { transform: scaleY(-1); }
+
+/* ---------- loose glass fragments flying around the card ---------- */
+.shard-bits {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.shard-bits i {
+  position: absolute;
+  display: block;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), var(--shard-a) 45%, rgba(255, 255, 255, 0.15) 92%);
+  opacity: 0.88;
+}
+
+.shard-bits i:nth-child(1) { top: -3%;  right: 4%;   width: 2.3rem; height: 2.7rem; clip-path: polygon(0 42%, 70% 0, 100% 62%, 28% 100%); }
+.shard-bits i:nth-child(2) { top: 30%;  left: -5%;   width: 1.5rem; height: 1.8rem; clip-path: polygon(20% 0, 100% 35%, 60% 100%, 0 58%); }
+.shard-bits i:nth-child(3) { top: 60%;  right: -5%;  width: 1.2rem; height: 1.5rem; clip-path: polygon(0 30%, 80% 0, 100% 70%, 30% 100%); }
+.shard-bits i:nth-child(4) { top: 8%;   left: 14%;   width: 0.9rem; height: 1.1rem; clip-path: polygon(30% 0, 100% 50%, 20% 100%, 0 40%); }
+
+.shard-card:nth-child(2) .shard-bits i:nth-child(1) { right: auto; left: 10%; }
+.shard-card:nth-child(2) .shard-bits i:nth-child(3) { top: 14%; }
+.shard-card:nth-child(3) .shard-bits i:nth-child(2) { top: 44%; left: -6%; }
+
+/* ---------- the info bar: slanted, dark, accent outline, overlapping the bottom of the glass ---------- */
+.shard-info {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  margin: calc(-1 * clamp(2rem, 5vw, 3.5rem)) 14% 0 -0.6rem;
+  padding: 0.6rem 1rem 0.7rem 1.6rem;
+  background: linear-gradient(90deg, var(--shard-b), var(--shard-a));   /* shows only as the thin outline */
+  clip-path: polygon(1.3rem 0, 100% 0, calc(100% - 1.3rem) 100%, 0 100%);
+  -webkit-mask-image: var(--torn-image);
+  mask-image: var(--torn-image);
+  -webkit-mask-size: var(--torn-size);
+  mask-size: var(--torn-size);
+  -webkit-mask-position: var(--torn-pos);
+  mask-position: var(--torn-pos);
+  -webkit-mask-repeat: var(--torn-repeat);
+  mask-repeat: var(--torn-repeat);
+}
+
+.shard-info::before {
+  position: absolute;
+  inset: 0.0625rem;
+  z-index: -1;
+  content: '';
+  clip-path: inherit;
+  background: var(--glass-dark);
+  transition: background 220ms ease;
+}
+
+.shard-card:hover .shard-info::before,
+.shard-card:focus-visible .shard-info::before { background: color-mix(in srgb, var(--shard-a) 22%, #130e29); }
+
+.shard-card:focus-visible .shard-info { background: #fff; }
+
+.shard-info-main { display: grid; min-width: 0; gap: 0.15rem; }
+
+.shard-head { display: flex; min-width: 0; align-items: center; gap: 0.6rem; }
+
+.shard-pad {
+  flex: none;
+  width: clamp(1.1rem, 1.7vw, 1.5rem);
+  height: auto;
+  color: var(--shard-a);
+}
+
+.shard-number {
+  flex: none;
+  color: var(--shard-b);
+  font-family: var(--display);
+  font-size: clamp(0.62rem, 0.9vw, 0.8rem);
+}
+
+.shard-head strong {
+  min-width: 0;
+  color: #fff;
+  font-family: var(--pixel);
+  font-size: clamp(0.8rem, 1.3vw, 1.1rem);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.shard-desc {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--mono);
+  font-size: clamp(0.6rem, 0.8vw, 0.7rem);
+  line-height: 1.4;
+}
+
+.shard-status {
+  color: var(--shard-b);
+  font-family: var(--pixel);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* arrow button: a small slanted outlined box */
+.shard-arrow {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  width: 2.4rem;
+  height: 1.7rem;
+  place-items: center;
+  color: var(--shard-b);
+  font-size: 1rem;
+  background: var(--shard-a);
+  clip-path: polygon(0.6rem 0, 100% 0, calc(100% - 0.6rem) 100%, 0 100%);
+  transition: color 180ms ease;
+}
+
+.shard-arrow::before {
+  position: absolute;
+  inset: 0.0625rem;
+  z-index: -1;
+  content: '';
+  clip-path: inherit;
+  background: var(--glass-dark);
+  transition: background 180ms ease;
+}
+
+.shard-card:hover .shard-arrow,
+.shard-card:focus-visible .shard-arrow { color: #130e29; }
+
+.shard-card:hover .shard-arrow::before,
+.shard-card:focus-visible .shard-arrow::before { background: var(--shard-b); }
+
+/* ---------- phones: one card per row, still a little staggered sideways ---------- */
+@media (max-width: 43.75rem) {
+  .shard-grid { grid-template-columns: 1fr; gap: 2.25rem; width: 100%; margin-left: 0; padding-inline: 1rem; }
+  .shard-card:nth-child(n) { margin-top: 0; }
+  .shard-card:nth-child(2) { margin-left: 1rem; }
+  .shard-card:nth-child(3) { margin-left: 0.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shard-card, .shard-info::before, .shard-arrow, .shard-arrow::before { transition: none; }
+}
