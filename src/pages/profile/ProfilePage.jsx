@@ -256,7 +256,7 @@ function ProfilePage() {
       <h1>Profile</h1>
 
       <div className="profile-card-wrap">
-      <Hanger className="hanger--card" src="/hang/ell.gif" />
+      <Hanger className="hanger--card" src="/hang/ell.webp" />
       <section className="profile-card" aria-label="Edit your profile">
         {!authReady && (
           <TurnPlaceholder message="loading chud account infos....." />

@@ -263,7 +263,7 @@ function DiceGamble() {
       <div id="dice-panel" className={`dice-panel${isOpen ? ' is-open' : ''}`}>
         <div className="dice-panel-inner">
           <div className="dice-card-wrap">
-            <Hanger className="hanger--corner" src="/hang/el.png" />
+            <Hanger className="hanger--corner" src="/hang/el.webp" />
           <div className="dice-card">
             <div className="dice-stage">
               {values.map((value, index) => (

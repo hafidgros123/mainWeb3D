@@ -236,7 +236,7 @@ function ChatWindow({ onClose, onUnlockTheme, userId, onRequireSignIn }) {
               <div className="message-sender">{isBot ? 'Ellen' : 'You'}</div>
               <div className="message-bubble">
                 {isSending && isBot && !message.message
-                  ? <img className="message-loading-gif" src="/orbit/ellen-joe-spin-ellen-joe.gif" alt="Ellen Joe spinning while Ellen responds" />
+                  ? <img className="message-loading-gif" src="/orbit/ellen-joe-spin-ellen-joe.webp" alt="Ellen Joe spinning while Ellen responds" />
                   : message.message}
               </div>
             </div>

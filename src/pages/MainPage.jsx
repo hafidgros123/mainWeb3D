@@ -92,7 +92,7 @@ function MenuScreen() {
     <main className="AppMainMenu">
       <section className="main-panel main-page-content" aria-labelledby="main-page-title">
         <div className="title-with-hanger">
-          <Hanger className="hanger--sit" src="/hang/ellen.gif" />
+          <Hanger className="hanger--sit" src="/hang/ellen.webp" />
           <h1 id="main-page-title">NomNom....?? Main</h1>
         </div>
         <p className="page-intro">
